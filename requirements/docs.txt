@@ -1,0 +1,2 @@
+mkdocs_pymdownx_material_extras>=1.6
+pyspelling

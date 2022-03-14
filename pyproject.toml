@@ -1,0 +1,14 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel"
+]
+
+build-backend = "setuptools.build_meta"
+
+[tool.mypy]
+files = [
+    "coloraide_extras"
+]
+strict = true
+show_error_codes = true
