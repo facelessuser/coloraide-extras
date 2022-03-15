@@ -51,6 +51,7 @@ setup(
     author_email='Isaac.Muse@gmail.com',
     url='https://github.com/facelessuser/coloraide-extras',
     packages=find_packages(exclude=['tests*', 'tools*', 'docs*']),
+    package_data={"coloraide_extras": ["py.typed"]},
     install_requires=get_requirements("requirements/project.txt"),
     license='MIT License',
     classifiers=[
