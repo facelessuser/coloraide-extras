@@ -7,6 +7,7 @@ repository.
 ## Spaces
 
 - xyY
+- CMYK
+- CIE 1960 UCS
 - UVW
 - Prismatic
-- CMYK
