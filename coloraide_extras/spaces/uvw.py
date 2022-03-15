@@ -1,5 +1,5 @@
 """
-UVW class.
+CIE 1964 UVW class.
 
 https://en.wikipedia.org/wiki/CIE_1964_color_space
 """
@@ -60,8 +60,8 @@ class UVW(Space):
     WHITE = "D65"
 
     BOUNDS = (
-        GamutUnbound(0.0, 1.0),
-        GamutUnbound(0.0, 1.0),
+        GamutUnbound(-0.1, 1.0),
+        GamutUnbound(-0.1, 1.0),
         GamutUnbound(0.0, 1.0)
     )
 
