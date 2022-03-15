@@ -9,5 +9,6 @@ repository.
 - xyY
 - CMYK
 - CIE 1960 UCS
-- UVW
+- CIE 1964 UVW
 - Prismatic
+- IgTgPg
