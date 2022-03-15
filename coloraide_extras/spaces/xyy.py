@@ -23,13 +23,13 @@ class XyY(Space):
 
     @property
     def x(self) -> float:
-        """X channel."""
+        """The x channel."""
 
         return self._coords[0]
 
     @x.setter
     def x(self, value: float) -> None:
-        """Shift the X."""
+        """Set x."""
 
         self._coords[0] = value
 
@@ -53,26 +53,18 @@ class XyY(Space):
 
     @Y.setter
     def Y(self, value: float) -> None:
-        """Set Y channel."""
+        """Set Y."""
 
         self._coords[2] = value
 
     @classmethod
     def to_base(cls, coords: MutableVector) -> MutableVector:
-        """
-        To XYZ (no change).
-
-        Any needed chromatic adaptation is handled in the parent Color object.
-        """
+        """To XYZ."""
 
         return xy_to_xyz(coords[0:2], coords[2])
 
     @classmethod
     def from_base(cls, coords: MutableVector) -> MutableVector:
-        """
-        From XYZ (no change).
-
-        Any needed chromatic adaptation is handled in the parent Color object.
-        """
+        """From XYZ."""
 
         return xyz_to_xyY(coords, cls.white())
