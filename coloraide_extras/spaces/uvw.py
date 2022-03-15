@@ -1,4 +1,8 @@
-"""XYZ D65 class."""
+"""
+UVW class.
+
+https://en.wikipedia.org/wiki/CIE_1964_color_space
+"""
 from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutUnbound
 import re
 from coloraide import util

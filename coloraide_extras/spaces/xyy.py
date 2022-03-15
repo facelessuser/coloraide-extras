@@ -1,7 +1,12 @@
-"""XYZ D65 class."""
+"""
+The xyY color space.
+
+https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space
+"""
 from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutUnbound
 import re
-from coloraide.util import MutableVector, xyz_to_xyY, xy_to_xyz
+from coloraide import util
+from coloraide.util import MutableVector
 from typing import Tuple
 
 
@@ -61,10 +66,10 @@ class XyY(Space):
     def to_base(cls, coords: MutableVector) -> MutableVector:
         """To XYZ."""
 
-        return xy_to_xyz(coords[0:2], coords[2])
+        return util.xy_to_xyz(coords[0:2], coords[2])
 
     @classmethod
     def from_base(cls, coords: MutableVector) -> MutableVector:
         """From XYZ."""
 
-        return xyz_to_xyY(coords, cls.white())
+        return util.xyz_to_xyY(coords, cls.white())
