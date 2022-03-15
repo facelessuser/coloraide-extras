@@ -10,7 +10,7 @@ def get_version():
 
     import importlib.util
 
-    path = os.path.join(os.path.dirname(__file__), 'coloraide_extra', '__meta__.py')
+    path = os.path.join(os.path.dirname(__file__), 'coloraide_extras', '__meta__.py')
     spec = importlib.util.spec_from_file_location("__meta__", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

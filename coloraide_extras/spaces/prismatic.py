@@ -26,7 +26,7 @@ def lrgb_to_srgb(lrgb: MutableVector) -> MutableVector:
     rgb = lrgb[1:]
     l = lrgb[0]
     mx = max(rgb)
-    return [(l * c) / mx for c in rgb ]
+    return [(l * c) / mx for c in rgb]
 
 
 class Prismatic(Space):
