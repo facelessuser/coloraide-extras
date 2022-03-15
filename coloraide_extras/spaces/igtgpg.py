@@ -70,8 +70,8 @@ class IgTgPg(Labish, Space):
 
     BOUNDS = (
         GamutUnbound(0.0, 1.0),
-        GamutUnbound(0.0, 1.0),
-        GamutUnbound(0.0, 1.0)
+        GamutUnbound(-0.5, 0.5),
+        GamutUnbound(-0.5, 0.5)
     )
 
     @property

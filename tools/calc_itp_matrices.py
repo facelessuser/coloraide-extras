@@ -1,7 +1,7 @@
 """
 Calculate IgTgPg matricies.
 
-https://www.ingentaconnect.com/content/ist/jpi/2020/00000003/00000002/art00002#
+https://scholarworks.rit.edu/cgi/viewcontent.cgi?article=3862&context=theses
 """
 import numpy as np
 
@@ -9,17 +9,17 @@ np.set_printoptions(precision=None, sign='-', floatmode='unique')
 
 m1 = np.asfarray(
     [
-        [2.968, 2.741, -0.649],
-        [1.237, 5.969, -0.173],
-        [-0.318, 0.387, 2.311]
+        [0.4002, 0.7075, -0.0807],
+        [-0.2280, 1.1500, 0.0612],
+        [0.0, 0.0, 0.9184]
     ]
 )
 
 m2 = np.asfarray(
     [
-        [0.117, 1.464, 0.130],
-        [8.285, -8.361, 21.40],
-        [-1.208, 2.412, -36.53]
+        [0.4000, 0.4000, 0.2000],
+        [4.4550, -4.8510, 0.3960],
+        [0.8056, 0.3572, -1.1628]
     ]
 )
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     print(m1)
     print('===== LMS to XYZ =====')
     print(np.linalg.inv(m1))
-    print('===== LMS to IgTgPg =====')
+    print('===== LMS to IPT =====')
     print(m2)
-    print('===== IgTgPg to LMS =====')
+    print('===== IPT to LMS =====')
     print(np.linalg.inv(m2))
