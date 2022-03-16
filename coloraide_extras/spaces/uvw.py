@@ -7,7 +7,7 @@ from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutUnbound
 import re
 from coloraide import util
 from coloraide.util import MutableVector
-from typing import Tuple
+from typing import Tuple, cast
 
 
 def xyz_to_uvw(xyz: MutableVector, white: MutableVector) -> MutableVector:
@@ -19,14 +19,17 @@ def xyz_to_uvw(xyz: MutableVector, white: MutableVector) -> MutableVector:
 
     u, v = util.xy_to_uv_1960(util.xyz_to_xyY(xyz, white)[:2])
     u0, v0 = util.xy_to_uv_1960(white)
-    w = 25 * util.npow(xyz[1] * 100, 1 / 3) - 17
-    return util.divide(
-        [
-            13 * w * (u - u0),
-            13 * w * (v - v0),
-            w
-        ],
-        100
+    w = 25.0 * util.npow(xyz[1] * 100.0, 1 / 3) - 17.0
+    return cast(
+        MutableVector,
+        util.divide(
+            [
+                13 * w * (u - u0),
+                13 * w * (v - v0),
+                w
+            ],
+            100.0
+        )
     )
 
 
@@ -37,7 +40,10 @@ def uvw_to_xyz(uvw: MutableVector, white: MutableVector) -> MutableVector:
     When translating xyY back to XYZ, we need to scale Y back as well: Y / 100.
     """
 
-    uvw = util.multiply(uvw, 100)
+    uvw = cast(
+        MutableVector,
+        util.multiply(uvw, 100.0)
+    )
     u0, v0 = util.xy_to_uv_1960(white)
     w = uvw[2]
     x, y = util.uv_1960_to_xy(
@@ -46,7 +52,7 @@ def uvw_to_xyz(uvw: MutableVector, white: MutableVector) -> MutableVector:
             (uvw[1] / (13 * w)) + v0
         ]
     )
-    return util.xy_to_xyz([x, y], (((w + 17) / 25) ** 3) / 100)
+    return util.xy_to_xyz([x, y], (((w + 17.0) / 25.0) ** 3) / 100.0)
 
 
 class UVW(Space):

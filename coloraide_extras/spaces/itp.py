@@ -34,14 +34,14 @@ ITP_TO_LMS = [
 ]
 
 
-def xyz_to_itp(xyz):
+def xyz_to_itp(xyz: MutableVector) -> MutableVector:
     """XYZ to ITP."""
 
     lms_p = [util.npow(c, 0.43) for c in cast(MutableVector, util.dot(XYZ_TO_LMS, xyz))]
     return cast(MutableVector, util.dot(LMS_TO_ITP, lms_p))
 
 
-def itp_to_xyz(itp):
+def itp_to_xyz(itp: MutableVector) -> MutableVector:
     """ITP to XYZ."""
 
     lms = [util.npow(c, 1 / 0.43) for c in cast(MutableVector, util.dot(ITP_TO_LMS, itp))]

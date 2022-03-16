@@ -34,7 +34,7 @@ IGTGPG_TO_LMS = [
 ]
 
 
-def xyz_to_igtgpg(xyz):
+def xyz_to_igtgpg(xyz: MutableVector) -> MutableVector:
     """XYZ to IgTgPg."""
 
     lms_in = cast(MutableVector, util.dot(XYZ_TO_LMS, xyz))
@@ -46,7 +46,7 @@ def xyz_to_igtgpg(xyz):
     return cast(MutableVector, util.dot(LMS_TO_IGTGPG, lms))
 
 
-def igtgpg_to_xyz(itp):
+def igtgpg_to_xyz(itp: MutableVector) -> MutableVector:
     """IgTgPg to XYZ."""
 
     lms = cast(MutableVector, util.dot(IGTGPG_TO_LMS, itp))

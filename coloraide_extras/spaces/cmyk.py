@@ -12,13 +12,13 @@ from typing import Tuple
 def srgb_to_cmyk(rgb: MutableVector) -> MutableVector:
     """Convert sRGB to CMYK."""
 
-    k = 1 - max(rgb)
-    c = m = y = 1
+    k = 1.0 - max(rgb)
+    c = m = y = 1.0
     if k < 1:
         r, g, b = rgb
-        c = (1 - r - k) / (1 - k)
-        m = (1 - g - k) / (1 - k)
-        y = (1 - b - k) / (1 - k)
+        c = (1.0 - r - k) / (1.0 - k)
+        m = (1.0 - g - k) / (1.0 - k)
+        y = (1.0 - b - k) / (1.0 - k)
 
     return [c, m, y, k]
 
@@ -28,9 +28,9 @@ def cmyk_to_srgb(cmyk: MutableVector) -> MutableVector:
 
     c, m, y, k = cmyk
     return [
-        1 - min(1, c * (1 - k) + k),
-        1 - min(1, m * (1 - k) + k),
-        1 - min(1, y * (1 - k) + k)
+        1.0 - min(1.0, c * (1.0 - k) + k),
+        1.0 - min(1.0, m * (1.0 - k) + k),
+        1.0 - min(1.0, y * (1.0 - k) + k)
     ]
 
 
