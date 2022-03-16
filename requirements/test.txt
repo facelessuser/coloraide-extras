@@ -1,0 +1,5 @@
+git+https://github.com/facelessuser/coloraide.git
+pytest
+pytest-cov
+coverage
+mypy
