@@ -1,6 +1,6 @@
 recursive-include coloraide_extras *.py py.typed
-recursive-include tests *.py *.json
-recursive-include tools *.py *.sh
+recursive-include tests *.py
+recursive-include tools *.py
 recursive-include requirements *.txt
 recursive-exclude site *
 include setup.py

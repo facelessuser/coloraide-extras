@@ -1,7 +1,8 @@
 """
 The IPT color space.
 
-https://www.ingentaconnect.com/content/ist/jpi/2020/00000003/00000002/art00002#
+https://www.researchgate.net/publication/\
+221677980_Development_and_Testing_of_a_Color_Space_IPT_with_Improved_Hue_Uniformity.
 """
 from coloraide.spaces import Space, Labish, RE_DEFAULT_MATCH, GamutUnbound
 import re
