@@ -19,7 +19,7 @@ def xyz_to_uvw(xyz: MutableVector, white: MutableVector) -> MutableVector:
 
     u, v = util.xy_to_uv_1960(util.xyz_to_xyY(xyz, white)[:2])
     u0, v0 = util.xy_to_uv_1960(white)
-    w = 25.0 * util.npow(xyz[1] * 100.0, 1 / 3) - 17.0
+    w = 25.0 * util.nth_root(xyz[1] * 100.0, 3) - 17.0
     return cast(
         MutableVector,
         util.divide(
