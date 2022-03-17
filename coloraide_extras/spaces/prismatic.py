@@ -33,8 +33,8 @@ class Prismatic(Space):
     """The Prismatic color class."""
 
     BASE = "srgb"
-    NAME = "lrgb"
-    SERIALIZE = ("--lrgb",)  # type: Tuple[str, ...]
+    NAME = "prismatic"
+    SERIALIZE = ("--prismatic",)  # type: Tuple[str, ...]
     CHANNEL_NAMES = ("l", "r", "g", "b")
     CHANNEL_ALIASES = {
         "lightness": 'l',
