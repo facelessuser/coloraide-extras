@@ -1,5 +1,5 @@
 """
-Calculate IgTgPg matricies.
+Calculate IPT matricies.
 
 https://scholarworks.rit.edu/cgi/viewcontent.cgi?article=3862&context=theses
 """
@@ -19,9 +19,9 @@ white_d65 = np.asfarray(xy_to_xyz(0.31270, 0.32900))
 
 def white_space_fixup(m):
     """
-    Fix up the ITP white space.
+    Fix up the IPT white space.
 
-    The ITP paper noted that the D65 white point that they use was [0.9504, 1.0, 1.0889].
+    The IPT paper noted that the D65 white point that they use was [0.9504, 1.0, 1.0889].
     This is not the white point we use, so actual precision of the color space breaks down
     and doesn't match implementations that do use the above white point.
 
@@ -40,11 +40,11 @@ def white_space_fixup(m):
 
     ```
     >>> from coloraide import Color
-    >>> from coloraide_extras.spaces.itp import ITP
+    >>> from coloraide_extras.spaces.ipt import IPT
     >>> class ColorX(Color): ...
     ...
-    >>> ColorX.register(ITP)
-    >>> ColorX('white').convert('itp').coords()
+    >>> ColorX.register(IPT)
+    >>> ColorX('white').convert('ipt').coords()
     [1.0000046779854483, 0.00011652905964981697, -0.00010857262923669175]
     ```
 
@@ -53,11 +53,11 @@ def white_space_fixup(m):
 
     ```
     >>> from coloraide import Color
-    >>> from coloraide_extras.spaces.itp import ITP
+    >>> from coloraide_extras.spaces.ipt import IPT
     >>> class ColorX(Color): ...
     ...
-    >>> ColorX.register(ITP)
-    >>> ColorX('white').convert('itp').coords()
+    >>> ColorX.register(IPT)
+    >>> ColorX('white').convert('ipt').coords()
     [0.9999910919149725, 6.69113462008486e-05, -3.900547708157731e-05]
     ```
     """

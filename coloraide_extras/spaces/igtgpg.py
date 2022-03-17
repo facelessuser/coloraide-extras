@@ -1,5 +1,5 @@
 """
-The IgTgPg color space.
+The IgPgTg color space.
 
 https://www.ingentaconnect.com/content/ist/jpi/2020/00000003/00000002/art00002#
 """
@@ -21,21 +21,21 @@ LMS_TO_XYZ = [
     [0.07447971736457795, -0.06330532030466152, 0.44889031421761344]
 ]
 
-LMS_TO_IGTGPG = [
+LMS_TO_IGPGTG = [
     [0.117, 1.464, 0.130],
     [8.285, -8.361, 21.40],
     [-1.208, 2.412, -36.53]
 ]
 
-IGTGPG_TO_LMS = [
+IGPGTG_TO_LMS = [
     [0.581846461899246, 0.12331854793907822, 0.07431308420320765],
     [0.634548193791416, -0.009437923746683554, -0.003270744675229782],
     [0.02265698651657832, -0.004701151874826367, -0.030048158824914562]
 ]
 
 
-def xyz_to_igtgpg(xyz: MutableVector) -> MutableVector:
-    """XYZ to IgTgPg."""
+def xyz_to_igpgtg(xyz: MutableVector) -> MutableVector:
+    """XYZ to IgPgTg."""
 
     lms_in = cast(MutableVector, util.dot(XYZ_TO_LMS, xyz))
     lms = [
@@ -43,27 +43,27 @@ def xyz_to_igtgpg(xyz: MutableVector) -> MutableVector:
         util.npow(lms_in[1] / 21.46, 0.427),
         util.npow(lms_in[2] / 19435, 0.427)
     ]
-    return cast(MutableVector, util.dot(LMS_TO_IGTGPG, lms))
+    return cast(MutableVector, util.dot(LMS_TO_IGPGTG, lms))
 
 
-def igtgpg_to_xyz(itp: MutableVector) -> MutableVector:
-    """IgTgPg to XYZ."""
+def igpgtg_to_xyz(itp: MutableVector) -> MutableVector:
+    """IgPgTg to XYZ."""
 
-    lms = cast(MutableVector, util.dot(IGTGPG_TO_LMS, itp))
+    lms = cast(MutableVector, util.dot(IGPGTG_TO_LMS, itp))
     lms_in = [
-        util.npow(lms[0], 1 / 0.427) * 18.36,
-        util.npow(lms[1], 1 / 0.427) * 21.46,
-        util.npow(lms[2], 1 / 0.427) * 19435
+        util.nth_root(lms[0], 0.427) * 18.36,
+        util.nth_root(lms[1], 0.427) * 21.46,
+        util.nth_root(lms[2], 0.427) * 19435
     ]
     return cast(MutableVector, util.dot(LMS_TO_XYZ, lms_in))
 
 
-class IgTgPg(Labish, Space):
-    """The IgTgPg class."""
+class IgPgTg(Labish, Space):
+    """The IgPgTg class."""
 
     BASE = "xyz-d65"
-    NAME = "igtgpg"
-    SERIALIZE = ("--igtgpg",)  # type: Tuple[str, ...]
+    NAME = "igpgtg"
+    SERIALIZE = ("--igpgtg",)  # type: Tuple[str, ...]
     CHANNEL_NAMES = ("ig", "tg", "pg")
     DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
     WHITE = "D65"
@@ -114,10 +114,10 @@ class IgTgPg(Labish, Space):
     def to_base(cls, coords: MutableVector) -> MutableVector:
         """To XYZ."""
 
-        return igtgpg_to_xyz(coords)
+        return igpgtg_to_xyz(coords)
 
     @classmethod
     def from_base(cls, coords: MutableVector) -> MutableVector:
         """From XYZ."""
 
-        return xyz_to_igtgpg(coords)
+        return xyz_to_igpgtg(coords)

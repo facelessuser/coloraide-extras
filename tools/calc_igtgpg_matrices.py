@@ -1,5 +1,5 @@
 """
-Calculate IgTgPg matricies.
+Calculate IgPgTg matricies.
 
 https://www.ingentaconnect.com/content/ist/jpi/2020/00000003/00000002/art00002#
 """
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     print(m1)
     print('===== LMS to XYZ =====')
     print(np.linalg.inv(m1))
-    print('===== LMS to IgTgPg =====')
+    print('===== LMS to IgPgTg =====')
     print(m2)
-    print('===== IgTgPg to LMS =====')
+    print('===== IgPgTg to LMS =====')
     print(np.linalg.inv(m2))

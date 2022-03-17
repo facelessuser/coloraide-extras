@@ -11,5 +11,5 @@ repository.
 - CIE 1960 UCS
 - CIE 1964 UVW
 - Prismatic
-- IgTgPg
-- ITP
+- IgPgGg
+- IPT
