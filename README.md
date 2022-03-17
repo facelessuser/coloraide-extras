@@ -7,6 +7,7 @@ repository.
 ## Spaces
 
 - xyY
+- CMY
 - CMYK
 - CIE 1960 UCS
 - CIE 1964 UVW
