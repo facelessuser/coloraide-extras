@@ -26,7 +26,6 @@ CKA_FACTOR = CKA / (CXN + CYN)
 CKB_FACTOR = CKB / (CZN + CYN)
 
 
-
 def xyz_to_hlab(xyz: MutableVector, white: MutableVector) -> MutableVector:
     """Convert XYZ to Hunter Lab."""
 
