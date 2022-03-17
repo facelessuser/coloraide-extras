@@ -34,8 +34,10 @@ def xyz_to_hlab(xyz: MutableVector, white: MutableVector) -> MutableVector:
     kb = CKB_FACTOR * (yn + zn)
     x, y, z = cast(MutableVector, util.multiply(xyz, 100))
     l = util.nth_root(y / yn, 2)
-    a = ka * (x / xn - y / yn) / l
-    b = kb * (y / yn - z / zn) / l
+    a = b = 0
+    if l != 0:
+        a = ka * (x / xn - y / yn) / l
+        b = kb * (y / yn - z / zn) / l
     return [l * 100, a, b]
 
 
