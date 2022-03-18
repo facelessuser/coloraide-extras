@@ -53,12 +53,21 @@ C, M, and Y inks are translucent and will only produce a gray color when laid on
 
 [Learn more](https://en.wikipedia.org/wiki/CMY_color_model).
 
+### xyY
+
+A derivative of this XYZ space, the CIE xyY color space, is often used as a way to graphically present the chromaticity
+of colors.
+
+![CMY](images/xyy.png)
+
+[Learn more](https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space).
+
 ### CIE 1960 UCS
 
 The CIE 1960 color space ("CIE 1960 UCS", variously expanded Uniform Color Space, Uniform Color Scale, Uniform
 Chromaticity Scale, Uniform Chromaticity Space) is another name for the (u, v) chromaticity space devised by David
-MacAdam. The is color space is implemented using the relation between this space and the XYZ space as coordinates U, V,
-and W.
+MacAdam. The color space is implemented using the relation between this space and the XYZ space as coordinates U, V, and
+W.
 
 ![UCS](images/ucs.png)
 
@@ -73,6 +82,9 @@ as in Adams chromatic valence color spaces.
 
 What's with all the weird negative black values at the bottom? :shrug:
 
+The algorithm is simple enough that it is unlikely that we are wrong, but more the color space was not designed in such
+a way to render nicely but to focus mainly on the distancing requirement.
+
 ![UVW](images/uvw.png)
 
 [Learn more](https://en.wikipedia.org/wiki/CIE_1964_color_space).
@@ -81,7 +93,7 @@ What's with all the weird negative black values at the bottom? :shrug:
 
 The HSI model is similar to models like HSL and HSV except that it uses I for intensity instead of Lightness or Value.
 It does not attempt to "fill" a cylinder by its definition of saturation leading to a very different look when we plot
-it like we do HSL and HSV. Though it makes more sense when you see a cross section of a particular hue.
+it.
 
 ![HSI](images/hsi.png)
 
