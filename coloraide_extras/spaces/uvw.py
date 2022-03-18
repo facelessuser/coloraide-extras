@@ -7,7 +7,7 @@ from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutUnbound, WHITES
 import re
 from coloraide import util
 from coloraide.util import MutableVector, Vector
-from typing import Tuple, cast
+from typing import Tuple
 
 
 def xyz_to_uvw(xyz: MutableVector, white: Vector) -> MutableVector:
@@ -20,17 +20,11 @@ def xyz_to_uvw(xyz: MutableVector, white: Vector) -> MutableVector:
     u, v = util.xy_to_uv_1960(util.xyz_to_xyY(xyz, white)[:2])
     u0, v0 = util.xy_to_uv_1960(white)
     w = 25.0 * util.nth_root(xyz[1] * 100.0, 3) - 17.0
-    return cast(
-        MutableVector,
-        util.divide(
-            [
-                13 * w * (u - u0),
-                13 * w * (v - v0),
-                w
-            ],
-            100.0
-        )
-    )
+    return [
+        13 * w * (u - u0),
+        13 * w * (v - v0),
+        w
+    ]
 
 
 def uvw_to_xyz(uvw: MutableVector, white: Vector) -> MutableVector:
@@ -40,10 +34,6 @@ def uvw_to_xyz(uvw: MutableVector, white: Vector) -> MutableVector:
     When translating xyY back to XYZ, we need to scale Y back as well: Y / 100.
     """
 
-    uvw = cast(
-        MutableVector,
-        util.multiply(uvw, 100.0)
-    )
     u0, v0 = util.xy_to_uv_1960(white)
     w = uvw[2]
     x, y = util.uv_1960_to_xy(
