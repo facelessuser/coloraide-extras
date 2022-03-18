@@ -1,5 +1,5 @@
 """Uncalibrated, naive CMY color space."""
-from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutBound
+from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutBound, WHITES
 import re
 from coloraide.util import MutableVector
 from typing import Tuple
@@ -30,7 +30,7 @@ class CMY(Space):
         "yellow": 'y'
     }
     DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=4))
-    WHITE = "D65"
+    WHITE = WHITES['2deg']['D65']
 
     BOUNDS = (
         GamutBound(0.0, 1.0),

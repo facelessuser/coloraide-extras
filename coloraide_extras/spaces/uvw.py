@@ -3,14 +3,14 @@ CIE 1964 UVW class.
 
 https://en.wikipedia.org/wiki/CIE_1964_color_space
 """
-from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutUnbound
+from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutUnbound, WHITES
 import re
 from coloraide import util
-from coloraide.util import MutableVector
+from coloraide.util import MutableVector, Vector
 from typing import Tuple, cast
 
 
-def xyz_to_uvw(xyz: MutableVector, white: MutableVector) -> MutableVector:
+def xyz_to_uvw(xyz: MutableVector, white: Vector) -> MutableVector:
     """
     Translate XYZ to UVW.
 
@@ -33,7 +33,7 @@ def xyz_to_uvw(xyz: MutableVector, white: MutableVector) -> MutableVector:
     )
 
 
-def uvw_to_xyz(uvw: MutableVector, white: MutableVector) -> MutableVector:
+def uvw_to_xyz(uvw: MutableVector, white: Vector) -> MutableVector:
     """
     Translate UVW to XYZ.
 
@@ -63,7 +63,7 @@ class UVW(Space):
     SERIALIZE = ("--uvw",)  # type: Tuple[str, ...]
     CHANNEL_NAMES = ("u", "v", "w")
     DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
-    WHITE = "D65"
+    WHITE = WHITES['2deg']['D65']
 
     BOUNDS = (
         GamutUnbound(-0.1, 1.0),

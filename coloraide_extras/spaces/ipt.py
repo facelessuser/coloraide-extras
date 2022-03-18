@@ -4,7 +4,7 @@ The IPT color space.
 https://www.researchgate.net/publication/\
 221677980_Development_and_Testing_of_a_Color_Space_IPT_with_Improved_Hue_Uniformity.
 """
-from coloraide.spaces import Space, Labish, RE_DEFAULT_MATCH, GamutUnbound
+from coloraide.spaces import Space, Labish, RE_DEFAULT_MATCH, GamutUnbound, WHITES
 import re
 from coloraide import util
 from coloraide.util import MutableVector
@@ -57,7 +57,7 @@ class IPT(Labish, Space):
     SERIALIZE = ("--ipt",)  # type: Tuple[str, ...]
     CHANNEL_NAMES = ("i", "p", "t")
     DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
-    WHITE = "D65"
+    WHITE = WHITES['2deg']['D65']
 
     BOUNDS = (
         GamutUnbound(0.0, 1.0),

@@ -3,7 +3,7 @@ The IgPgTg color space.
 
 https://www.ingentaconnect.com/content/ist/jpi/2020/00000003/00000002/art00002#
 """
-from coloraide.spaces import Space, Labish, RE_DEFAULT_MATCH, GamutUnbound
+from coloraide.spaces import Space, Labish, RE_DEFAULT_MATCH, GamutUnbound, WHITES
 import re
 from coloraide import util
 from coloraide.util import MutableVector
@@ -66,7 +66,7 @@ class IgPgTg(Labish, Space):
     SERIALIZE = ("--igpgtg",)  # type: Tuple[str, ...]
     CHANNEL_NAMES = ("ig", "tg", "pg")
     DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
-    WHITE = "D65"
+    WHITE = WHITES['2deg']['D65']
 
     BOUNDS = (
         GamutUnbound(0.0, 1.0),

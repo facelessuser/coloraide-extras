@@ -3,7 +3,7 @@ Hunter Lab class.
 
 https://support.hunterlab.com/hc/en-us/articles/203997095-Hunter-Lab-Color-Scale-an08-96a2
 """
-from coloraide.spaces import RE_DEFAULT_MATCH
+from coloraide.spaces import RE_DEFAULT_MATCH, WHITES
 from coloraide.spaces.lab import Lab
 from coloraide import util
 import re
@@ -62,7 +62,7 @@ class HunterLab(Lab):
     NAME = "hunter-lab"
     SERIALIZE = ("--hunter-lab",)
     DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
-    WHITE = "D65"
+    WHITE = WHITES['2deg']['D65']
 
     @classmethod
     def to_base(cls, coords: MutableVector) -> MutableVector:

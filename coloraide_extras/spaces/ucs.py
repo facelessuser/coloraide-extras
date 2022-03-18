@@ -3,7 +3,7 @@ CIE 1960 UCS color class.
 
 http://en.wikipedia.org/wiki/CIE_1960_color_space#Relation_to_CIE_XYZ
 """
-from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutUnbound
+from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutUnbound, WHITES
 import re
 from coloraide.util import MutableVector
 from typing import Tuple
@@ -31,7 +31,7 @@ class UCS(Space):
     SERIALIZE = ("--ucs",)  # type: Tuple[str, ...]
     CHANNEL_NAMES = ("u", "v", "w")
     DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
-    WHITE = "D65"
+    WHITE = WHITES['2deg']['D65']
 
     BOUNDS = (
         GamutUnbound(0.0, 1.0),

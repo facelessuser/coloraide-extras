@@ -6,7 +6,7 @@ Creates a Maxwell color triangle with a lightness component.
 http://psgraphics.blogspot.com/2015/10/prismatic-color-model.html
 https://studylib.net/doc/14656976/the-prismatic-color-space-for-rgb-computations
 """
-from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutBound
+from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutBound, WHITES
 import re
 from coloraide.util import MutableVector
 from typing import Tuple
@@ -43,7 +43,7 @@ class Prismatic(Space):
         "blue": 'b'
     }
     DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=4))
-    WHITE = "D65"
+    WHITE = WHITES['2deg']['D65']
 
     BOUNDS = (
         GamutBound(0.0, 1.0),
