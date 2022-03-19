@@ -104,7 +104,6 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip setuptools tox build
-        npm install
     - name: Install Aspell
       run: |
         sudo apt-get install aspell aspell-en
