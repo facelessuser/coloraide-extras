@@ -46,7 +46,7 @@ subtractive primary colors: cyan, magenta, and yellow.
 
 [Learn more](https://en.wikipedia.org/wiki/CMY_color_model).
 
-![CMY](images/cmy.png)
+![CMY](https://github.com/facelessuser/coloraide-extras/blob/main/images/cmy.png)
 
 ### CMYK
 
@@ -73,7 +73,7 @@ color(--xyy 0.64 0.33 0.21264 / 1)
 A derivative of this XYZ space, the CIE xyY color space, is often used as a way to graphically present the chromaticity
 of colors.
 
-![CMY](images/xyy.png)
+![CMY](https://github.com/facelessuser/coloraide-extras/blob/main/images/xyy.png)
 
 [Learn more](https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space).
 
@@ -89,7 +89,7 @@ Chromaticity Scale, Uniform Chromaticity Space) is another name for the (u, v) c
 MacAdam. The color space is implemented using the relation between this space and the XYZ space as coordinates U, V, and
 W.
 
-![UCS](images/ucs.png)
+![UCS](https://github.com/facelessuser/coloraide-extras/blob/main/images/ucs.png)
 
 [Learn more](https://en.wikipedia.org/wiki/CIE_1960_color_space)
 
@@ -110,7 +110,7 @@ What's with all the weird negative black values at the bottom? :shrug:
 The algorithm is simple enough that it is unlikely that we are wrong, but more the color space was not designed in such
 a way to render nicely but to focus mainly on the distancing requirement.
 
-![UVW](images/uvw.png)
+![UVW](https://github.com/facelessuser/coloraide-extras/blob/main/images/uvw.png)
 
 [Learn more](https://en.wikipedia.org/wiki/CIE_1964_color_space).
 
@@ -125,9 +125,9 @@ The HSI model is similar to models like HSL and HSV except that it uses I for in
 It does not attempt to "fill" a cylinder by its definition of saturation leading to a very different look when we plot
 it.
 
-![HSI](images/hsi.png)
+![HSI](https://github.com/facelessuser/coloraide-extras/blob/main/images/hsi.png)
 
-![HSI Slice](images/hsi-slice.png)
+![HSI Slice](https://github.com/facelessuser/coloraide-extras/blob/main/images/hsi-slice.png)
 
 [Learn more](https://en.wikipedia.org/wiki/HSL_and_HSV#HSI_to_RGB).
 
@@ -143,7 +143,7 @@ hue is a normalized (barycentric)triangle with pure red, green, and blue at the 
 Tri-angle.  Each cross section of the space is the same barycentric triangle, and the light/darkdimension runs zero to
 one for each hue so the whole color volume takes the form of a prism.
 
-![Prismatic](images/prismatic.png)
+![Prismatic](https://github.com/facelessuser/coloraide-extras/blob/main/images/prismatic.png)
 
 [Learn more](http://psgraphics.blogspot.com/2015/10/prismatic-color-model.html).
 
@@ -159,7 +159,7 @@ CIELAB, it was also designed to be computed via simple formulas from the CIEXYZ 
 uniform than CIEXYZ. Hunter named his coordinates L, a, and b. The CIE named the coordinates for CIELAB as L*, a*, b* to
 distinguish them from Hunter's coordinates.
 
-![Hunter Lab](images/hunter-lab.png)
+![Hunter Lab](https://github.com/facelessuser/coloraide-extras/blob/main/images/hunter-lab.png)
 
 [Learn more](https://support.hunterlab.com/hc/en-us/articles/203997095-Hunter-Lab-Color-Scale-an08-96a2).
 
@@ -178,7 +178,7 @@ The IPT color appearance model excels at providing a formulation for hue where a
 perceived hue independent of the values of lightness and chroma (which is the general ideal for any color appearance
 model, but hard to achieve). It is therefore well-suited for gamut mapping implementations.
 
-![IPT](images/ipt.png)
+![IPT](https://github.com/facelessuser/coloraide-extras/blob/main/images/ipt.png)
 
 [Learn more](https://www.researchgate.net/publication/21677980_Development_and_Testing_of_a_Color_Space_IPT_with_Improved_Hue_Uniformity.).
 
@@ -193,6 +193,6 @@ IgPgTg uses the same structure as IPT, an established hue-uniform color space ut
 While IPT was fit to visual data on the perceived hue, IGPGTG was optimized based on evidence linking the peak
 wavelength of Gaussian-shaped light spectra to their perceived hues.
 
-![IgPgTg](images/igpgtg.png)
+![IgPgTg](https://github.com/facelessuser/coloraide-extras/blob/main/images/igpgtg.png)
 
 [Learn more](https://www.researchgate.net/publication/21677980_Development_and_Testing_of_a_Color_Space_IPT_with_Improved_Hue_Uniformity.).
