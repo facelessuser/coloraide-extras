@@ -1,5 +1,5 @@
 """
-Calculate IPT matricies.
+Calculate IPT matrices.
 
 https://scholarworks.rit.edu/cgi/viewcontent.cgi?article=3862&context=theses
 """
@@ -26,7 +26,7 @@ def white_space_fixup(m):
     and doesn't match implementations that do use the above white point.
 
     If we look at Colour Science, we can see that when using the above white point, that
-    precsion around white is much better:
+    precision around white is much better:
 
     ```
     >>> import colour

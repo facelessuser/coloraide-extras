@@ -1,5 +1,5 @@
 """
-Calculate IgPgTg matricies.
+Calculate IgPgTg matrices.
 
 https://www.ingentaconnect.com/content/ist/jpi/2020/00000003/00000002/art00002#
 """
