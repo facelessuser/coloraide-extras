@@ -2,6 +2,7 @@ recursive-include coloraide_extras *.py py.typed
 recursive-include tests *.py
 recursive-include tools *.py
 recursive-include requirements *.txt
+recursive-include images *.png
 recursive-exclude site *
 include setup.py
 include setup.cfg
