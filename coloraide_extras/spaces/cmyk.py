@@ -13,8 +13,8 @@ def srgb_to_cmyk(rgb: MutableVector) -> MutableVector:
     """Convert sRGB to CMYK."""
 
     k = 1.0 - max(rgb)
-    c = m = y = 1.0
-    if k < 1:
+    c = m = y = 0.0
+    if k != 1:
         r, g, b = rgb
         c = (1.0 - r - k) / (1.0 - k)
         m = (1.0 - g - k) / (1.0 - k)
