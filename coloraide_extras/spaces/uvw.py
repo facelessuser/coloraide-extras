@@ -38,8 +38,8 @@ def uvw_to_xyz(uvw: MutableVector, white: Vector) -> MutableVector:
     w = uvw[2]
     x, y = util.uv_1960_to_xy(
         [
-            (uvw[0] / (13 * w)) + u0,
-            (uvw[1] / (13 * w)) + v0
+            (uvw[0] / (13 * w)) + u0 if w != 0 else u0,
+            (uvw[1] / (13 * w)) + v0 if w != 0 else v0
         ]
     )
     return util.xy_to_xyz([x, y], (((w + 17.0) / 25.0) ** 3) / 100.0)

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+
+- **FIX**: Fix UVW calculation when `u = v = w = 0`.
+
 ## 0.1.1
 
 - **FIX**: Fix some divide by zero cases in some of the color spaces.
