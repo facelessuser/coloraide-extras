@@ -12,7 +12,7 @@ def srgb_to_cmy(rgb: MutableVector) -> MutableVector:
 
 
 def cmy_to_srgb(cmy: MutableVector) -> MutableVector:
-    """Convert cmy to sRGB."""
+    """Convert CMY to sRGB."""
 
     return [1 - c for c in cmy]
 

@@ -138,9 +138,9 @@ it.
 color(--prismatic 1 1 0 0 / 1)
 ```
 
-The Prismatic model introduces a simple transform of the RGBcolor cube into a light/dark dimension and a 2D hue.  The
-hue is a normalized (barycentric)triangle with pure red, green, and blue at the vertices, often called theMaxwell Color
-Tri-angle.  Each cross section of the space is the same barycentric triangle, and the light/darkdimension runs zero to
+The Prismatic model introduces a simple transform of the RGB color cube into a light/dark dimension and a 2D hue.  The
+hue is a normalized (barycentric)triangle with pure red, green, and blue at the vertices, often called the Maxwell Color
+Triangle.  Each cross section of the space is the same barycentric triangle, and the light/dark dimension runs zero to
 one for each hue so the whole color volume takes the form of a prism.
 
 ![Prismatic](https://github.com/facelessuser/coloraide-extras/blob/main/images/prismatic.png)
