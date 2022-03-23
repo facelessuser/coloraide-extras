@@ -3,11 +3,10 @@ Hunter Lab class.
 
 https://support.hunterlab.com/hc/en-us/articles/203997095-Hunter-Lab-Color-Scale-an08-96a2
 """
-from coloraide.spaces import RE_DEFAULT_MATCH, WHITES
+from coloraide.cat import WHITES
 from coloraide.spaces.lab import Lab
 from coloraide import util
-import re
-from coloraide.util import MutableVector
+from coloraide.util import MutableVector, Vector
 from typing import cast
 
 # Values for the original Hunter Lab with illuminant C.
@@ -26,7 +25,7 @@ CKA_FACTOR = CKA / (CXN + CYN)
 CKB_FACTOR = CKB / (CZN + CYN)
 
 
-def xyz_to_hlab(xyz: MutableVector, white: MutableVector) -> MutableVector:
+def xyz_to_hlab(xyz: MutableVector, white: Vector) -> MutableVector:
     """Convert XYZ to Hunter Lab."""
 
     xn, yn, zn = cast(MutableVector, util.multiply(util.xy_to_xyz(white), 100))
@@ -34,14 +33,14 @@ def xyz_to_hlab(xyz: MutableVector, white: MutableVector) -> MutableVector:
     kb = CKB_FACTOR * (yn + zn)
     x, y, z = cast(MutableVector, util.multiply(xyz, 100))
     l = util.nth_root(y / yn, 2)
-    a = b = 0
+    a = b = 0.0
     if l != 0:
         a = ka * (x / xn - y / yn) / l
         b = kb * (y / yn - z / zn) / l
     return [l * 100, a, b]
 
 
-def hlab_to_xyz(hlab: MutableVector, white: MutableVector) -> MutableVector:
+def hlab_to_xyz(hlab: MutableVector, white: Vector) -> MutableVector:
     """Convert Hunter Lab to XYZ."""
 
     xn, yn, zn = cast(MutableVector, util.multiply(util.xy_to_xyz(white), 100))
@@ -61,7 +60,6 @@ class HunterLab(Lab):
     BASE = 'xyz-d65'
     NAME = "hunter-lab"
     SERIALIZE = ("--hunter-lab",)
-    DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
     WHITE = WHITES['2deg']['D65']
 
     @classmethod

@@ -4,8 +4,9 @@ The IPT color space.
 https://www.researchgate.net/publication/\
 221677980_Development_and_Testing_of_a_Color_Space_IPT_with_Improved_Hue_Uniformity.
 """
-from coloraide.spaces import Space, Labish, RE_DEFAULT_MATCH, GamutUnbound, WHITES
-import re
+from coloraide.spaces import Space, Labish
+from coloraide.gamut.bounds import GamutUnbound
+from coloraide.cat import WHITES
 from coloraide import util
 from coloraide.util import MutableVector
 from typing import Tuple, cast
@@ -22,13 +23,13 @@ LMS_TO_XYZ = [
     [0.0, 0.0, 1.089007917757562]
 ]
 
-LMS_TO_IPT = [
+LMS_P_TO_IPT = [
     [0.4000, 0.4000, 0.2000],
     [4.4550, -4.851, 0.3960],
     [0.8056, 0.3572, -1.1628]
 ]
 
-IPT_TO_LMS = [
+IPT_TO_LMS_P = [
     [0.9999999999999999, 0.09756893051461393, 0.20522643316459166],
     [0.9999999999999999, -0.11387648547314712, 0.1332171583699981],
     [1.0, 0.0326151099170664, -0.6768871830691793]
@@ -39,13 +40,13 @@ def xyz_to_ipt(xyz: MutableVector) -> MutableVector:
     """XYZ to IPT."""
 
     lms_p = [util.npow(c, 0.43) for c in cast(MutableVector, util.dot(XYZ_TO_LMS, xyz))]
-    return cast(MutableVector, util.dot(LMS_TO_IPT, lms_p))
+    return cast(MutableVector, util.dot(LMS_P_TO_IPT, lms_p))
 
 
 def ipt_to_xyz(ipt: MutableVector) -> MutableVector:
     """IPT to XYZ."""
 
-    lms = [util.nth_root(c, 0.43) for c in cast(MutableVector, util.dot(IPT_TO_LMS, ipt))]
+    lms = [util.nth_root(c, 0.43) for c in cast(MutableVector, util.dot(IPT_TO_LMS_P, ipt))]
     return cast(MutableVector, util.dot(LMS_TO_XYZ, lms))
 
 
@@ -56,7 +57,6 @@ class IPT(Labish, Space):
     NAME = "ipt"
     SERIALIZE = ("--ipt",)  # type: Tuple[str, ...]
     CHANNEL_NAMES = ("i", "p", "t")
-    DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
     WHITE = WHITES['2deg']['D65']
 
     BOUNDS = (
@@ -81,25 +81,25 @@ class IPT(Labish, Space):
     def p(self) -> float:
         """The `P` channel."""
 
-        return self._coords[2]
+        return self._coords[1]
 
     @p.setter
     def p(self, value: float) -> None:
         """Set `P`."""
 
-        self._coords[2] = value
+        self._coords[1] = value
 
     @property
     def t(self) -> float:
         """The `T` channel."""
 
-        return self._coords[1]
+        return self._coords[2]
 
     @t.setter
     def t(self, value: float) -> None:
         """Set `T`."""
 
-        self._coords[1] = value
+        self._coords[2] = value
 
     @classmethod
     def to_base(cls, coords: MutableVector) -> MutableVector:

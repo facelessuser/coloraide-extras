@@ -1,7 +1,6 @@
 """HSI class."""
-from coloraide.spaces import Space, RE_DEFAULT_MATCH, FLG_ANGLE, FLG_OPT_PERCENT, GamutBound, Cylindrical, WHITES
+from coloraide.spaces import Space, FLG_ANGLE, FLG_OPT_PERCENT, GamutBound, Cylindrical, WHITES
 from coloraide import util
-import re
 from coloraide.util import MutableVector
 from typing import Tuple
 
@@ -75,7 +74,6 @@ class HSI(Cylindrical, Space):
         "saturation": "s",
         "intensity": "i"
     }
-    DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
     WHITE = WHITES['2deg']['D65']
     GAMUT_CHECK = "srgb"
 
