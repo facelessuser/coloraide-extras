@@ -3,7 +3,7 @@
 ## 0.2.0
 
 - **NEW**: Updated to work with latest ColorAide.
-- **FIX**: IPT mismatched channel association. This also broke round trip conversions.
+- **FIX**: IPT and IgPgTg mismatched channel association (`p` <=> `t`). This also broke round trip conversions.
 
 ## 0.1.2
 
