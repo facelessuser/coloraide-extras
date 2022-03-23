@@ -3,8 +3,9 @@ The IgPgTg color space.
 
 https://www.ingentaconnect.com/content/ist/jpi/2020/00000003/00000002/art00002#
 """
-from coloraide.spaces import Space, Labish, RE_DEFAULT_MATCH, GamutUnbound, WHITES
-import re
+from coloraide.spaces import Space, Labish
+from coloraide.gamut.bounds import GamutUnbound
+from coloraide.cat import WHITES
 from coloraide import util
 from coloraide.util import MutableVector
 from typing import Tuple, cast
@@ -64,8 +65,7 @@ class IgPgTg(Labish, Space):
     BASE = "xyz-d65"
     NAME = "igpgtg"
     SERIALIZE = ("--igpgtg",)  # type: Tuple[str, ...]
-    CHANNEL_NAMES = ("ig", "tg", "pg")
-    DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
+    CHANNEL_NAMES = ("ig", "pg", "tg")
     WHITE = WHITES['2deg']['D65']
 
     BOUNDS = (
@@ -87,26 +87,26 @@ class IgPgTg(Labish, Space):
         self._coords[0] = value
 
     @property
-    def tg(self) -> float:
-        """The `Tg` channel."""
-
-        return self._coords[1]
-
-    @tg.setter
-    def tg(self, value: float) -> None:
-        """Set `Tg`."""
-
-        self._coords[1] = value
-
-    @property
     def pg(self) -> float:
         """The `Pg` channel."""
 
-        return self._coords[2]
+        return self._coords[1]
 
     @pg.setter
     def pg(self, value: float) -> None:
         """Set `Pg`."""
+
+        self._coords[1] = value
+
+    @property
+    def tg(self) -> float:
+        """The `Tg` channel."""
+
+        return self._coords[2]
+
+    @tg.setter
+    def tg(self, value: float) -> None:
+        """Set `Tg`."""
 
         self._coords[2] = value
 

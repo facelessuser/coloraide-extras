@@ -1,7 +1,10 @@
-"""HSI class."""
-from coloraide.spaces import Space, RE_DEFAULT_MATCH, FLG_ANGLE, FLG_OPT_PERCENT, GamutBound, Cylindrical, WHITES
+"""
+HSI class.
+
+https://en.wikipedia.org/wiki/HSL_and_HSV#Saturation
+"""
+from coloraide.spaces import Space, FLG_ANGLE, FLG_OPT_PERCENT, GamutBound, Cylindrical, WHITES
 from coloraide import util
-import re
 from coloraide.util import MutableVector
 from typing import Tuple
 
@@ -31,11 +34,7 @@ def srgb_to_hsi(rgb: MutableVector) -> MutableVector:
 
 
 def hsi_to_srgb(hsi: MutableVector) -> MutableVector:
-    """
-    HSI to RGB.
-
-    https://en.wikipedia.org/wiki/HSL_and_HSV#Saturation
-    """
+    """HSI to RGB."""
 
     h, s, i = hsi
     h = h % 360
@@ -44,7 +43,16 @@ def hsi_to_srgb(hsi: MutableVector) -> MutableVector:
     c = (3 * i * s) / (1 + z)
     x = c * z
 
-    if util.is_nan(h):
+    if util.is_nan(h):  # pragma: no cover
+        # In our current setup, this will not occur. If colors are naturally achromatic,
+        # they will resolve to zeros automatically even without this check. This case
+        # would be a shortcut normally.
+        #
+        # Unnatural cases, such as explicitly setting of hue to undefined, could cause this,
+        # but the conversion pipeline converts all undefined values to zero. We'd have to
+        # encounter a natural case due to conversion to or from HSI mid pipeline to trigger
+        # this, and we are not currently in a position where that would occur with sRGB being
+        # the only pass-through.
         rgb = [0.0] * 3
     elif 0 <= h <= 1:
         rgb = [c, x, 0]
@@ -75,7 +83,6 @@ class HSI(Cylindrical, Space):
         "saturation": "s",
         "intensity": "i"
     }
-    DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
     WHITE = WHITES['2deg']['D65']
     GAMUT_CHECK = "srgb"
 
@@ -125,10 +132,16 @@ class HSI(Cylindrical, Space):
     def null_adjust(cls, coords: MutableVector, alpha: float) -> Tuple[MutableVector, float]:
         """On color update."""
 
-        if coords[2] == 0:
+        h, s, i = util.no_nans(coords)
+        h = h % 360
+        h /= 60
+        z = 1 - abs(h % 2 - 1)
+        c = (3 * i * s) / (1 + z)
+
+        if c == 0:
             coords[0] = util.NaN
 
-        return coords, alpha
+        return coords, util.no_nan(alpha)
 
     @classmethod
     def to_base(cls, coords: MutableVector) -> MutableVector:

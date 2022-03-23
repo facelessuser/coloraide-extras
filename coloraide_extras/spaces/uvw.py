@@ -3,8 +3,9 @@ CIE 1964 UVW class.
 
 https://en.wikipedia.org/wiki/CIE_1964_color_space
 """
-from coloraide.spaces import Space, RE_DEFAULT_MATCH, GamutUnbound, WHITES
-import re
+from coloraide.spaces import Space
+from coloraide.gamut.bounds import GamutUnbound
+from coloraide.cat import WHITES
 from coloraide import util
 from coloraide.util import MutableVector, Vector
 from typing import Tuple
@@ -52,7 +53,6 @@ class UVW(Space):
     NAME = "uvw"
     SERIALIZE = ("--uvw",)  # type: Tuple[str, ...]
     CHANNEL_NAMES = ("u", "v", "w")
-    DEFAULT_MATCH = re.compile(RE_DEFAULT_MATCH.format(color_space='|'.join(SERIALIZE), channels=3))
     WHITE = WHITES['2deg']['D65']
 
     BOUNDS = (

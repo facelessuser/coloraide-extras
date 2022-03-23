@@ -1,0 +1,5 @@
+[run]
+omit=coloraide_extras/__meta__.py
+
+[report]
+omit=coloraide_extras/__meta__.py

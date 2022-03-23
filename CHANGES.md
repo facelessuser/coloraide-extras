@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+
+- **NEW**: Updated to work with latest ColorAide.
+- **FIX**: IPT and IgPgTg mismatched channel association (`p` <=> `t`). This also broke round trip conversions.
+
 ## 0.1.2
 
 - **FIX**: Fix UVW calculation when `u = v = w = 0`.
