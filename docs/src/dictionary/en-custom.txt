@@ -1,4 +1,6 @@
 ACEScc
+ACEScct
+ACEScg
 Accessors
 Berns
 CIE
@@ -29,6 +31,7 @@ NONINFRINGEMENT
 Pinney
 PyPI
 RGB
+RYB
 Rlab
 Twemoji
 UCS
