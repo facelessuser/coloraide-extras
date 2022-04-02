@@ -6,8 +6,8 @@ https://www.ingentaconnect.com/content/ist/jpi/2020/00000003/00000002/art00002#
 from coloraide.spaces import Space, Labish
 from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
-from coloraide import util
-from coloraide.util import MutableVector
+from coloraide import algebra as alg
+from coloraide.types import MutableVector
 from typing import Tuple, cast
 
 XYZ_TO_LMS = [
@@ -17,46 +17,46 @@ XYZ_TO_LMS = [
 ]
 
 LMS_TO_XYZ = [
-    [0.43434868555746337, -0.20636237011428415, 0.10653033617352774],
-    [-0.08785463778363381, 0.20846346647992342, -0.009066845616854866],
+    [0.4343486855574634, -0.20636237011428418, 0.10653033617352772],
+    [-0.08785463778363381, 0.20846346647992345, -0.009066845616854866],
     [0.07447971736457795, -0.06330532030466152, 0.44889031421761344]
 ]
 
 LMS_TO_IGPGTG = [
-    [0.117, 1.464, 0.130],
-    [8.285, -8.361, 21.40],
+    [0.117, 1.464, 0.13],
+    [8.285, -8.361, 21.4],
     [-1.208, 2.412, -36.53]
 ]
 
 IGPGTG_TO_LMS = [
-    [0.581846461899246, 0.12331854793907822, 0.07431308420320765],
-    [0.634548193791416, -0.009437923746683554, -0.003270744675229782],
-    [0.02265698651657832, -0.004701151874826367, -0.030048158824914562]
+    [0.5818464618992484, 0.1233185479390782, 0.07431308420320765],
+    [0.6345481937914158, -0.009437923746683553, -0.003270744675229782],
+    [0.022656986516578225, -0.0047011518748263665, -0.030048158824914562]
 ]
 
 
 def xyz_to_igpgtg(xyz: MutableVector) -> MutableVector:
     """XYZ to IgPgTg."""
 
-    lms_in = cast(MutableVector, util.dot(XYZ_TO_LMS, xyz))
+    lms_in = cast(MutableVector, alg.dot(XYZ_TO_LMS, xyz, alg.A2D_A1D))
     lms = [
-        util.npow(lms_in[0] / 18.36, 0.427),
-        util.npow(lms_in[1] / 21.46, 0.427),
-        util.npow(lms_in[2] / 19435, 0.427)
+        alg.npow(lms_in[0] / 18.36, 0.427),
+        alg.npow(lms_in[1] / 21.46, 0.427),
+        alg.npow(lms_in[2] / 19435, 0.427)
     ]
-    return cast(MutableVector, util.dot(LMS_TO_IGPGTG, lms))
+    return cast(MutableVector, alg.dot(LMS_TO_IGPGTG, lms, alg.A2D_A1D))
 
 
 def igpgtg_to_xyz(itp: MutableVector) -> MutableVector:
     """IgPgTg to XYZ."""
 
-    lms = cast(MutableVector, util.dot(IGPGTG_TO_LMS, itp))
+    lms = cast(MutableVector, alg.dot(IGPGTG_TO_LMS, itp, alg.A2D_A1D))
     lms_in = [
-        util.nth_root(lms[0], 0.427) * 18.36,
-        util.nth_root(lms[1], 0.427) * 21.46,
-        util.nth_root(lms[2], 0.427) * 19435
+        alg.nth_root(lms[0], 0.427) * 18.36,
+        alg.nth_root(lms[1], 0.427) * 21.46,
+        alg.nth_root(lms[2], 0.427) * 19435
     ]
-    return cast(MutableVector, util.dot(LMS_TO_XYZ, lms_in))
+    return cast(MutableVector, alg.dot(LMS_TO_XYZ, lms_in, alg.A2D_A1D))
 
 
 class IgPgTg(Labish, Space):

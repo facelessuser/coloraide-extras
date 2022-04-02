@@ -2,7 +2,7 @@
 from coloraide.spaces import Space
 from coloraide.gamut.bounds import GamutBound
 from coloraide.cat import WHITES
-from coloraide.util import MutableVector
+from coloraide.types import MutableVector
 from typing import Tuple
 
 

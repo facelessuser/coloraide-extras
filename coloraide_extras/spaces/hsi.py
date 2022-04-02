@@ -4,8 +4,9 @@ HSI class.
 https://en.wikipedia.org/wiki/HSL_and_HSV#Saturation
 """
 from coloraide.spaces import Space, FLG_ANGLE, FLG_OPT_PERCENT, GamutBound, Cylindrical, WHITES
+from coloraide import algebra as alg
 from coloraide import util
-from coloraide.util import MutableVector
+from coloraide.types import MutableVector
 from typing import Tuple
 
 
@@ -13,7 +14,7 @@ def srgb_to_hsi(rgb: MutableVector) -> MutableVector:
     """SRGB to HSI."""
 
     r, g, b = rgb
-    h = util.NaN
+    h = alg.NaN
     s = 0.0
     mx = max(rgb)
     mn = min(rgb)
@@ -43,7 +44,7 @@ def hsi_to_srgb(hsi: MutableVector) -> MutableVector:
     c = (3 * i * s) / (1 + z)
     x = c * z
 
-    if util.is_nan(h):  # pragma: no cover
+    if alg.is_nan(h):  # pragma: no cover
         # In our current setup, this will not occur. If colors are naturally achromatic,
         # they will resolve to zeros automatically even without this check. This case
         # would be a shortcut normally.
@@ -132,16 +133,16 @@ class HSI(Cylindrical, Space):
     def null_adjust(cls, coords: MutableVector, alpha: float) -> Tuple[MutableVector, float]:
         """On color update."""
 
-        h, s, i = util.no_nans(coords)
+        h, s, i = alg.no_nans(coords)
         h = h % 360
         h /= 60
         z = 1 - abs(h % 2 - 1)
         c = (3 * i * s) / (1 + z)
 
         if c == 0:
-            coords[0] = util.NaN
+            coords[0] = alg.NaN
 
-        return coords, util.no_nan(alpha)
+        return coords, alg.no_nan(alpha)
 
     @classmethod
     def to_base(cls, coords: MutableVector) -> MutableVector:

@@ -6,7 +6,7 @@ http://en.wikipedia.org/wiki/CIE_1960_color_space#Relation_to_CIE_XYZ
 from coloraide.spaces import Space
 from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
-from coloraide.util import MutableVector
+from coloraide.types import MutableVector
 from typing import Tuple
 
 

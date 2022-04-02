@@ -5,8 +5,9 @@ https://support.hunterlab.com/hc/en-us/articles/203997095-Hunter-Lab-Color-Scale
 """
 from coloraide.cat import WHITES
 from coloraide.spaces.lab import Lab
+from coloraide import algebra as alg
 from coloraide import util
-from coloraide.util import MutableVector, Vector
+from coloraide.types import MutableVector, Vector
 from typing import cast
 
 # Values for the original Hunter Lab with illuminant C.
@@ -28,11 +29,11 @@ CKB_FACTOR = CKB / (CZN + CYN)
 def xyz_to_hlab(xyz: MutableVector, white: Vector) -> MutableVector:
     """Convert XYZ to Hunter Lab."""
 
-    xn, yn, zn = cast(MutableVector, util.multiply(util.xy_to_xyz(white), 100))
+    xn, yn, zn = cast(MutableVector, alg.multiply(util.xy_to_xyz(white), 100, alg.A1D_NUM))
     ka = CKA_FACTOR * (xn + yn)
     kb = CKB_FACTOR * (yn + zn)
-    x, y, z = cast(MutableVector, util.multiply(xyz, 100))
-    l = util.nth_root(y / yn, 2)
+    x, y, z = cast(MutableVector, alg.multiply(xyz, 100, alg.A1D_NUM))
+    l = alg.nth_root(y / yn, 2)
     a = b = 0.0
     if l != 0:
         a = ka * (x / xn - y / yn) / l
@@ -43,7 +44,7 @@ def xyz_to_hlab(xyz: MutableVector, white: Vector) -> MutableVector:
 def hlab_to_xyz(hlab: MutableVector, white: Vector) -> MutableVector:
     """Convert Hunter Lab to XYZ."""
 
-    xn, yn, zn = cast(MutableVector, util.multiply(util.xy_to_xyz(white), 100))
+    xn, yn, zn = cast(MutableVector, alg.multiply(util.xy_to_xyz(white), 100, alg.A1D_NUM))
     ka = CKA_FACTOR * (xn + yn)
     kb = CKB_FACTOR * (yn + zn)
     l, a, b = hlab
@@ -51,7 +52,7 @@ def hlab_to_xyz(hlab: MutableVector, white: Vector) -> MutableVector:
     y = (l ** 2) * yn
     x = (((a * l) / ka) + (y / yn)) * xn
     z = (((b * l) / kb) - (y / yn)) * -zn
-    return cast(MutableVector, util.divide([x, y, z], 100))
+    return cast(MutableVector, alg.divide([x, y, z], 100, alg.A1D_NUM))
 
 
 class HunterLab(Lab):

@@ -7,7 +7,8 @@ from coloraide.spaces import Space
 from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
 from coloraide import util
-from coloraide.util import MutableVector, Vector
+from coloraide import algebra as alg
+from coloraide.types import MutableVector, Vector
 from typing import Tuple
 
 
@@ -20,7 +21,7 @@ def xyz_to_uvw(xyz: MutableVector, white: Vector) -> MutableVector:
 
     u, v = util.xy_to_uv_1960(util.xyz_to_xyY(xyz, white)[:2])
     u0, v0 = util.xy_to_uv_1960(white)
-    w = 25.0 * util.nth_root(xyz[1] * 100.0, 3) - 17.0
+    w = 25.0 * alg.nth_root(xyz[1] * 100.0, 3) - 17.0
     return [
         13 * w * (u - u0),
         13 * w * (v - v0),

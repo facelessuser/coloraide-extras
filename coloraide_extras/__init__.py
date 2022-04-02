@@ -1,6 +1,6 @@
 """ColorAide Extra."""
 from .__meta__ import __version_info__, __version__  # noqa: F401
-from coloraide.util import NaN
+from coloraide import NaN
 from coloraide.interpolate import Piecewise, Lerp
 from coloraide import Color as Base
 from .spaces.hsi import HSI

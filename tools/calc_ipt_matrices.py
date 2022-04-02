@@ -3,18 +3,11 @@ Calculate IPT matrices.
 
 https://scholarworks.rit.edu/cgi/viewcontent.cgi?article=3862&context=theses
 """
-import numpy as np
-
-np.set_printoptions(precision=None, sign='-', floatmode='unique')
-
-
-def xy_to_xyz(x, y):
-    """Convert `xyY` to `xyz`."""
-
-    return [x / y, 1, (1 - x - y) / y]
+from coloraide import algebra as alg
+from coloraide import util
 
 
-white_d65 = np.asfarray(xy_to_xyz(0.31270, 0.32900))
+white_d65 = util.xy_to_xyz((0.31270, 0.32900))
 
 
 def white_space_fixup(m):
@@ -62,37 +55,46 @@ def white_space_fixup(m):
     ```
     """
 
-    theirs = np.diag([0.9504, 1.0, 1.0889])
-    ours = np.diag(white_d65)
+    theirs = alg.diag([0.9504, 1.0, 1.0889])
+    ours = alg.diag(white_d65)
 
-    return np.dot(np.dot(m, theirs), np.linalg.inv(ours))
+    return alg.dot(alg.dot(m, theirs), alg.inv(ours))
 
 
-m1 = np.asfarray(
-    [
-        [0.4002, 0.7075, -0.0807],
-        [-0.2280, 1.1500, 0.0612],
-        [0.0, 0.0, 0.9184]
-    ]
-)
+m1 = [
+    [0.4002, 0.7075, -0.0807],
+    [-0.2280, 1.1500, 0.0612],
+    [0.0, 0.0, 0.9184]
+]
 
 m1 = white_space_fixup(m1)
 
-m2 = np.asfarray(
-    [
-        [0.4000, 0.4000, 0.2000],
-        [4.4550, -4.8510, 0.3960],
-        [0.8056, 0.3572, -1.1628]
-    ]
-)
+m2 = [
+    [0.4000, 0.4000, 0.2000],
+    [4.4550, -4.8510, 0.3960],
+    [0.8056, 0.3572, -1.1628]
+]
+
+
+def pprint(value):
+    """Print the matrix."""
+    print('[', end='')
+    first = True
+    for v in value:
+        if first:
+            first = False
+        else:
+            print(',\n ', end='')
+        print(v, end='')
+    print(']')
 
 
 if __name__ == "__main__":
     print('===== XYZ to LMS =====')
-    print(m1)
+    pprint(m1)
     print('===== LMS to XYZ =====')
-    print(np.linalg.inv(m1))
+    pprint(alg.inv(m1))
     print('===== LMS P to IPT =====')
-    print(m2)
+    pprint(m2)
     print('===== IPT to LMS P =====')
-    print(np.linalg.inv(m2))
+    pprint(alg.inv(m2))

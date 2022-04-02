@@ -7,8 +7,8 @@ https://www.researchgate.net/publication/\
 from coloraide.spaces import Space, Labish
 from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
-from coloraide import util
-from coloraide.util import MutableVector
+from coloraide import algebra as alg
+from coloraide.types import MutableVector
 from typing import Tuple, cast
 
 XYZ_TO_LMS = [
@@ -18,20 +18,20 @@ XYZ_TO_LMS = [
 ]
 
 LMS_TO_XYZ = [
-    [1.8503518239760195, -1.1383686221417688, 0.23844898940542367],
-    [0.36683077517134854, 0.6438845448402356, -0.010673443584379994],
+    [1.8503518239760197, -1.1383686221417688, 0.23844898940542367],
+    [0.36683077517134854, 0.6438845448402356, -0.01067344358438],
     [0.0, 0.0, 1.089007917757562]
 ]
 
 LMS_P_TO_IPT = [
-    [0.4000, 0.4000, 0.2000],
-    [4.4550, -4.851, 0.3960],
+    [0.4, 0.4, 0.2],
+    [4.455, -4.851, 0.396],
     [0.8056, 0.3572, -1.1628]
 ]
 
 IPT_TO_LMS_P = [
-    [0.9999999999999999, 0.09756893051461393, 0.20522643316459166],
-    [0.9999999999999999, -0.11387648547314712, 0.1332171583699981],
+    [1.0000000000000004, 0.0975689305146139, 0.2052264331645916],
+    [0.9999999999999997, -0.1138764854731471, 0.13321715836999803],
     [1.0, 0.0326151099170664, -0.6768871830691793]
 ]
 
@@ -39,15 +39,15 @@ IPT_TO_LMS_P = [
 def xyz_to_ipt(xyz: MutableVector) -> MutableVector:
     """XYZ to IPT."""
 
-    lms_p = [util.npow(c, 0.43) for c in cast(MutableVector, util.dot(XYZ_TO_LMS, xyz))]
-    return cast(MutableVector, util.dot(LMS_P_TO_IPT, lms_p))
+    lms_p = [alg.npow(c, 0.43) for c in cast(MutableVector, alg.dot(XYZ_TO_LMS, xyz, alg.A2D_A1D))]
+    return cast(MutableVector, alg.dot(LMS_P_TO_IPT, lms_p, alg.A2D_A1D))
 
 
 def ipt_to_xyz(ipt: MutableVector) -> MutableVector:
     """IPT to XYZ."""
 
-    lms = [util.nth_root(c, 0.43) for c in cast(MutableVector, util.dot(IPT_TO_LMS_P, ipt))]
-    return cast(MutableVector, util.dot(LMS_TO_XYZ, lms))
+    lms = [alg.nth_root(c, 0.43) for c in cast(MutableVector, alg.dot(IPT_TO_LMS_P, ipt, alg.A2D_A1D))]
+    return cast(MutableVector, alg.dot(LMS_TO_XYZ, lms, alg.A2D_A1D))
 
 
 class IPT(Labish, Space):
