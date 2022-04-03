@@ -73,7 +73,7 @@ color(--xyy 0.64 0.33 0.21264 / 1)
 A derivative of this XYZ space, the CIE xyY color space, is often used as a way to graphically present the chromaticity
 of colors.
 
-![CMY](https://github.com/facelessuser/coloraide-extras/blob/main/images/xyy.png)
+![xyY](https://github.com/facelessuser/coloraide-extras/blob/main/images/xyy.png)
 
 [Learn more](https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space).
 
