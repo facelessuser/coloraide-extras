@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+- **NEW**: Updated to work with ColorAide 0.15.0 as there were substantial changes.
+
 ## 0.2.0
 
 - **NEW**: Updated to work with latest ColorAide.
