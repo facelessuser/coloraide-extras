@@ -1,1 +1,1 @@
-coloraide>=0.14.0
+coloraide @ git+https://github.com/facelessuser/coloraide.git@master
