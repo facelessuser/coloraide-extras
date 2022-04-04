@@ -39,15 +39,15 @@ IPT_TO_LMS_P = [
 def xyz_to_ipt(xyz: Vector) -> Vector:
     """XYZ to IPT."""
 
-    lms_p = [alg.npow(c, 0.43) for c in cast(Vector, alg.dot(XYZ_TO_LMS, xyz, alg.A2D_A1D))]
-    return cast(Vector, alg.dot(LMS_P_TO_IPT, lms_p, alg.A2D_A1D))
+    lms_p = [alg.npow(c, 0.43) for c in cast(Vector, alg.dot(XYZ_TO_LMS, xyz, dims=alg.D2_D1))]
+    return cast(Vector, alg.dot(LMS_P_TO_IPT, lms_p, dims=alg.D2_D1))
 
 
 def ipt_to_xyz(ipt: Vector) -> Vector:
     """IPT to XYZ."""
 
-    lms = [alg.nth_root(c, 0.43) for c in cast(Vector, alg.dot(IPT_TO_LMS_P, ipt, alg.A2D_A1D))]
-    return cast(Vector, alg.dot(LMS_TO_XYZ, lms, alg.A2D_A1D))
+    lms = [alg.nth_root(c, 0.43) for c in cast(Vector, alg.dot(IPT_TO_LMS_P, ipt, dims=alg.D2_D1))]
+    return cast(Vector, alg.dot(LMS_TO_XYZ, lms, dims=alg.D2_D1))
 
 
 class IPT(Labish, Space):

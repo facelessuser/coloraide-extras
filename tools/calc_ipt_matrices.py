@@ -58,7 +58,7 @@ def white_space_fixup(m):
     theirs = alg.diag([0.9504, 1.0, 1.0889])
     ours = alg.diag(white_d65)
 
-    return alg.dot(alg.dot(m, theirs), alg.inv(ours))
+    return alg.multi_dot([m, theirs, alg.inv(ours)])
 
 
 m1 = [

@@ -29,10 +29,10 @@ CKB_FACTOR = CKB / (CZN + CYN)
 def xyz_to_hlab(xyz: Vector, white: VectorLike) -> Vector:
     """Convert XYZ to Hunter Lab."""
 
-    xn, yn, zn = cast(Vector, alg.multiply(util.xy_to_xyz(white), 100, alg.A1D_NUM))
+    xn, yn, zn = cast(Vector, alg.multiply(util.xy_to_xyz(white), 100, dims=alg.D1_SC))
     ka = CKA_FACTOR * (xn + yn)
     kb = CKB_FACTOR * (yn + zn)
-    x, y, z = cast(Vector, alg.multiply(xyz, 100, alg.A1D_NUM))
+    x, y, z = cast(Vector, alg.multiply(xyz, 100, dims=alg.D1_SC))
     l = alg.nth_root(y / yn, 2)
     a = b = 0.0
     if l != 0:
@@ -44,7 +44,7 @@ def xyz_to_hlab(xyz: Vector, white: VectorLike) -> Vector:
 def hlab_to_xyz(hlab: Vector, white: VectorLike) -> Vector:
     """Convert Hunter Lab to XYZ."""
 
-    xn, yn, zn = cast(Vector, alg.multiply(util.xy_to_xyz(white), 100, alg.A1D_NUM))
+    xn, yn, zn = cast(Vector, alg.multiply(util.xy_to_xyz(white), 100, dims=alg.D1_SC))
     ka = CKA_FACTOR * (xn + yn)
     kb = CKB_FACTOR * (yn + zn)
     l, a, b = hlab
@@ -52,7 +52,7 @@ def hlab_to_xyz(hlab: Vector, white: VectorLike) -> Vector:
     y = (l ** 2) * yn
     x = (((a * l) / ka) + (y / yn)) * xn
     z = (((b * l) / kb) - (y / yn)) * -zn
-    return cast(Vector, alg.divide([x, y, z], 100, alg.A1D_NUM))
+    return cast(Vector, alg.divide([x, y, z], 100, dims=alg.D1_SC))
 
 
 class HunterLab(Lab):

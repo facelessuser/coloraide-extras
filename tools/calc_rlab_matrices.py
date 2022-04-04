@@ -52,7 +52,7 @@ def calc_ram(white):
     lms = alg.dot(M, xyz_w)
     a_lms = calc_a_lms(lms)
     A = alg.diag(a_lms)
-    R = alg.dot(alg.inv(alg.diag(xyz_w)), alg.dot(alg.inv(M), alg.inv(A)))
+    R = alg.multi_dot([alg.inv(alg.diag(xyz_w)), alg.inv(M), alg.inv(A)])
     ram = alg.dot(R, alg.dot(A, M))
     return ram
 
