@@ -8,7 +8,7 @@ from coloraide.spaces import Space, Labish
 from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
 from coloraide import algebra as alg
-from coloraide.types import MutableVector
+from coloraide.types import Vector
 from typing import Tuple, cast
 
 XYZ_TO_LMS = [
@@ -36,18 +36,18 @@ IPT_TO_LMS_P = [
 ]
 
 
-def xyz_to_ipt(xyz: MutableVector) -> MutableVector:
+def xyz_to_ipt(xyz: Vector) -> Vector:
     """XYZ to IPT."""
 
-    lms_p = [alg.npow(c, 0.43) for c in cast(MutableVector, alg.dot(XYZ_TO_LMS, xyz, alg.A2D_A1D))]
-    return cast(MutableVector, alg.dot(LMS_P_TO_IPT, lms_p, alg.A2D_A1D))
+    lms_p = [alg.npow(c, 0.43) for c in cast(Vector, alg.dot(XYZ_TO_LMS, xyz, alg.A2D_A1D))]
+    return cast(Vector, alg.dot(LMS_P_TO_IPT, lms_p, alg.A2D_A1D))
 
 
-def ipt_to_xyz(ipt: MutableVector) -> MutableVector:
+def ipt_to_xyz(ipt: Vector) -> Vector:
     """IPT to XYZ."""
 
-    lms = [alg.nth_root(c, 0.43) for c in cast(MutableVector, alg.dot(IPT_TO_LMS_P, ipt, alg.A2D_A1D))]
-    return cast(MutableVector, alg.dot(LMS_TO_XYZ, lms, alg.A2D_A1D))
+    lms = [alg.nth_root(c, 0.43) for c in cast(Vector, alg.dot(IPT_TO_LMS_P, ipt, alg.A2D_A1D))]
+    return cast(Vector, alg.dot(LMS_TO_XYZ, lms, alg.A2D_A1D))
 
 
 class IPT(Labish, Space):
@@ -102,13 +102,13 @@ class IPT(Labish, Space):
         self._coords[2] = value
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To XYZ."""
 
         return ipt_to_xyz(coords)
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From XYZ."""
 
         return xyz_to_ipt(coords)

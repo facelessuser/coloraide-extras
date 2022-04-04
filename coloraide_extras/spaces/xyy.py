@@ -7,7 +7,7 @@ from coloraide.spaces import Space
 from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
 from coloraide import util
-from coloraide.types import MutableVector
+from coloraide.types import Vector
 from typing import Tuple
 
 
@@ -63,13 +63,13 @@ class XyY(Space):
         self._coords[2] = value
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To XYZ."""
 
         return util.xy_to_xyz(coords[0:2], coords[2])
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From XYZ."""
 
         return util.xyz_to_xyY(coords, cls.white())

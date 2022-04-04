@@ -6,11 +6,11 @@ https://www.w3.org/TR/css-color-5/#cmyk-rgb
 from coloraide.spaces import Space
 from coloraide.gamut.bounds import GamutBound
 from coloraide.cat import WHITES
-from coloraide.types import MutableVector
+from coloraide.types import Vector
 from typing import Tuple
 
 
-def srgb_to_cmyk(rgb: MutableVector) -> MutableVector:
+def srgb_to_cmyk(rgb: Vector) -> Vector:
     """Convert sRGB to CMYK."""
 
     k = 1.0 - max(rgb)
@@ -24,7 +24,7 @@ def srgb_to_cmyk(rgb: MutableVector) -> MutableVector:
     return [c, m, y, k]
 
 
-def cmyk_to_srgb(cmyk: MutableVector) -> MutableVector:
+def cmyk_to_srgb(cmyk: Vector) -> Vector:
     """Convert CMYK to sRGB."""
 
     c, m, y, k = cmyk
@@ -106,13 +106,13 @@ class CMYK(Space):
         self._coords[3] = value
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To sRGB."""
 
         return cmyk_to_srgb(coords)
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From sRGB."""
 
         return srgb_to_cmyk(coords)

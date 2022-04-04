@@ -6,18 +6,18 @@ http://en.wikipedia.org/wiki/CIE_1960_color_space#Relation_to_CIE_XYZ
 from coloraide.spaces import Space
 from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
-from coloraide.types import MutableVector
+from coloraide.types import Vector
 from typing import Tuple
 
 
-def xyz_to_ucs(xyz: MutableVector) -> MutableVector:
+def xyz_to_ucs(xyz: Vector) -> Vector:
     """Translate XYZ to 1960 UCS."""
 
     x, y, z = xyz
     return [(2 / 3) * x, y, (-x + 3 * y + z) * 0.5]
 
 
-def ucs_to_xyz(ucs: MutableVector) -> MutableVector:
+def ucs_to_xyz(ucs: Vector) -> Vector:
     """Translate 1960 UCS to XYZ."""
 
     u, v, w = ucs
@@ -76,13 +76,13 @@ class UCS(Space):
         self._coords[2] = value
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To XYZ."""
 
         return ucs_to_xyz(coords)
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From XYZ."""
 
         return xyz_to_ucs(coords)

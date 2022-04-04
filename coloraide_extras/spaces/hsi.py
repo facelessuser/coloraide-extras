@@ -6,11 +6,11 @@ https://en.wikipedia.org/wiki/HSL_and_HSV#Saturation
 from coloraide.spaces import Space, FLG_ANGLE, FLG_OPT_PERCENT, GamutBound, Cylindrical, WHITES
 from coloraide import algebra as alg
 from coloraide import util
-from coloraide.types import MutableVector
+from coloraide.types import Vector
 from typing import Tuple
 
 
-def srgb_to_hsi(rgb: MutableVector) -> MutableVector:
+def srgb_to_hsi(rgb: Vector) -> Vector:
     """SRGB to HSI."""
 
     r, g, b = rgb
@@ -34,7 +34,7 @@ def srgb_to_hsi(rgb: MutableVector) -> MutableVector:
     return [util.constrain_hue(h), s, i]
 
 
-def hsi_to_srgb(hsi: MutableVector) -> MutableVector:
+def hsi_to_srgb(hsi: Vector) -> Vector:
     """HSI to RGB."""
 
     h, s, i = hsi
@@ -130,7 +130,7 @@ class HSI(Cylindrical, Space):
         self._coords[2] = value
 
     @classmethod
-    def null_adjust(cls, coords: MutableVector, alpha: float) -> Tuple[MutableVector, float]:
+    def null_adjust(cls, coords: Vector, alpha: float) -> Tuple[Vector, float]:
         """On color update."""
 
         h, s, i = alg.no_nans(coords)
@@ -145,13 +145,13 @@ class HSI(Cylindrical, Space):
         return coords, alg.no_nan(alpha)
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To sRGB from HSI."""
 
         return hsi_to_srgb(coords)
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From sRGB to HSI."""
 
         return srgb_to_hsi(coords)

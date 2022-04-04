@@ -2,17 +2,17 @@
 from coloraide.spaces import Space
 from coloraide.gamut.bounds import GamutBound
 from coloraide.cat import WHITES
-from coloraide.types import MutableVector
+from coloraide.types import Vector
 from typing import Tuple
 
 
-def srgb_to_cmy(rgb: MutableVector) -> MutableVector:
+def srgb_to_cmy(rgb: Vector) -> Vector:
     """Convert sRGB to CMY."""
 
     return [1 - c for c in rgb]
 
 
-def cmy_to_srgb(cmy: MutableVector) -> MutableVector:
+def cmy_to_srgb(cmy: Vector) -> Vector:
     """Convert CMY to sRGB."""
 
     return [1 - c for c in cmy]
@@ -75,13 +75,13 @@ class CMY(Space):
         self._coords[2] = value
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To sRGB."""
 
         return cmy_to_srgb(coords)
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From sRGB."""
 
         return srgb_to_cmy(coords)

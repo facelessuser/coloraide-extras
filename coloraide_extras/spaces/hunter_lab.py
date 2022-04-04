@@ -7,7 +7,7 @@ from coloraide.cat import WHITES
 from coloraide.spaces.lab import Lab
 from coloraide import algebra as alg
 from coloraide import util
-from coloraide.types import MutableVector, Vector
+from coloraide.types import Vector, VectorLike
 from typing import cast
 
 # Values for the original Hunter Lab with illuminant C.
@@ -26,13 +26,13 @@ CKA_FACTOR = CKA / (CXN + CYN)
 CKB_FACTOR = CKB / (CZN + CYN)
 
 
-def xyz_to_hlab(xyz: MutableVector, white: Vector) -> MutableVector:
+def xyz_to_hlab(xyz: Vector, white: VectorLike) -> Vector:
     """Convert XYZ to Hunter Lab."""
 
-    xn, yn, zn = cast(MutableVector, alg.multiply(util.xy_to_xyz(white), 100, alg.A1D_NUM))
+    xn, yn, zn = cast(Vector, alg.multiply(util.xy_to_xyz(white), 100, alg.A1D_NUM))
     ka = CKA_FACTOR * (xn + yn)
     kb = CKB_FACTOR * (yn + zn)
-    x, y, z = cast(MutableVector, alg.multiply(xyz, 100, alg.A1D_NUM))
+    x, y, z = cast(Vector, alg.multiply(xyz, 100, alg.A1D_NUM))
     l = alg.nth_root(y / yn, 2)
     a = b = 0.0
     if l != 0:
@@ -41,10 +41,10 @@ def xyz_to_hlab(xyz: MutableVector, white: Vector) -> MutableVector:
     return [l * 100, a, b]
 
 
-def hlab_to_xyz(hlab: MutableVector, white: Vector) -> MutableVector:
+def hlab_to_xyz(hlab: Vector, white: VectorLike) -> Vector:
     """Convert Hunter Lab to XYZ."""
 
-    xn, yn, zn = cast(MutableVector, alg.multiply(util.xy_to_xyz(white), 100, alg.A1D_NUM))
+    xn, yn, zn = cast(Vector, alg.multiply(util.xy_to_xyz(white), 100, alg.A1D_NUM))
     ka = CKA_FACTOR * (xn + yn)
     kb = CKB_FACTOR * (yn + zn)
     l, a, b = hlab
@@ -52,7 +52,7 @@ def hlab_to_xyz(hlab: MutableVector, white: Vector) -> MutableVector:
     y = (l ** 2) * yn
     x = (((a * l) / ka) + (y / yn)) * xn
     z = (((b * l) / kb) - (y / yn)) * -zn
-    return cast(MutableVector, alg.divide([x, y, z], 100, alg.A1D_NUM))
+    return cast(Vector, alg.divide([x, y, z], 100, alg.A1D_NUM))
 
 
 class HunterLab(Lab):
@@ -64,13 +64,13 @@ class HunterLab(Lab):
     WHITE = WHITES['2deg']['D65']
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To XYZ from Hunter Lab."""
 
         return hlab_to_xyz(coords, cls.white())
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From XYZ to Hunter Lab."""
 
         return xyz_to_hlab(coords, cls.white())

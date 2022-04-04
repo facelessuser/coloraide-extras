@@ -8,11 +8,11 @@ from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
 from coloraide import util
 from coloraide import algebra as alg
-from coloraide.types import MutableVector, Vector
+from coloraide.types import Vector, VectorLike
 from typing import Tuple
 
 
-def xyz_to_uvw(xyz: MutableVector, white: Vector) -> MutableVector:
+def xyz_to_uvw(xyz: Vector, white: VectorLike) -> Vector:
     """
     Translate XYZ to UVW.
 
@@ -29,7 +29,7 @@ def xyz_to_uvw(xyz: MutableVector, white: Vector) -> MutableVector:
     ]
 
 
-def uvw_to_xyz(uvw: MutableVector, white: Vector) -> MutableVector:
+def uvw_to_xyz(uvw: Vector, white: VectorLike) -> Vector:
     """
     Translate UVW to XYZ.
 
@@ -99,13 +99,13 @@ class UVW(Space):
         self._coords[2] = value
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To XYZ."""
 
         return uvw_to_xyz(coords, cls.white())
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From XYZ."""
 
         return xyz_to_uvw(coords, cls.white())

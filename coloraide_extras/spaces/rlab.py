@@ -7,7 +7,7 @@ https://www.imaging.org/site/PDFS/Papers/1997/RP-0-67/2368.pdf
 from coloraide.cat import WHITES
 from coloraide.spaces.lab import Lab
 from coloraide import algebra as alg
-from coloraide.types import MutableVector
+from coloraide.types import Vector
 from typing import cast
 
 XYZ_TO_XYZ_REF = [
@@ -25,20 +25,20 @@ XYZ_REF_TO_XYZ = [
 EXP = 2.3
 
 
-def rlab_to_xyz(rlab: MutableVector) -> MutableVector:
+def rlab_to_xyz(rlab: Vector) -> Vector:
     """RLAB to XYZ."""
 
     l, a, b = rlab
     yr = l / 100
     xr = alg.npow((a / 430) + yr, EXP)
     zr = alg.npow(yr - (b / 170), EXP)
-    return cast(MutableVector, alg.dot(XYZ_REF_TO_XYZ, [xr, alg.npow(yr, EXP), zr]))
+    return cast(Vector, alg.dot(XYZ_REF_TO_XYZ, [xr, alg.npow(yr, EXP), zr]))
 
 
-def xyz_to_rlab(xyz: MutableVector) -> MutableVector:
+def xyz_to_rlab(xyz: Vector) -> Vector:
     """XYZ to RLAB."""
 
-    xyz_ref = cast(MutableVector, alg.dot(XYZ_TO_XYZ_REF, xyz))
+    xyz_ref = cast(Vector, alg.dot(XYZ_TO_XYZ_REF, xyz))
     xr, yr, zr = [alg.nth_root(c, EXP) for c in xyz_ref]
     l = 100 * yr
     a = 430 * (xr - yr)
@@ -55,13 +55,13 @@ class RLAB(Lab):
     WHITE = WHITES['2deg']['D65']
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To XYZ from Hunter Lab."""
 
         return rlab_to_xyz(coords)
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From XYZ to Hunter Lab."""
 
         return xyz_to_rlab(coords)

@@ -9,11 +9,11 @@ https://studylib.net/doc/14656976/the-prismatic-color-space-for-rgb-computations
 from coloraide.spaces import Space
 from coloraide.gamut.bounds import GamutBound
 from coloraide.cat import WHITES
-from coloraide.types import MutableVector
+from coloraide.types import Vector
 from typing import Tuple
 
 
-def srgb_to_lrgb(rgb: MutableVector) -> MutableVector:
+def srgb_to_lrgb(rgb: Vector) -> Vector:
     """Convert sRGB to Prismatic."""
 
     l = max(rgb)
@@ -21,7 +21,7 @@ def srgb_to_lrgb(rgb: MutableVector) -> MutableVector:
     return [l] + ([(c / s) for c in rgb] if s != 0 else [0, 0, 0])
 
 
-def lrgb_to_srgb(lrgb: MutableVector) -> MutableVector:
+def lrgb_to_srgb(lrgb: Vector) -> Vector:
     """Convert Prismatic to sRGB."""
 
     rgb = lrgb[1:]
@@ -101,13 +101,13 @@ class Prismatic(Space):
         self._coords[3] = value
 
     @classmethod
-    def to_base(cls, coords: MutableVector) -> MutableVector:
+    def to_base(cls, coords: Vector) -> Vector:
         """To sRGB."""
 
         return lrgb_to_srgb(coords)
 
     @classmethod
-    def from_base(cls, coords: MutableVector) -> MutableVector:
+    def from_base(cls, coords: Vector) -> Vector:
         """From sRGB."""
 
         return srgb_to_lrgb(coords)
