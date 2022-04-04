@@ -1,5 +1,6 @@
 ACEScc
 Accessors
+Berns
 CIE
 CIELAB
 CIEXYZ
@@ -22,6 +23,7 @@ MHPE
 MacAdam
 Pinney
 RGB
+Rlab
 UCS
 UVW
 Uncalibrated
