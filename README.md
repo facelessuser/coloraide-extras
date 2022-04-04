@@ -163,6 +163,20 @@ distinguish them from Hunter's coordinates.
 
 [Learn more](https://support.hunterlab.com/hc/en-us/articles/203997095-Hunter-Lab-Color-Scale-an08-96a2).
 
+### RLAB
+
+```py
+>>> Color('red').convert('rlab')
+color(--rlab 51.012 79.742 57.26 / 1)
+```
+
+The RLAB color-appearance space was developed by Fairchild and Berns for cross-media color reproduction applications in
+which images are reproduced with differing white points, luminance levels, and/or surrounds.
+
+![RLAB](https://github.com/facelessuser/coloraide-extras/blob/main/images/rlab.png)
+
+[Learn more](https://scholarworks.rit.edu/cgi/viewcontent.cgi?article=1153&context=article).
+
 ### IPT
 
 ```py

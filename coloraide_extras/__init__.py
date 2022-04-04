@@ -13,10 +13,11 @@ from .spaces.uvw import UVW
 from .spaces.xyy import XyY
 from .spaces.hunter_lab import HunterLab
 from .spaces.prismatic import Prismatic
+from .spaces.rlab import RLAB
 
 __all__ = ("Color", "SPACES", 'NaN', 'Piecewise', 'Lerp')
 
-SPACES = [HSI, IPT, IgPgTg, CMY, CMYK, UCS, UVW, XyY, HunterLab, Prismatic]
+SPACES = [HSI, IPT, IgPgTg, CMY, CMYK, UCS, UVW, XyY, HunterLab, Prismatic, RLAB]
 
 
 class Color(Base):
