@@ -22,6 +22,7 @@ Ladd
 MHPE
 MacAdam
 Pinney
+PyPI
 RGB
 Rlab
 UCS
