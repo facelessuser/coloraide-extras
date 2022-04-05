@@ -1,3 +1,12 @@
+[![Donate via PayPal][donate-image]][donate-link]
+[![Discord][discord-image]][discord-link]
+[![Build][github-ci-image]][github-ci-link]
+[![Coverage Status][codecov-image]][codecov-link]
+[![PyPI Version][pypi-image]][pypi-link]
+[![PyPI Downloads][pypi-down]][pypi-link]
+[![PyPI - Python Version][python-image]][pypi-link]
+![License][license-image-mit]
+
 # ColorAide Extras
 
 A place to house uncommon and experimental color spaces, ∆E methods, and gamut mapping methods not currently intended
@@ -210,3 +219,17 @@ wavelength of Gaussian-shaped light spectra to their perceived hues.
 ![IgPgTg](https://github.com/facelessuser/coloraide-extras/blob/main/images/igpgtg.png)
 
 [Learn more](https://www.researchgate.net/publication/21677980_Development_and_Testing_of_a_Color_Space_IPT_with_Improved_Hue_Uniformity.).
+
+[github-ci-image]: https://github.com/facelessuser/coloraide-extras/workflows/build/badge.svg?branch=main&event=push
+[github-ci-link]: https://github.com/facelessuser/coloraide-extras/actions?query=workflow%3Abuild+branch%3Amaster
+[discord-image]: https://img.shields.io/discord/678289859768745989?logo=discord&logoColor=aaaaaa&color=mediumpurple&labelColor=333333
+[discord-link]:https://discord.gg/TWs8Tgr
+[codecov-image]: https://img.shields.io/codecov/c/github/facelessuser/coloraide-extras/main.svg?logo=codecov&logoColor=aaaaaa&labelColor=333333
+[codecov-link]: https://codecov.io/github/facelessuser/coloraide-extras
+[pypi-image]: https://img.shields.io/pypi/v/coloraide-extras.svg?logo=pypi&logoColor=aaaaaa&labelColor=333333
+[pypi-down]: https://img.shields.io/pypi/dm/coloraide-extras.svg?logo=pypi&logoColor=aaaaaa&labelColor=333333
+[pypi-link]: https://pypi.python.org/pypi/coloraide-extras
+[python-image]: https://img.shields.io/pypi/pyversions/coloraide_extras?logo=python&logoColor=aaaaaa&labelColor=333333
+[license-image-mit]: https://img.shields.io/badge/license-MIT-blue.svg?labelColor=333333
+[donate-image]: https://img.shields.io/badge/Donate-PayPal-3fabd1?logo=paypal
+[donate-link]: https://www.paypal.me/facelessuser
