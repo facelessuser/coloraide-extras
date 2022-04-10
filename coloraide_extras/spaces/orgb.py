@@ -8,7 +8,8 @@ from coloraide import algebra as alg
 from coloraide.spaces import Space, Labish
 from coloraide.types import Vector
 from coloraide.cat import WHITES
-from coloraide.gamut import GamutBound
+from coloraide.gamut.bounds import GamutBound
+from typing import cast
 
 
 RGB_TO_LC1C2 = [
@@ -20,19 +21,19 @@ RGB_TO_LC1C2 = [
 LC1C2_TO_RGB = alg.inv(RGB_TO_LC1C2)
 
 
-def rotate(v, d):
+def rotate(v: Vector, d: float) -> Vector:
     """Rotate the vector."""
 
     m = alg.identity(3)
     m[1][1:] = math.cos(d), -math.sin(d)
     m[2][1:] = math.sin(d), math.cos(d)
-    return alg.dot(m, v, dims=alg.D2_D1)
+    return cast(Vector, alg.dot(m, v, dims=alg.D2_D1))
 
 
-def srgb_to_orgb(rgb):
+def srgb_to_orgb(rgb: Vector) -> Vector:
     """SRGB to ORGB."""
 
-    lcc = alg.dot(RGB_TO_LC1C2, rgb, dims=alg.D2_D1)
+    lcc = cast(Vector, alg.dot(RGB_TO_LC1C2, rgb, dims=alg.D2_D1))
     theta = math.atan2(lcc[2], lcc[1])
     theta0 = theta
     atheta = abs(theta)
@@ -44,7 +45,7 @@ def srgb_to_orgb(rgb):
     return rotate(lcc, theta0 - theta)
 
 
-def orgb_to_srgb(lcc):
+def orgb_to_srgb(lcc: Vector) -> Vector:
     """ORGB to sRGB."""
 
     theta0 = math.atan2(lcc[2], lcc[1])
@@ -55,7 +56,7 @@ def orgb_to_srgb(lcc):
     elif (math.pi / 2) <= atheta0 <= math.pi:
         theta = math.copysign((math.pi / 3) + (4 / 3) * (atheta0 - math.pi / 2), theta0)
 
-    return alg.dot(LC1C2_TO_RGB, rotate(lcc, theta - theta0))
+    return cast(Vector, alg.dot(LC1C2_TO_RGB, rotate(lcc, theta - theta0)))
 
 
 class ORGB(Labish, Space):
@@ -110,7 +111,6 @@ class ORGB(Labish, Space):
         """Set `Crg`."""
 
         self._coords[2] = value
-
 
     @classmethod
     def to_base(cls, coords: Vector) -> Vector:
