@@ -140,6 +140,19 @@ it.
 
 [Learn more](https://en.wikipedia.org/wiki/HSL_and_HSV#HSI_to_RGB).
 
+### oRGB
+
+A new color model that is based on opponent color theory. Like HSV, it is designed specifically for computer graphics.
+However, it is also designed to work well for computational applications such as color transfer, where HSV falters.
+Despite being geared towards computation, oRGB’s natural axes facilitate HSV-style color selection and manipulation.
+oRGB also allows for new applications such as a quantitative cool-to-warm metric, intuitive color manipulations and
+variations, and simple gamut mapping. This new color model strikes a balance between simplicity and the computational
+qualities of color spaces such as CIELAB.
+
+![oRGB](https://github.com/facelessuser/coloraide-extras/blob/main/images/orgb.png)
+
+[Learn more](https://graphics.stanford.edu/~boulos/papers/orgb_sig.pdf).
+
 ### Prismatic
 
 ```py

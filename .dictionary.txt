@@ -41,6 +41,8 @@ chromaticity
 et
 illuminant
 luminance
+oRGB
+oRGB's
 pre
 prerelease
 prereleases
