@@ -32,13 +32,13 @@ def rlab_to_xyz(rlab: Vector) -> Vector:
     yr = l / 100
     xr = alg.npow((a / 430) + yr, EXP)
     zr = alg.npow(yr - (b / 170), EXP)
-    return cast(Vector, alg.dot(XYZ_REF_TO_XYZ, [xr, alg.npow(yr, EXP), zr]), alg.D2_D1)
+    return cast(Vector, alg.dot(XYZ_REF_TO_XYZ, [xr, alg.npow(yr, EXP), zr], dims=alg.D2_D1))
 
 
 def xyz_to_rlab(xyz: Vector) -> Vector:
     """XYZ to RLAB."""
 
-    xyz_ref = cast(Vector, alg.dot(XYZ_TO_XYZ_REF, xyz, alg.D2_D1))
+    xyz_ref = cast(Vector, alg.dot(XYZ_TO_XYZ_REF, xyz, dims=alg.D2_D1))
     xr, yr, zr = [alg.nth_root(c, EXP) for c in xyz_ref]
     l = 100 * yr
     a = 430 * (xr - yr)
