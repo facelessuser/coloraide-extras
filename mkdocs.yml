@@ -1,0 +1,127 @@
+site_name: ColorAide Extras Documentation
+site_url: https://facelessuser.github.io/coloraide-extras
+repo_url: https://github.com/facelessuser/coloraide-extras
+edit_uri: ""
+site_description: Additional color spaces for ColorAide
+copyright: |
+  Copyright &copy; 2014 - 2022 <a href="https://github.com/facelessuser" target="_blank" rel="noopener">Isaac Muse</a>
+
+docs_dir: docs/src/markdown
+theme:
+  custom_dir: docs/theme
+  name: material
+  icon:
+    logo: material/book-open-page-variant
+  palette:
+    scheme: dracula
+    primary: deep purple
+    accent: deep purple
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.tabs
+    - navigation.top
+    - navigation.instant
+  pymdownx:
+    sponsor: "https://github.com/sponsors/facelessuser"
+
+nav:
+  - ColorAide Extras:
+      - Introduction: index.md
+  - Color Spaces:
+      - Supported Colors: colors/index.md
+  - Playground: playground.md
+  - About:
+      - Contributing &amp; Support: about/contributing.md
+      - Changelog: about/changelog.md
+      - License: about/license.md
+
+markdown_extensions:
+  - markdown.extensions.toc:
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
+      permalink: ""
+  - markdown.extensions.admonition:
+  - markdown.extensions.smarty:
+      smart_quotes: false
+  - pymdownx.betterem:
+  - markdown.extensions.attr_list:
+  - markdown.extensions.def_list:
+  - markdown.extensions.tables:
+  - markdown.extensions.abbr:
+  - markdown.extensions.footnotes:
+  - markdown.extensions.md_in_html:
+  - pymdownx.superfences:
+      preserve_tabs: true
+      custom_fences:
+        - name: playground
+          class: playground
+          format: !!python/name:docs.src.py.notebook.color_command_formatter
+          validator: !!python/name:docs.src.py.notebook.color_command_validator
+  - pymdownx.highlight:
+      extend_pygments_lang:
+        - name: php-inline
+          lang: php
+          options:
+            startinline: true
+        - name: pycon3
+          lang: pycon
+          options:
+            python3: true
+  - pymdownx.inlinehilite:
+      custom_inline:
+        - name: color
+          class: color
+          format: !!python/name:docs.src.py.notebook.color_formatter
+  - pymdownx.magiclink:
+      repo_url_shortener: true
+      repo_url_shorthand: true
+      social_url_shorthand: true
+      user: facelessuser
+      repo: coloraide-extras
+  - pymdownx.tilde:
+  - pymdownx.caret:
+  - pymdownx.smartsymbols:
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.escapeall:
+      hardbreak: True
+      nbsp: True
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.progressbar:
+  - pymdownx.striphtml:
+  - pymdownx.snippets:
+      base_path:
+      - docs/src/markdown/.snippets
+      - LICENSE.md
+      auto_append:
+      - refs.md
+  - pymdownx.keys:
+      separator: "\uff0b"
+  - pymdownx.details:
+  - pymdownx.saneheaders:
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_css:
+  - assets/coloraide-extras/extra-477e18ad12.css
+extra_javascript:
+  - playground-config-6119f839.js
+  - https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js
+  - assets/coloraide-extras/extra-notebook-2aa5ae1a.js
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/facelessuser
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/TWs8Tgr
+
+plugins:
+  - search
+  - git-revision-date-localized
+  - mkdocs_pymdownx_material_extras
+  - minify:
+      minify_html: true
