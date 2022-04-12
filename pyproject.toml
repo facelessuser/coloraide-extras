@@ -37,7 +37,10 @@ include = [
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "/.dictionary.txt",
+    "/docs/src/markdown/**/*.md",
+    "/docs/src/markdown/**/*.gif",
+    "/docs/src/markdown/**/*.png",
+    "/docs/src/markdown/dictionary/*.txt",
     "/requirements/*.txt",
     "/coloraide_extras/**/*.py",
     "/coloraide_extras/py.typed",
@@ -45,7 +48,7 @@ include = [
     "/tools/**/*.py",
     "/.pyspelling.yml",
     "/.coveragerc",
-    "/CHANGES.md",
+    "/mkdocs.yml",
     "/tox.ini",
 ]
 

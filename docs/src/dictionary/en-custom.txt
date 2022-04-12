@@ -6,8 +6,10 @@ CIELAB
 CIEXYZ
 CMY
 CMYK
+Changelog
 Chromaticity
 ColorAide
+Ctrl
 Ebner
 Estevez
 Fairchild
@@ -19,12 +21,16 @@ IPT
 IgPgTg
 LMS
 Ladd
+MERCHANTABILITY
 MHPE
 MacAdam
+MkDocs
+NONINFRINGEMENT
 Pinney
 PyPI
 RGB
 Rlab
+Twemoji
 UCS
 UVW
 Uncalibrated
@@ -38,6 +44,8 @@ al
 barycentric
 chroma
 chromaticity
+colorimetrically
+config
 et
 illuminant
 luminance
@@ -47,5 +55,6 @@ pre
 prerelease
 prereleases
 sRGB
+sublicense
 subtractive
 xyY

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+- **NEW**: Added oRGB color space.
+
 ## 0.3.0
 
 - **NEW**: Updated to work with ColorAide 0.15.0 (now the required minimum) as there were substantial changes.
