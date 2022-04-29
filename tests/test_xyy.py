@@ -35,30 +35,30 @@ class TestXyYPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `x`."""
 
         c = Color('color(--xyy 0.41931 0.50526 0.92781)')
-        self.assertEqual(c.x, 0.41931)
-        c.x = 0.2
-        self.assertEqual(c.x, 0.2)
+        self.assertEqual(c['x'], 0.41931)
+        c['x'] = 0.2
+        self.assertEqual(c['x'], 0.2)
 
     def test_y(self):
         """Test `y`."""
 
         c = Color('color(--xyy 0.41931 0.50526 0.92781)')
-        self.assertEqual(c.y, 0.50526)
-        c.y = 0.1
-        self.assertEqual(c.y, 0.1)
+        self.assertEqual(c['y'], 0.50526)
+        c['y'] = 0.1
+        self.assertEqual(c['y'], 0.1)
 
     def test_Y(self):
         """Test `Y`."""
 
         c = Color('color(--xyy 0.41931 0.50526 0.92781)')
-        self.assertEqual(c.Y, 0.92781)
-        c.Y = 0.1
-        self.assertEqual(c.Y, 0.1)
+        self.assertEqual(c['Y'], 0.92781)
+        c['Y'] = 0.1
+        self.assertEqual(c['Y'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--xyy 0.41931 0.50526 0.92781)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)

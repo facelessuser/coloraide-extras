@@ -35,30 +35,30 @@ class TestRLABPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `l`."""
 
         c = Color('color(--rlab 96.323 -21.06 55.728)')
-        self.assertEqual(c.l, 96.323)
-        c.l = 0.2
-        self.assertEqual(c.l, 0.2)
+        self.assertEqual(c['l'], 96.323)
+        c['l'] = 0.2
+        self.assertEqual(c['l'], 0.2)
 
     def test_a(self):
         """Test `a`."""
 
         c = Color('color(--rlab 96.323 -21.06 55.728)')
-        self.assertEqual(c.a, -21.06)
-        c.a = 0.1
-        self.assertEqual(c.a, 0.1)
+        self.assertEqual(c['a'], -21.06)
+        c['a'] = 0.1
+        self.assertEqual(c['a'], 0.1)
 
     def test_b(self):
         """Test `b`."""
 
         c = Color('color(--rlab 96.323 -21.06 55.728)')
-        self.assertEqual(c.b, 55.728)
-        c.b = 0.1
-        self.assertEqual(c.b, 0.1)
+        self.assertEqual(c['b'], 55.728)
+        c['b'] = 0.1
+        self.assertEqual(c['b'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--rlab 96.323 -21.06 55.728)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)

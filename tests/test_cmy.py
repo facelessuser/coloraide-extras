@@ -35,30 +35,30 @@ class TestCMYPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `c`."""
 
         c = Color('color(--cmy 0 0 1)')
-        self.assertEqual(c.c, 0)
-        c.c = 0.2
-        self.assertEqual(c.c, 0.2)
+        self.assertEqual(c['c'], 0)
+        c['c'] = 0.2
+        self.assertEqual(c['c'], 0.2)
 
     def test_m(self):
         """Test `m`."""
 
         c = Color('color(--cmy 0 0 1)')
-        self.assertEqual(c.m, 0)
-        c.m = 0.1
-        self.assertEqual(c.m, 0.1)
+        self.assertEqual(c['m'], 0)
+        c['m'] = 0.1
+        self.assertEqual(c['m'], 0.1)
 
     def test_y(self):
         """Test `y`."""
 
         c = Color('color(--cmy 0 0 1)')
-        self.assertEqual(c.y, 1)
-        c.y = 0.1
-        self.assertEqual(c.y, 0.1)
+        self.assertEqual(c['y'], 1)
+        c['y'] = 0.1
+        self.assertEqual(c['y'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--cmy 0 0 1)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)

@@ -35,33 +35,33 @@ class TestHSIPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `h`."""
 
         c = Color('color(--hsi 60 1 0.66667)')
-        self.assertEqual(c.h, 60)
-        c.h = 0.2
-        self.assertEqual(c.h, 0.2)
+        self.assertEqual(c['h'], 60)
+        c['h'] = 0.2
+        self.assertEqual(c['h'], 0.2)
 
     def test_s(self):
         """Test `s`."""
 
         c = Color('color(--hsi 60 1 0.66667)')
-        self.assertEqual(c.s, 1)
-        c.s = 0.1
-        self.assertEqual(c.s, 0.1)
+        self.assertEqual(c['s'], 1)
+        c['s'] = 0.1
+        self.assertEqual(c['s'], 0.1)
 
     def test_i(self):
         """Test `i`."""
 
         c = Color('color(--hsi 60 1 0.66667)')
-        self.assertEqual(c.i, 0.66667)
-        c.i = 0.1
-        self.assertEqual(c.i, 0.1)
+        self.assertEqual(c['i'], 0.66667)
+        c['i'] = 0.1
+        self.assertEqual(c['i'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--hsi 60 1 0.66667)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)
 
 
 class TestNull(util.ColorAsserts, unittest.TestCase):

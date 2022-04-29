@@ -35,38 +35,38 @@ class TestPrismaticPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `l`."""
 
         c = Color('color(--prismatic 1 0.5 0.5 0)')
-        self.assertEqual(c.l, 1)
-        c.l = 0.2
-        self.assertEqual(c.l, 0.2)
+        self.assertEqual(c['l'], 1)
+        c['l'] = 0.2
+        self.assertEqual(c['l'], 0.2)
 
     def test_r(self):
         """Test `r`."""
 
         c = Color('color(--prismatic 1 0.5 0.5 0)')
-        self.assertEqual(c.r, 0.5)
-        c.r = 0.1
-        self.assertEqual(c.r, 0.1)
+        self.assertEqual(c['r'], 0.5)
+        c['r'] = 0.1
+        self.assertEqual(c['r'], 0.1)
 
     def test_g(self):
         """Test `g`."""
 
         c = Color('color(--prismatic 1 0.5 0.5 0)')
-        self.assertEqual(c.g, 0.5)
-        c.g = 0.1
-        self.assertEqual(c.g, 0.1)
+        self.assertEqual(c['g'], 0.5)
+        c['g'] = 0.1
+        self.assertEqual(c['g'], 0.1)
 
     def test_b(self):
         """Test `b`."""
 
         c = Color('color(--prismatic 1 0.5 0.5 0)')
-        self.assertEqual(c.b, 0)
-        c.b = 0.1
-        self.assertEqual(c.b, 0.1)
+        self.assertEqual(c['b'], 0)
+        c['b'] = 0.1
+        self.assertEqual(c['b'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--prismatic 1 0.5 0.5 0)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)

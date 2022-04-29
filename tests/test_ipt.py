@@ -35,30 +35,30 @@ class TestIPTPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `i`."""
 
         c = Color('color(--ipt 0.85654 -0.10831 0.65148)')
-        self.assertEqual(c.i, 0.85654)
-        c.i = 0.2
-        self.assertEqual(c.i, 0.2)
+        self.assertEqual(c['i'], 0.85654)
+        c['i'] = 0.2
+        self.assertEqual(c['i'], 0.2)
 
     def test_p(self):
         """Test `p`."""
 
         c = Color('color(--ipt 0.85654 -0.10831 0.65148)')
-        self.assertEqual(c.p, -0.10831)
-        c.p = 0.1
-        self.assertEqual(c.p, 0.1)
+        self.assertEqual(c['p'], -0.10831)
+        c['p'] = 0.1
+        self.assertEqual(c['p'], 0.1)
 
     def test_t(self):
         """Test `t`."""
 
         c = Color('color(--ipt 0.85654 -0.10831 0.65148)')
-        self.assertEqual(c.t, 0.65148)
-        c.t = 0.1
-        self.assertEqual(c.t, 0.1)
+        self.assertEqual(c['t'], 0.65148)
+        c['t'] = 0.1
+        self.assertEqual(c['t'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--ipt 0.85654 -0.10831 0.65148)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)

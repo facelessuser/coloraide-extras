@@ -37,7 +37,7 @@ def white_space_fixup(m):
     >>> class ColorX(Color): ...
     ...
     >>> ColorX.register(IPT)
-    >>> ColorX('white').convert('ipt').coords()
+    >>> ColorX('white').convert('ipt')[:-1]
     [1.0000046779854483, 0.00011652905964981697, -0.00010857262923669175]
     ```
 
@@ -50,7 +50,7 @@ def white_space_fixup(m):
     >>> class ColorX(Color): ...
     ...
     >>> ColorX.register(IPT)
-    >>> ColorX('white').convert('ipt').coords()
+    >>> ColorX('white').convert('ipt')[:-1]
     [0.9999910919149725, 6.69113462008486e-05, -3.900547708157731e-05]
     ```
     """

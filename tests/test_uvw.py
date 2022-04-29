@@ -35,30 +35,30 @@ class TestUVWPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `u`."""
 
         c = Color('color(--uvw 7.628 70.501 96.177)')
-        self.assertEqual(c.u, 7.628)
-        c.u = 0.2
-        self.assertEqual(c.u, 0.2)
+        self.assertEqual(c['u'], 7.628)
+        c['u'] = 0.2
+        self.assertEqual(c['u'], 0.2)
 
     def test_v(self):
         """Test `v`."""
 
         c = Color('color(--uvw 7.628 70.501 96.177)')
-        self.assertEqual(c.v, 70.501)
-        c.v = 0.1
-        self.assertEqual(c.v, 0.1)
+        self.assertEqual(c['v'], 70.501)
+        c['v'] = 0.1
+        self.assertEqual(c['v'], 0.1)
 
     def test_w(self):
         """Test `w`."""
 
         c = Color('color(--uvw 7.628 70.501 96.177)')
-        self.assertEqual(c.w, 96.177)
-        c.w = 0.1
-        self.assertEqual(c.w, 0.1)
+        self.assertEqual(c['w'], 96.177)
+        c['w'] = 0.1
+        self.assertEqual(c['w'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--uvw 7.628 70.501 96.177)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)

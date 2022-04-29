@@ -35,30 +35,30 @@ class TestIgPgTgPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `ig`."""
 
         c = Color('color(--igpgtg 0.94415 -0.1422 0.39035)')
-        self.assertEqual(c.ig, 0.94415)
-        c.ig = 0.2
-        self.assertEqual(c.ig, 0.2)
+        self.assertEqual(c['ig'], 0.94415)
+        c['ig'] = 0.2
+        self.assertEqual(c['ig'], 0.2)
 
     def test_pg(self):
         """Test `pg`."""
 
         c = Color('color(--igpgtg 0.94415 -0.1422 0.39035)')
-        self.assertEqual(c.pg, -0.1422)
-        c.pg = 0.1
-        self.assertEqual(c.pg, 0.1)
+        self.assertEqual(c['pg'], -0.1422)
+        c['pg'] = 0.1
+        self.assertEqual(c['pg'], 0.1)
 
     def test_tg(self):
         """Test `tg`."""
 
         c = Color('color(--igpgtg 0.94415 -0.1422 0.39035)')
-        self.assertEqual(c.tg, 0.39035)
-        c.tg = 0.1
-        self.assertEqual(c.tg, 0.1)
+        self.assertEqual(c['tg'], 0.39035)
+        c['tg'] = 0.1
+        self.assertEqual(c['tg'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--igpgtg 0.94415 -0.1422 0.39035)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)

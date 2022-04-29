@@ -35,30 +35,30 @@ class TestUCSPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `u`."""
 
         c = Color('color(--ucs 0.51332 0.92781 1.076)')
-        self.assertEqual(c.u, 0.51332)
-        c.u = 0.2
-        self.assertEqual(c.u, 0.2)
+        self.assertEqual(c['u'], 0.51332)
+        c['u'] = 0.2
+        self.assertEqual(c['u'], 0.2)
 
     def test_v(self):
         """Test `v`."""
 
         c = Color('color(--ucs 0.51332 0.92781 1.076)')
-        self.assertEqual(c.v, 0.92781)
-        c.v = 0.1
-        self.assertEqual(c.v, 0.1)
+        self.assertEqual(c['v'], 0.92781)
+        c['v'] = 0.1
+        self.assertEqual(c['v'], 0.1)
 
     def test_w(self):
         """Test `w`."""
 
         c = Color('color(--ucs 0.51332 0.92781 1.076)')
-        self.assertEqual(c.w, 1.076)
-        c.w = 0.1
-        self.assertEqual(c.w, 0.1)
+        self.assertEqual(c['w'], 1.076)
+        c['w'] = 0.1
+        self.assertEqual(c['w'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--ucs 0.51332 0.92781 1.076)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)

@@ -35,30 +35,30 @@ class TestORGBPoperties(util.ColorAsserts, unittest.TestCase):
         """Test `l`."""
 
         c = Color('color(--orgb 1 0.5 0.5)')
-        self.assertEqual(c.l, 1)
-        c.l = 0.2
-        self.assertEqual(c.l, 0.2)
+        self.assertEqual(c['l'], 1)
+        c['l'] = 0.2
+        self.assertEqual(c['l'], 0.2)
 
     def test_cyb(self):
         """Test `cyb`."""
 
         c = Color('color(--orgb 1 0.5 0.5)')
-        self.assertEqual(c.cyb, 0.5)
-        c.cyb = 0.1
-        self.assertEqual(c.cyb, 0.1)
+        self.assertEqual(c['cyb'], 0.5)
+        c['cyb'] = 0.1
+        self.assertEqual(c['cyb'], 0.1)
 
     def test_crg(self):
         """Test `crg`."""
 
         c = Color('color(--orgb 1 0.5 0.5)')
-        self.assertEqual(c.crg, 0.5)
-        c.crg = 0.1
-        self.assertEqual(c.crg, 0.1)
+        self.assertEqual(c['crg'], 0.5)
+        c['crg'] = 0.1
+        self.assertEqual(c['crg'], 0.1)
 
     def test_alpha(self):
         """Test `alpha`."""
 
         c = Color('color(--orgb 1 0.5 0.5)')
-        self.assertEqual(c.alpha, 1)
-        c.alpha = 0.5
-        self.assertEqual(c.alpha, 0.5)
+        self.assertEqual(c['alpha'], 1)
+        c['alpha'] = 0.5
+        self.assertEqual(c['alpha'], 0.5)
