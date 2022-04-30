@@ -15,7 +15,7 @@ def white_space_fixup(m):
     Fix up the IPT white space.
 
     The IPT paper noted that the D65 white point that they use was [0.9504, 1.0, 1.0889].
-    This is not the white point we use, so actual precision of the color space breaks down
+    Our D65 white point is slightly different, so actual precision of the color space breaks down
     and doesn't match implementations that do use the above white point.
 
     If we look at Colour Science, we can see that when using the above white point, that
@@ -32,12 +32,8 @@ def white_space_fixup(m):
     But what we got was:
 
     ```
-    >>> from coloraide import Color
-    >>> from coloraide_extras.spaces.ipt import IPT
-    >>> class ColorX(Color): ...
-    ...
-    >>> ColorX.register(IPT)
-    >>> ColorX('white').convert('ipt')[:-1]
+    >>> from coloraide_extras import Color
+    >>> Color('white').convert('ipt')[:-1]
     [1.0000046779854483, 0.00011652905964981697, -0.00010857262923669175]
     ```
 
@@ -45,19 +41,14 @@ def white_space_fixup(m):
     previous white point and adding ours in, we get comparable results.
 
     ```
-    >>> from coloraide import Color
-    >>> from coloraide_extras.spaces.ipt import IPT
-    >>> class ColorX(Color): ...
-    ...
-    >>> ColorX.register(IPT)
-    >>> ColorX('white').convert('ipt')[:-1]
+    >>> from coloraide_extras import Color
+    >>> Color('white').convert('ipt')[:-1]
     [0.9999910919149725, 6.69113462008486e-05, -3.900547708157731e-05]
     ```
     """
 
     theirs = alg.diag([0.9504, 1.0, 1.0889])
     ours = alg.diag(white_d65)
-
     return alg.multi_dot([m, theirs, alg.inv(ours)])
 
 

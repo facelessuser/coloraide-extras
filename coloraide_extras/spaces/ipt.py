@@ -11,6 +11,23 @@ from coloraide import algebra as alg
 from coloraide.types import Vector
 from typing import Tuple, cast
 
+# The IPT algorithm requires the use of the Hunt-Pointer-Estevez matrix,
+# but it was originally calculated with the assumption of a slightly different
+# D65 white point than what we use.
+#
+# - Theirs: [0.9504, 1.0, 1.0889] -> xy chromatacity points (0.3127035830618893, 0.32902313032606195)
+# - Ours: [0.9504559270516716, 1, 1.0890577507598784] -> calculated from xy chromatacity points [0.31270, 0.32900]
+#
+# For a good conversion, our options were to either set the color space to a slightly different D65 white point,
+# or adjust the algorithm such that it accounted for the difference in white point. We chose the latter.
+#
+# ```
+# theirs = alg.diag([0.9504, 1.0, 1.0889])
+# ours = alg.diag(white_d65)
+# return alg.multi_dot([MHPE, theirs, alg.inv(ours)])
+# ```
+#
+# Below is the Hunter-Pointer-Estevez matrix combined with our white point compensation.
 XYZ_TO_LMS = [
     [0.4001764512951712, 0.7075, -0.08068831054981859],
     [-0.2279865839462744, 1.15, 0.061191135138152386],

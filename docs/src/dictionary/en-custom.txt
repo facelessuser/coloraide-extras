@@ -57,4 +57,5 @@ prereleases
 sRGB
 sublicense
 subtractive
+xy
 xyY
