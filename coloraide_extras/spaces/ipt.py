@@ -9,7 +9,7 @@ from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
 from coloraide import algebra as alg
 from coloraide.types import Vector
-from typing import Tuple, cast
+from typing import Tuple
 
 # The IPT algorithm requires the use of the Hunt-Pointer-Estevez matrix,
 # but it was originally calculated with the assumption of a slightly different
@@ -56,15 +56,15 @@ IPT_TO_LMS_P = [
 def xyz_to_ipt(xyz: Vector) -> Vector:
     """XYZ to IPT."""
 
-    lms_p = [alg.npow(c, 0.43) for c in cast(Vector, alg.dot(XYZ_TO_LMS, xyz, dims=alg.D2_D1))]
-    return cast(Vector, alg.dot(LMS_P_TO_IPT, lms_p, dims=alg.D2_D1))
+    lms_p = [alg.npow(c, 0.43) for c in alg.dot(XYZ_TO_LMS, xyz, dims=alg.D2_D1)]
+    return alg.dot(LMS_P_TO_IPT, lms_p, dims=alg.D2_D1)
 
 
 def ipt_to_xyz(ipt: Vector) -> Vector:
     """IPT to XYZ."""
 
-    lms = [alg.nth_root(c, 0.43) for c in cast(Vector, alg.dot(IPT_TO_LMS_P, ipt, dims=alg.D2_D1))]
-    return cast(Vector, alg.dot(LMS_TO_XYZ, lms, dims=alg.D2_D1))
+    lms = [alg.nth_root(c, 0.43) for c in alg.dot(IPT_TO_LMS_P, ipt, dims=alg.D2_D1)]
+    return alg.dot(LMS_TO_XYZ, lms, dims=alg.D2_D1)
 
 
 class IPT(Labish, Space):

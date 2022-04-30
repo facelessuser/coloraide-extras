@@ -8,7 +8,7 @@ from coloraide.gamut.bounds import GamutUnbound
 from coloraide.cat import WHITES
 from coloraide import algebra as alg
 from coloraide.types import Vector
-from typing import Tuple, cast
+from typing import Tuple
 
 XYZ_TO_LMS = [
     [2.968, 2.741, -0.649],
@@ -38,25 +38,25 @@ IGPGTG_TO_LMS = [
 def xyz_to_igpgtg(xyz: Vector) -> Vector:
     """XYZ to IgPgTg."""
 
-    lms_in = cast(Vector, alg.dot(XYZ_TO_LMS, xyz, dims=alg.D2_D1))
+    lms_in = alg.dot(XYZ_TO_LMS, xyz, dims=alg.D2_D1)
     lms = [
         alg.npow(lms_in[0] / 18.36, 0.427),
         alg.npow(lms_in[1] / 21.46, 0.427),
         alg.npow(lms_in[2] / 19435, 0.427)
     ]
-    return cast(Vector, alg.dot(LMS_TO_IGPGTG, lms, dims=alg.D2_D1))
+    return alg.dot(LMS_TO_IGPGTG, lms, dims=alg.D2_D1)
 
 
 def igpgtg_to_xyz(itp: Vector) -> Vector:
     """IgPgTg to XYZ."""
 
-    lms = cast(Vector, alg.dot(IGPGTG_TO_LMS, itp, dims=alg.D2_D1))
+    lms = alg.dot(IGPGTG_TO_LMS, itp, dims=alg.D2_D1)
     lms_in = [
         alg.nth_root(lms[0], 0.427) * 18.36,
         alg.nth_root(lms[1], 0.427) * 21.46,
         alg.nth_root(lms[2], 0.427) * 19435
     ]
-    return cast(Vector, alg.dot(LMS_TO_XYZ, lms_in, dims=alg.D2_D1))
+    return alg.dot(LMS_TO_XYZ, lms_in, dims=alg.D2_D1)
 
 
 class IgPgTg(Labish, Space):
