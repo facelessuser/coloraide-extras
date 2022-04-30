@@ -8,7 +8,6 @@ from coloraide.spaces.lab import Lab
 from coloraide import algebra as alg
 from coloraide import util
 from coloraide.types import Vector, VectorLike
-from typing import cast
 
 # Values for the original Hunter Lab with illuminant C.
 # Also, the original calculated `ka` and `kb` under illuminant C.

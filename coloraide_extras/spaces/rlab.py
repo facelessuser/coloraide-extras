@@ -8,7 +8,6 @@ from coloraide.cat import WHITES
 from coloraide.spaces.lab import Lab
 from coloraide import algebra as alg
 from coloraide.types import Vector
-from typing import cast
 
 XYZ_TO_XYZ_REF = [
     [1.0521266389510715, 2.220446049250313e-16, 0.0],
