@@ -15,8 +15,8 @@ from typing import Tuple
 # but it was originally calculated with the assumption of a slightly different
 # D65 white point than what we use.
 #
-# - Theirs: [0.9504, 1.0, 1.0889] -> xy chromatacity points (0.3127035830618893, 0.32902313032606195)
-# - Ours: [0.9504559270516716, 1, 1.0890577507598784] -> calculated from xy chromatacity points [0.31270, 0.32900]
+# - Theirs: [0.9504, 1.0, 1.0889] -> xy chromaticity points (0.3127035830618893, 0.32902313032606195)
+# - Ours: [0.9504559270516716, 1, 1.0890577507598784] -> calculated from xy chromaticity points [0.31270, 0.32900]
 #
 # For a good conversion, our options were to either set the color space to a slightly different D65 white point,
 # or adjust the algorithm such that it accounted for the difference in white point. We chose the latter.
