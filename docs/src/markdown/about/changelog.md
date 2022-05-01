@@ -2,7 +2,7 @@
 
 ## 0.5.1
 
-- **NEW**: Fix Hunter Lab values.
+- **FIX**: Fix Hunter Lab values.
 
 ## 0.5.0
 
