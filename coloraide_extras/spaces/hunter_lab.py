@@ -13,14 +13,20 @@ from coloraide.types import Vector, VectorLike
 # Also, the original calculated `ka` and `kb` under illuminant C.
 # Original values:
 #   https://support.hunterlab.com/hc/en-us/articles/203997095-Hunter-Lab-Color-Scale-an08-96a2
-# Slightly more precise values in `rdab`:
-#   https://hunterlabdotcom.files.wordpress.com/2012/07/an-1016-hunter-rd-a-b-color-scale-update-12-07-03.pdf
-CXN = 98.043
+CXN = 98.04
 CYN = 100.0
-CZN = 118.106
+CZN = 118.11
 CKA = 175.0
 CKB = 70.0
-# Conversion factors
+
+# We will calculate our adapted `ka`, `kb` directly as our D65 white point isn't exactly the same.
+# This also allows us to change the white point to anything, and it should still work.
+#      | `Xn`               | `Yn`               | `Ka`                | `Kb`
+# ---- | -------------------| ------------------ | ------------------- | ----
+# Spec | 95.02              | 108.82             | 172.30              | 67.20
+# Ours | 95.04559270516715  | 108.90577507598784 | 172.35396244902168  | 67.04600548035003
+
+# Conversion factors used used to adapt our white point to get our `Ka` and `Kb`
 CKA_FACTOR = CKA / (CXN + CYN)
 CKB_FACTOR = CKB / (CZN + CYN)
 
