@@ -535,8 +535,8 @@ one for each hue so the whole color volume takes the form of a prism.
     Name | Range
     ---- | -----
     `l`  | [0.0, 100.0]^\*^
-    `a`  | [-69.078, 109.459]^\*^
-    `b`  | [-199.782, 55.728]^\*^
+    `a`  | [-69.06, 109.43]^\*^
+    `b`  | [-200.288, 55.869]^\*^
 
     ^\*^ ≈ range in relation to sRGB rounded to 3 decimal places.
 

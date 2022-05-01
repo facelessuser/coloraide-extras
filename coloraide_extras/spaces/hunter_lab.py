@@ -10,33 +10,20 @@ from coloraide import util
 from coloraide.types import Vector, VectorLike
 
 # Values for the original Hunter Lab with illuminant C.
-# Also, the original calculated `ka` and `kb` under illuminant C.
-# Original values:
-#   https://support.hunterlab.com/hc/en-us/articles/203997095-Hunter-Lab-Color-Scale-an08-96a2
+# Used to calculate an appropriate `Ka` and `Kb` for whatever white point we are using.
 CXN = 98.04
 CYN = 100.0
 CZN = 118.11
 CKA = 175.0
 CKB = 70.0
 
-# We will calculate our adapted `ka`, `kb` directly as our D65 white point isn't exactly the same.
-# This also allows us to change the white point to anything, and it should still work.
-#      | `Xn`               | `Yn`               | `Ka`                | `Kb`
-# ---- | -------------------| ------------------ | ------------------- | ----
-# Spec | 95.02              | 108.82             | 172.30              | 67.20
-# Ours | 95.04559270516715  | 108.90577507598784 | 172.35396244902168  | 67.04600548035003
-
-# Conversion factors used used to adapt our white point to get our `Ka` and `Kb`
-CKA_FACTOR = CKA / (CXN + CYN)
-CKB_FACTOR = CKB / (CZN + CYN)
-
 
 def xyz_to_hlab(xyz: Vector, white: VectorLike) -> Vector:
     """Convert XYZ to Hunter Lab."""
 
     xn, yn, zn = alg.multiply(util.xy_to_xyz(white), 100, dims=alg.D1_SC)
-    ka = CKA_FACTOR * (xn + yn)
-    kb = CKB_FACTOR * (yn + zn)
+    ka = CKA * alg.nth_root(xn / CXN, 2)
+    kb = CKB * alg.nth_root(zn / CZN, 2)
     x, y, z = alg.multiply(xyz, 100, dims=alg.D1_SC)
     l = alg.nth_root(y / yn, 2)
     a = b = 0.0
@@ -50,8 +37,8 @@ def hlab_to_xyz(hlab: Vector, white: VectorLike) -> Vector:
     """Convert Hunter Lab to XYZ."""
 
     xn, yn, zn = alg.multiply(util.xy_to_xyz(white), 100, dims=alg.D1_SC)
-    ka = CKA_FACTOR * (xn + yn)
-    kb = CKB_FACTOR * (yn + zn)
+    ka = CKA * alg.nth_root(xn / CXN, 2)
+    kb = CKB * alg.nth_root(zn / CZN, 2)
     l, a, b = hlab
     l /= 100
     y = (l ** 2) * yn

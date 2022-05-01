@@ -9,13 +9,13 @@ class TestHunterLab(util.ColorAssertsPyTest):
     """Test Hunter Lab."""
 
     COLORS = [
-        ('red', 'color(--hunter-lab 46.113 82.695 28.336)'),
-        ('orange', 'color(--hunter-lab 69.407 23.272 40.842)'),
-        ('yellow', 'color(--hunter-lab 96.323 -21.06 55.727)'),
-        ('green', 'color(--hunter-lab 39.291 -32.095 22.311)'),
-        ('blue', 'color(--hunter-lab 26.869 75.499 -199.78)'),
-        ('indigo', 'color(--hunter-lab 17.629 40.907 -62.756)'),
-        ('violet', 'color(--hunter-lab 63.496 58.124 -40.407)'),
+        ('red', 'color(--hunter-lab 46.113 82.672 28.408)'),
+        ('orange', 'color(--hunter-lab 69.407 23.266 40.946)'),
+        ('yellow', 'color(--hunter-lab 96.323 -21.054 55.869)'),
+        ('green', 'color(--hunter-lab 39.291 -32.086 22.368)'),
+        ('blue', 'color(--hunter-lab 26.869 75.478 -200.29)'),
+        ('indigo', 'color(--hunter-lab 17.629 40.896 -62.916)'),
+        ('violet', 'color(--hunter-lab 63.496 58.109 -40.51)'),
         ('white', 'color(--hunter-lab 100 0 0)'),
         ('gray', 'color(--hunter-lab 46.461 0 0)'),
         ('black', 'color(--hunter-lab 0 0 0)')
