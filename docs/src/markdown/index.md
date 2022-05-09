@@ -19,20 +19,20 @@ $ pip install coloraide_extras
 
 ## Usage
 
-If you want access to all the color spaces for both ColorAide and ColorAide Extras, simply import `Color` from
-`coloraide_extras` instead of `coloraide`:
+Normally, it is advisable to only cherry pick color spaces you need. Rarely do people need every color space. This can
+be done simply by registering the color spaces you'd like.
 
 ```playground
 from coloraide_extras import Color
 Color('color(--hunter-lab 46.113 82.694 28.337 / 1)')
 ```
 
-If you'd like to only grab a few, simply subclass `Color` from `coloraide` and register the additional plugins that you
-desire:
+But, if you want access to all the color spaces for both ColorAide and ColorAide Extras, simply import `Color` from
+`coloraide_extras` instead of `coloraide`:
 
 ```playground
 from coloraide import Color as Base
-from coloraide_extras.spaces.hunter_lab import HunterLab
+from coloraide_extras import HunterLab
 class Color(Base): ...
 Color.register(HunterLab)
 Color('red').convert('hunter-lab')

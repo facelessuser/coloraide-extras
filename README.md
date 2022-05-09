@@ -20,25 +20,25 @@ ColorAide Extras is an add-on pack containing various plugins for [ColorAide](ht
 ColorAide only ships with a select number of color spaces, ∆E methods, and gamut mapping alternatives. ColorAide Extras
 allows us to offer an additional number of uncommon and/or experimental set of color spaces and other plugins.
 
-If you want access to all the color spaces for both ColorAide and ColorAide Extras, simply import `Color` from
+Normally, it is advisable to only cherry pick color spaces you need. Rarely do people need every color space. This can
+be done simply by registering the color spaces you'd like.
+
+```python
+>>> from coloraide import Color as Base
+>>> from coloraide_extras import HunterLab
+>>> class Color(Base): ...
+... 
+>>> Color.register(HunterLab)
+>>> Color('red').convert('hunter-lab')
+color(--hunter-lab 46.113 82.694 28.337 / 1)
+```
+
+But, if you want access to all the color spaces for both ColorAide and ColorAide Extras, simply import `Color` from
 `coloraide_extras` instead of `coloraide`:
 
 ```python
 >>> from coloraide_extras import Color
 >>> Color('color(--hunter-lab 46.113 82.694 28.337 / 1)')
-color(--hunter-lab 46.113 82.694 28.337 / 1)
-```
-
-If you'd like to only grab a few, simply subclass `Color` from `coloraide` and register the additional plugins that you
-desire:
-
-```python
->>> from coloraide import Color as Base
->>> from coloraide_extras.spaces.hunter_lab import HunterLab
->>> class Color(Base): ...
-... 
->>> Color.register(HunterLab)
->>> Color('red').convert('hunter-lab')
 color(--hunter-lab 46.113 82.694 28.337 / 1)
 ```
 
