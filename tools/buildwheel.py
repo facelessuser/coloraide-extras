@@ -30,7 +30,7 @@ CONFIG = """\
 var color_notebook = {{
     "playground_wheels": {},
     "notebook_wheels": {},
-    "default_playground": "from coloraide_extras import Color\\ncoloraide.__version__\\nColor('color(--xyy 0.64 0.33 0.21264)')"
+    "default_playground": "from coloraide_extras import Color\\ncoloraide.__version__\\nColor('color(--ucs 0.27493 0.21264 0.12243 / 1)')"
 }}
 """  # noqa: E501
 

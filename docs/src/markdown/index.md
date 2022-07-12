@@ -24,7 +24,7 @@ be done simply by registering the color spaces you'd like.
 
 ```playground
 from coloraide_extras import Color
-Color('color(--hunter-lab 46.113 82.694 28.337 / 1)')
+Color('color(--ucs 0.27493 0.21264 0.12243 / 1)')
 ```
 
 But, if you want access to all the color spaces for both ColorAide and ColorAide Extras, simply import `Color` from
@@ -32,8 +32,8 @@ But, if you want access to all the color spaces for both ColorAide and ColorAide
 
 ```playground
 from coloraide import Color as Base
-from coloraide_extras import HunterLab
+from coloraide_extras import UCS
 class Color(Base): ...
-Color.register(HunterLab)
-Color('red').convert('hunter-lab')
+Color.register(UCS)
+Color('red').convert('ucs')
 ```

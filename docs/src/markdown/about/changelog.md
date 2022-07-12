@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.0
+
+- **NEW**: Add support for new ColorAide 1.0b1.
+- **NEW**: All color spaces except UCS and UVW have been moved to ColorAide 1.0b1.
+
 ## 0.5.1
 
 - **FIX**: Fix Hunter Lab values.
