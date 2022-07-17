@@ -1,9 +1,11 @@
 # Changelog
 
-## 0.6.0
+## 1.0b1
 
-- **NEW**: Add support for new ColorAide 1.0b1.
-- **NEW**: All color spaces except UCS and UVW have been moved to ColorAide 1.0b1.
+- **NEW**: Add support for new ColorAide 1.0 Beta.
+- **NEW**: All previous color spaces except UCS and UVW have been moved to ColorAide 1.0 Beta.
+- **NEW**: Added CAM16 UCS, CAM16 LCD, and CAM16 SCD and an associated `cam16` ∆E.
+- **NEW**: Added Weber contrast and Michelson contrast.
 
 ## 0.5.1
 

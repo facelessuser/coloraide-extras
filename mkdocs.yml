@@ -29,8 +29,9 @@ theme:
 nav:
   - ColorAide Extras:
       - Introduction: index.md
-  - Color Spaces:
       - Supported Colors: colors/index.md
+      - Color Distance and Delta E: distance.md
+      - Color Contrast: contrast.md
   - Playground: playground.md
   - About:
       - Contributing &amp; Support: about/contributing.md
@@ -104,13 +105,18 @@ markdown_extensions:
   - pymdownx.saneheaders:
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+      block_tag: 'pre'
 
 extra_css:
   - assets/coloraide-extras/extra-753860a807.css
 extra_javascript:
-  - playground-config-5ad13f66.js
+  - playground-config-ca43cbaa.js
   - https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js
   - assets/coloraide-extras/extra-notebook-1d173e7b.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 extra:
   social:

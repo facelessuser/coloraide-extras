@@ -2,6 +2,7 @@ ACEScc
 Accessors
 Berns
 CIE
+CIECAM
 CIELAB
 CIEXYZ
 CMY
@@ -30,10 +31,12 @@ Pinney
 PyPI
 RGB
 Rlab
+SCD
 Twemoji
 UCS
 UVW
 Uncalibrated
+WCAG
 Wyszecki
 XD
 XYZ
@@ -46,9 +49,11 @@ chroma
 chromaticity
 colorimetrically
 config
+differencing
 et
 illuminant
 luminance
+luminances
 oRGB
 oRGB's
 pre
@@ -57,5 +62,6 @@ prereleases
 sRGB
 sublicense
 subtractive
+workgroup
 xy
 xyY

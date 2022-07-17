@@ -9,16 +9,13 @@
 
 # ColorAide Extras
 
-> **This is still a work in progress.**
->
-> Like ColorAide, ColorAide Extras is very usable and out of the alpha stage, but it is currently in a prerelease state.
-> This simply means that the API of ColorAide is still in flux to some degree and could affect this package.
+> **Since [ColorAide](https://github.com/facelessuser/coloraide) is now in beta, ColorAide Extra is also in beta!**
 
 ## Overview
 
 ColorAide Extras is an add-on pack containing various plugins for [ColorAide](https://github.com/facelessuser/coloraide).
-ColorAide only ships with a select number of color spaces, ∆E methods, and gamut mapping alternatives. ColorAide Extras
-allows us to offer an additional number of uncommon and/or experimental set of color spaces and other plugins.
+The idea behind ColorAide Extras is to provide an environment for experimental color spaces, ∆E methods, and other
+plugins.
 
 Normally, it is advisable to only cherry pick color spaces you need. Rarely do people need every color space. This can
 be done simply by registering the color spaces you'd like.
