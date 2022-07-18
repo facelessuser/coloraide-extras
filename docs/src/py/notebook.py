@@ -86,12 +86,12 @@ def std_output(stdout=None):
 def get_colors(result):
     """Get color from results."""
 
-    from coloraide import Color
+    from coloraide import Color, ColorAll
     from coloraide.interpolate import Interpolator
     try:
         from coloraide_extras import Color as Color2
     except ImportError:
-        Color2 = Color
+        Color2 = ColorAll
 
     colors = []
     if isinstance(result, HtmlRow):
@@ -107,7 +107,7 @@ def get_colors(result):
     elif isinstance(result, Color):
         colors.append(ColorTuple(result.to_string(fit=False), result.clone()))
     elif isinstance(result, Interpolator):
-        colors = HtmlGradient(result.steps(steps=5, max_delta_e=3))
+        colors = HtmlGradient(result.steps(steps=5, max_delta_e=2.3))
     elif isinstance(result, str):
         try:
             colors.append(ColorTuple(result, Color2(result)))
@@ -131,7 +131,7 @@ def find_colors(text):
     try:
         from coloraide_extras import Color
     except ImportError:
-        from coloraide import Color
+        from coloraide import ColorAll as Color
 
     colors = []
     for m in RE_COLOR_START.finditer(text):
@@ -142,7 +142,7 @@ def find_colors(text):
     return colors
 
 
-def execute(cmd):
+def execute(cmd, no_except=True, inline=False):
     """Execute color commands."""
 
     import coloraide
@@ -152,10 +152,11 @@ def execute(cmd):
         coloraide_extras = None
 
     g = {
-        'Color': coloraide.Color,
+        'Color': coloraide.ColorAll,
         'coloraide': coloraide,
         'NaN': coloraide.NaN,
-        'Piecewise': coloraide.Piecewise,
+        'stop': coloraide.stop,
+        'hint': coloraide.hint,
         'HtmlRow': HtmlRow,
         'HtmlSteps': HtmlSteps,
         'HtmlGradient': HtmlGradient
@@ -173,7 +174,14 @@ def execute(cmd):
     lines = src.split('\n')
     try:
         tree = ast.parse(src)
-    except Exception:
+    except Exception as e:
+        if no_except:
+            if not inline:
+                from pymdownx.superfences import SuperFencesException
+                raise SuperFencesException from e
+            else:
+                from pymdownx.inlinehilite import InlineHiliteException
+                raise InlineHiliteException from e
         import traceback
         return '{}'.format(traceback.format_exc()), colors
 
@@ -217,7 +225,14 @@ def execute(cmd):
                         colors.append(clist)
                     console += '\n{}'.format(text)
                 s.flush()
-        except Exception:
+        except Exception as e:
+            if no_except:
+                if not inline:
+                    from pymdownx.superfences import SuperFencesException
+                    raise SuperFencesException from e
+                else:
+                    from pymdownx.inlinehilite import InlineHiliteException
+                    raise InlineHiliteException from e
             import traceback
             console += '{}\n{}'.format(command, traceback.format_exc())
             # Failed for some reason, so quit
@@ -251,7 +266,7 @@ def colorize(src, lang, **options):
 def color_command_validator(language, inputs, options, attrs, md):
     """Color validator."""
 
-    valid_inputs = set()
+    valid_inputs = set(['exceptions'])
 
     for k, v in inputs.items():
         if k in valid_inputs:
@@ -282,7 +297,7 @@ def _color_command_console(colors):
             style = "--swatch-stops: "
             stops = []
             for e, color in enumerate(item):
-                color.fit(WEBSPACE, in_place=True)
+                color.fit(WEBSPACE)
                 if current:
                     stops.append('{} {}%'.format(color.convert(WEBSPACE).to_string(), str(last)))
                     stops.append('{} {}%'.format(color.convert(WEBSPACE).to_string(), str(current)))
@@ -315,7 +330,7 @@ def _color_command_console(colors):
             for color in item:
                 if not color.color.in_gamut(WEBSPACE):
                     base_classes += " out-of-gamut"
-                color.color.fit(WEBSPACE, in_place=True)
+                color.color.fit(WEBSPACE)
                 srgb = color.color.convert(WEBSPACE)
                 value1 = srgb.to_string(alpha=False)
                 value2 = srgb.to_string()
@@ -345,12 +360,16 @@ def color_command_formatter(src="", language="", class_name=None, options=None, 
     """Formatter wrapper."""
 
     global code_id
+    from pymdownx.superfences import SuperFencesException
 
     try:
         if len(md.preprocessors['fenced_code_block'].extension.stash) == 0:
             code_id = 0
 
-        console, colors = execute(src.strip())
+        # Check if we should allow exceptions
+        exceptions = options.get('exceptions', False) if options is not None else False
+
+        console, colors = execute(src.strip(), not exceptions)
         el = _color_command_console(colors)
 
         el += md.preprocessors['fenced_code_block'].extension.superfences[0]['formatter'](
@@ -364,6 +383,8 @@ def color_command_formatter(src="", language="", class_name=None, options=None, 
         el = '<div class="color-command">{}</div>'.format(el)
         el = template.format(el_id=code_id, raw_source=_escape(src), results=el)
         code_id += 1
+    except SuperFencesException:
+        raise
     except Exception:
         from pymdownx import superfences
         import traceback
@@ -372,45 +393,34 @@ def color_command_formatter(src="", language="", class_name=None, options=None, 
     return el
 
 
-def live_color_command_formatter(src):
+def color_formatter(src="", language="", class_name=None, md="", exceptions=True):
     """Formatter wrapper."""
 
-    try:
-        console, colors = execute(src.strip())
-        el = _color_command_console(colors)
-
-        if not colors:
-            el += '<div class="swatch-bar"></div>'
-
-        el += colorize(console, 'pycon', **{'python3': True, 'stripnl': False})
-        el = '<div class="color-command">{}</div>'.format(el)
-    except Exception:
-        return '<div class="color-command"><div class="swatch-bar"></div>{}</div>'.format(colorize('', 'text'))
-    return el
-
-
-def color_formatter(src="", language="", class_name=None, md=""):
-    """Formatter wrapper."""
-
+    from pymdownx.inlinehilite import InlineHiliteException
     try:
         from coloraide_extras import Color
     except ImportError:
-        from coloraide import Color
+        from coloraide import ColorAll as Color
 
     try:
         result = src.strip()
+
         try:
-            console, colors = execute(result)
+            color = Color(result.strip())
+        except Exception:
+            console, colors = execute(result, exceptions, inline=True)
             if len(colors) != 1 or len(colors[0]) != 1:
-                raise ValueError('Need one color only')
+                if exceptions:
+                    raise InlineHiliteException('Only one color allowed')
+                else:
+                    raise ValueError('Only one color allowed')
             color = colors[0][0].color
             result = colors[0][0].string
-        except Exception:
-            color = Color(result.strip())
+
         el = Etree.Element('span')
         stops = []
         if not color.in_gamut(WEBSPACE):
-            color.fit(WEBSPACE, in_place=True)
+            color.fit(WEBSPACE)
             attributes = {'class': "swatch out-of-gamut", "title": result}
             sub_el = Etree.SubElement(el, 'span', attributes)
             stops.append(color.convert(WEBSPACE).to_string(hex=True, alpha=False))
@@ -440,6 +450,8 @@ def color_formatter(src="", language="", class_name=None, md=""):
         )
 
         el.append(md.inlinePatterns['backtick'].handle_code('css-color', result))
+    except InlineHiliteException:
+        raise
     except Exception:
         import traceback
         print(traceback.format_exc())
@@ -450,6 +462,38 @@ def color_formatter(src="", language="", class_name=None, md=""):
 #############################
 # Pyodide specific code
 #############################
+def live_color_command_formatter(src):
+    """Formatter wrapper."""
+
+    try:
+        console, colors = execute(src.strip(), False)
+        el = _color_command_console(colors)
+
+        if not colors:
+            el += '<div class="swatch-bar"></div>'
+
+        el += colorize(console, 'pycon', **{'python3': True, 'stripnl': False})
+        el = '<div class="color-command">{}</div>'.format(el)
+    except Exception:
+        return '<div class="color-command"><div class="swatch-bar"></div>{}</div>'.format(colorize('', 'text'))
+    return el
+
+
+def live_color_command_validator(language, inputs, options, attrs, md):
+    """Color validator."""
+
+    value = color_command_validator(language, inputs, options, attrs, md)
+    # Live edit, we always allow exceptions so not to crash the service.
+    options['exceptions'] = True
+    return value
+
+
+def live_color_formatter(src="", language="", class_name=None, md=""):
+    """Color formatter for a live environment."""
+
+    return color_formatter(src, language, class_name, md, exceptions=False)
+
+
 def render_console(*args):
     """Render console update."""
 
@@ -517,7 +561,7 @@ def render_notebook(*args):
                     "name": 'playground',
                     "class": 'playground',
                     "format": color_command_formatter,
-                    "validator": color_command_validator
+                    "validator": live_color_command_validator
                 }
             ]
         },
@@ -526,7 +570,7 @@ def render_notebook(*args):
                 {
                     'name': 'color',
                     'class': 'color',
-                    'format': color_formatter
+                    'format': live_color_formatter
                 }
             ]
         },

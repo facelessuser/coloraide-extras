@@ -9,28 +9,25 @@
 
 # ColorAide Extras
 
-> **This is still a work in progress.**
->
-> Like ColorAide, ColorAide Extras is very usable and out of the alpha stage, but it is currently in a prerelease state.
-> This simply means that the API of ColorAide is still in flux to some degree and could affect this package.
+> **Since [ColorAide](https://github.com/facelessuser/coloraide) is now in beta, ColorAide Extra is also in beta!**
 
 ## Overview
 
 ColorAide Extras is an add-on pack containing various plugins for [ColorAide](https://github.com/facelessuser/coloraide).
-ColorAide only ships with a select number of color spaces, ∆E methods, and gamut mapping alternatives. ColorAide Extras
-allows us to offer an additional number of uncommon and/or experimental set of color spaces and other plugins.
+The idea behind ColorAide Extras is to provide an environment for experimental color spaces, ∆E methods, and other
+plugins.
 
 Normally, it is advisable to only cherry pick color spaces you need. Rarely do people need every color space. This can
 be done simply by registering the color spaces you'd like.
 
 ```python
 >>> from coloraide import Color as Base
->>> from coloraide_extras import HunterLab
+>>> from coloraide_extras import UCS
 >>> class Color(Base): ...
-... 
->>> Color.register(HunterLab)
->>> Color('red').convert('hunter-lab')
-color(--hunter-lab 46.113 82.694 28.337 / 1)
+...
+>>> Color.register(UCS)
+>>> Color('red').convert('ucs')
+color(--ucs 0.27493 0.21264 0.12243 / 1)
 ```
 
 But, if you want access to all the color spaces for both ColorAide and ColorAide Extras, simply import `Color` from
@@ -38,8 +35,8 @@ But, if you want access to all the color spaces for both ColorAide and ColorAide
 
 ```python
 >>> from coloraide_extras import Color
->>> Color('color(--hunter-lab 46.113 82.694 28.337 / 1)')
-color(--hunter-lab 46.113 82.694 28.337 / 1)
+>>> Color('color(--ucs 0.27493 0.21264 0.12243 / 1)')
+color(--ucs 0.27493 0.21264 0.12243 / 1)
 ```
 
 # Documentation

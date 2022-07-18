@@ -1,1 +1,1 @@
-coloraide>=0.16.0
+coloraide>=1.0b3

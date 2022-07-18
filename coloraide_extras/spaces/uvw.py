@@ -4,7 +4,7 @@ CIE 1964 UVW class.
 https://en.wikipedia.org/wiki/CIE_1964_color_space
 """
 from coloraide.spaces import Space
-from coloraide.gamut.bounds import GamutUnbound
+from coloraide.channels import Channel, FLG_MIRROR_PERCENT
 from coloraide.cat import WHITES
 from coloraide import util
 from coloraide import algebra as alg
@@ -53,50 +53,12 @@ class UVW(Space):
     BASE = "xyz-d65"
     NAME = "uvw"
     SERIALIZE = ("--uvw",)  # type: Tuple[str, ...]
-    CHANNEL_NAMES = ("u", "v", "w")
-    WHITE = WHITES['2deg']['D65']
-
-    BOUNDS = (
-        GamutUnbound(-0.1, 1.0),
-        GamutUnbound(-0.1, 1.0),
-        GamutUnbound(0.0, 1.0)
+    CHANNELS = (
+        Channel("u", -1.0, 1.0, flags=FLG_MIRROR_PERCENT),
+        Channel("v", -1.0, 1.0, flags=FLG_MIRROR_PERCENT),
+        Channel("w", 0.0, 1.0, flags=FLG_MIRROR_PERCENT)
     )
-
-    @property
-    def u(self) -> float:
-        """The u channel."""
-
-        return self._coords[0]
-
-    @u.setter
-    def u(self, value: float) -> None:
-        """Set u."""
-
-        self._coords[0] = value
-
-    @property
-    def v(self) -> float:
-        """The v channel."""
-
-        return self._coords[1]
-
-    @v.setter
-    def v(self, value: float) -> None:
-        """Set v."""
-
-        self._coords[1] = value
-
-    @property
-    def w(self) -> float:
-        """The w channel."""
-
-        return self._coords[2]
-
-    @w.setter
-    def w(self, value: float) -> None:
-        """Set w."""
-
-        self._coords[2] = value
+    WHITE = WHITES['2deg']['D65']
 
     @classmethod
     def to_base(cls, coords: Vector) -> Vector:
