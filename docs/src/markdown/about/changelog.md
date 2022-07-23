@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0rc1
+
+- **NEW**: Move the `Color` object which contains **all** plugins to `coloraide_extras.everything.ColorAll`. This will
+  prevent instantiating things that some users may not care about.
+- **NEW**: Plugins are no longer available root of package, but must be imported from their location:
+  `coloraide_extras.<plugin_type>.<space>.<class>`.
+- **FIX**: Clamp luminance in Michelson and Weber contrast plugins to zero if negative luminance.
+- **FIX**: Adjust some color space ranges to be more reasonable.
+
 ## 1.0b1
 
 - **NEW**: Add support for new ColorAide 1.0 Beta.

@@ -1,12 +1,6 @@
-# Color Distance and Delta E
+# CAM16
 
-ColorAide Extras not only includes some experimental color spaces, but includes some associated ∆E methods as well.
-
-## CAM16
-
-```py
-from coloraide_extras.distance.delta_e_cam16 import DECAM16
-```
+## Description
 
 The CAM16 UCS color space is perceptually uniform. Part of the reason for its creation is to help improve color
 distancing. CAM02, which CAM16 is based off of and meant to improve, specified 3 color spaces: UCS, LCD, and SCD. LCD
@@ -21,4 +15,15 @@ instead (assuming all required color spaces are registered).
 Color('red').delta_e('blue', method='cam16')
 Color('red').delta_e('blue', method='cam16', magnitude='scd')
 Color('red').delta_e('blue', method='cam16', magnitude='lcd')
+```
+
+## Registering
+
+```py
+from coloriade import Color as Base
+from coloraide_extras.distance.delta_e_cam16 import DECAM16
+
+class Color(Base): ...
+
+Color.register(DECAM16())
 ```

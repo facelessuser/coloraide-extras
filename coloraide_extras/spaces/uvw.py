@@ -54,9 +54,9 @@ class UVW(Space):
     NAME = "uvw"
     SERIALIZE = ("--uvw",)  # type: Tuple[str, ...]
     CHANNELS = (
-        Channel("u", -1.0, 1.0, flags=FLG_MIRROR_PERCENT),
-        Channel("v", -1.0, 1.0, flags=FLG_MIRROR_PERCENT),
-        Channel("w", 0.0, 1.0, flags=FLG_MIRROR_PERCENT)
+        Channel("u", -100.0, 100.0, flags=FLG_MIRROR_PERCENT),
+        Channel("v", -100.0, 100.0, flags=FLG_MIRROR_PERCENT),
+        Channel("w", 0.0, 100.0, flags=FLG_MIRROR_PERCENT)
     )
     WHITE = WHITES['2deg']['D65']
 

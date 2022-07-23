@@ -1,6 +1,6 @@
 """Test contrast."""
 import unittest
-from coloraide_extras import Color
+from coloraide_extras.everything import ColorAll as Color
 from . import util
 
 
