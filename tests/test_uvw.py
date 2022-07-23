@@ -1,7 +1,7 @@
 """Test UVW 1964."""
 import unittest
 from . import util
-from coloraide_extras import Color
+from coloraide_extras.everything import ColorAll as Color
 import pytest
 
 

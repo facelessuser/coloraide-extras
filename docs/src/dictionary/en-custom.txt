@@ -59,6 +59,7 @@ oRGB's
 pre
 prerelease
 prereleases
+rc
 sRGB
 sublicense
 subtractive

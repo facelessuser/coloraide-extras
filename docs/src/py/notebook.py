@@ -86,10 +86,11 @@ def std_output(stdout=None):
 def get_colors(result):
     """Get color from results."""
 
-    from coloraide import Color, ColorAll
+    from coloraide import Color
+    from coloraide.everything import ColorAll
     from coloraide.interpolate import Interpolator
     try:
-        from coloraide_extras import Color as Color2
+        from coloraide_extras.everything import ColorAll as Color2
     except ImportError:
         Color2 = ColorAll
 
@@ -129,9 +130,9 @@ def find_colors(text):
     """Find colors in text buffer."""
 
     try:
-        from coloraide_extras import Color
+        from coloraide_extras.everything import ColorAll as Color
     except ImportError:
-        from coloraide import ColorAll as Color
+        from coloraide.everything import ColorAll as Color
 
     colors = []
     for m in RE_COLOR_START.finditer(text):
@@ -146,13 +147,16 @@ def execute(cmd, no_except=True, inline=False):
     """Execute color commands."""
 
     import coloraide
+    from coloraide.everything import ColorAll
     try:
         import coloraide_extras
+        import coloraide_extras.everything as extras
     except ImportError:
         coloraide_extras = None
+        extras = None
 
     g = {
-        'Color': coloraide.ColorAll,
+        'Color': ColorAll,
         'coloraide': coloraide,
         'NaN': coloraide.NaN,
         'stop': coloraide.stop,
@@ -162,9 +166,9 @@ def execute(cmd, no_except=True, inline=False):
         'HtmlGradient': HtmlGradient
     }
 
-    if coloraide_extras is not None:
+    if extras is not None:
         g['coloraide_extras'] = coloraide_extras
-        g['Color'] = coloraide_extras.Color
+        g['Color'] = extras.ColorAll
 
     console = ''
     colors = []
@@ -398,9 +402,9 @@ def color_formatter(src="", language="", class_name=None, md="", exceptions=True
 
     from pymdownx.inlinehilite import InlineHiliteException
     try:
-        from coloraide_extras import Color
+        from coloraide_extras.everything import ColorAll as Color
     except ImportError:
-        from coloraide import ColorAll as Color
+        from coloraide.everything import ColorAll as Color
 
     try:
         result = src.strip()

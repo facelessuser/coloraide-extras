@@ -1,7 +1,7 @@
 """Test CAM16 UCS."""
 import unittest
 from . import util
-from coloraide_extras import Color
+from coloraide_extras.everything import ColorAll as Color
 from coloraide_extras.spaces.cam16_ucs import cam16_to_xyz_d65, CAM16UCS
 import pytest
 from collections import namedtuple

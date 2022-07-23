@@ -19,8 +19,8 @@ class ContrastMichelson(ColorContrast):
     def contrast(cls, color1: 'Color', color2: 'Color', **kwargs: Any) -> float:
         """Contrast."""
 
-        lum1 = color1.luminance()
-        lum2 = color2.luminance()
+        lum1 = max(color1.luminance(), 0.0)
+        lum2 = max(color2.luminance(), 0.0)
 
         if lum1 > lum2:
             lum2, lum1 = lum1, lum2

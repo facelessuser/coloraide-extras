@@ -27,17 +27,18 @@ Normally, it is advisable to only cherry pick color spaces you need. Rarely do p
 be done simply by registering the color spaces you'd like.
 
 ```playground
-from coloraide_extras import Color
-Color('color(--ucs 0.27493 0.21264 0.12243 / 1)')
+from coloraide import Color as Base
+from coloraide_extras.spaces.ucs import UCS
+class Color(Base): ...
+Color.register(UCS())
+Color('red').convert('ucs')
 ```
 
-But, if you want access to all the color spaces for both ColorAide and ColorAide Extras, simply import `Color` from
-`coloraide_extras` instead of `coloraide`:
+But, if you want access to all the color spaces for both ColorAide and ColorAide Extras, simply import `ColorAll` from
+`coloraide_extras.everything` instead of `coloraide`:
+
 
 ```playground
-from coloraide import Color as Base
-from coloraide_extras import UCS
-class Color(Base): ...
-Color.register(UCS)
-Color('red').convert('ucs')
+from coloraide_extras.everything import ColorAll as Color
+Color('color(--ucs 0.27493 0.21264 0.12243 / 1)')
 ```
