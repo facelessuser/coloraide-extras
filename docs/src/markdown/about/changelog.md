@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.post1
+
+- **FIX**: Remove beta notices from documentation.
+
 ## 1.0
 
 - **NEW**: Update to support the official ColorAide stable release. Move to a "stable" release for ColorAide Extras.

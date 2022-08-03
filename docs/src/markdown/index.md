@@ -1,8 +1,5 @@
 # Introduction
 
-!!! warning "Currently in Beta"
-    Since [ColorAide](https://github.com/facelessuser/coloraide) is now in beta, ColorAide Extra is also in beta!
-
 !!! warning "Experimental"
     Plugins provided by ColorAide Extras is essentially an experimental playground. Regardless of how polished a given
     plugin may seem, they should be considered experimental.

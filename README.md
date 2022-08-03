@@ -9,8 +9,6 @@
 
 # ColorAide Extras
 
-> **Since [ColorAide](https://github.com/facelessuser/coloraide) is now in beta, ColorAide Extra is also in beta!**
-
 ## Overview
 
 ColorAide Extras is an add-on pack containing various plugins for [ColorAide](https://github.com/facelessuser/coloraide).
