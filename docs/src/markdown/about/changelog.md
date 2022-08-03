@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0
+
+- **NEW**: Update to support the official ColorAide stable release. Move to a "stable" release for ColorAide Extras.
+
 ## 1.0rc1
 
 - **NEW**: Move the `Color` object which contains **all** plugins to `coloraide_extras.everything.ColorAll`. This will
