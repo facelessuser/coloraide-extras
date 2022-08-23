@@ -1,5 +1,5 @@
 """Everything but the kitchen sink."""
-from coloraide import Color as Base
+from coloraide.everything import ColorAll as Base
 from coloraide import stop, hint, NaN
 from .spaces.ucs import UCS
 from .spaces.uvw import UVW

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+- **FIX**: `coloraide_extras.everything.ColorAll` should derive from `coloraide.everything.ColorAll`, not
+  `coloraide.Color`.
+
 ## 1.0.post1
 
 - **FIX**: Remove beta notices from documentation.
