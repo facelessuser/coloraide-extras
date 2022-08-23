@@ -15,7 +15,7 @@ class TestContrastWeber(util.ColorAsserts, unittest.TestCase):
     def test_contrast_zero_luminance(self):
         """Test contrast of two blacks (divide by zero)."""
 
-        self.assertEqual(Color('black').contrast('black', method='weber'), 0)
+        self.assertEqual(Color('black').contrast('black', method='weber'), 50000)
 
     def test_contrast_bigger(self):
         """Test greater contrast."""
