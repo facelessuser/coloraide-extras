@@ -9,6 +9,8 @@ from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:  # pragma: no cover
     from coloraide import Color
 
+MAX = 50000
+
 
 class ContrastWeber(ColorContrast):
     """Weber contrast."""
@@ -26,6 +28,6 @@ class ContrastWeber(ColorContrast):
             lum2, lum1 = lum1, lum2
 
         if lum1 == 0:
-            return 0
+            return MAX
 
         return (lum2 - lum1) / lum1

@@ -4,6 +4,7 @@
 
 - **FIX**: `coloraide_extras.everything.ColorAll` should derive from `coloraide.everything.ColorAll`, not
   `coloraide.Color`.
+- **FIX**: Handle divide by zero case for Weber contrast by setting a more reasonable max.
 
 ## 1.0.post1
 
