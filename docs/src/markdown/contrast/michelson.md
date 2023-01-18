@@ -11,7 +11,7 @@ $$
 $$
 
 ```playground
-Color('red').contrast('blue', method='weber')
+Color('red').contrast('blue', method='michelson')
 ```
 
 ## Registering

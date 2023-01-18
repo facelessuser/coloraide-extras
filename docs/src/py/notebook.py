@@ -20,6 +20,20 @@ from io import StringIO
 import contextlib
 import sys
 import re
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import find_formatter_class
+import coloraide
+from coloraide import Color
+from coloraide.interpolate import Interpolator, normalize_domain
+try:
+    from coloraide_extras.everything import ColorAll
+except ImportError:
+    from coloraide.everything import ColorAll
+try:
+    import coloraide_extras
+except ImportError:
+    coloraide_extras = None
 
 WEBSPACE = "srgb"
 AST_BLOCKS = (ast.If, ast.For, ast.While, ast.Try, ast.With, ast.FunctionDef, ast.ClassDef)
@@ -86,32 +100,32 @@ def std_output(stdout=None):
 def get_colors(result):
     """Get color from results."""
 
-    from coloraide import Color
-    from coloraide.everything import ColorAll
-    from coloraide.interpolate import Interpolator
-    try:
-        from coloraide_extras.everything import ColorAll as Color2
-    except ImportError:
-        Color2 = ColorAll
-
     colors = []
+    domain = []
     if isinstance(result, HtmlRow):
         colors = HtmlRow(
             [
-                ColorTuple(c.to_string(fit=False), c.clone()) if isinstance(c, Color) else ColorTuple(c, Color2(c))
+                ColorTuple(c.to_string(fit=False), c.clone()) if isinstance(c, Color) else ColorTuple(c, ColorAll(c))
                 for c in result
             ]
         )
     elif isinstance(result, (HtmlSteps, HtmlGradient)):
         t = type(result)
-        colors = t([c.clone() if isinstance(c, Color) else Color2(c) for c in result])
+        colors = t([c.clone() if isinstance(c, Color) else ColorAll(c) for c in result])
     elif isinstance(result, Color):
         colors.append(ColorTuple(result.to_string(fit=False), result.clone()))
     elif isinstance(result, Interpolator):
+        # Since we are auto showing the gradient, we need to scale the domain to something we expect.
+        if result.domain:
+            domain = result.domain
+            result.domain = normalize_domain(result.domain)
         colors = HtmlGradient(result.steps(steps=5, max_delta_e=2.3))
+        if domain:
+            result.domain = domain
+            domain = []
     elif isinstance(result, str):
         try:
-            colors.append(ColorTuple(result, Color2(result)))
+            colors.append(ColorTuple(result, ColorAll(result)))
         except Exception:
             pass
     elif isinstance(result, Sequence):
@@ -120,7 +134,7 @@ def get_colors(result):
                 colors.append(ColorTuple(x.to_string(fit=False), x.clone()))
             elif isinstance(x, str):
                 try:
-                    colors.append(ColorTuple(x, Color2(x)))
+                    colors.append(ColorTuple(x, ColorAll(x)))
                 except Exception:
                     pass
     return colors
@@ -129,15 +143,10 @@ def get_colors(result):
 def find_colors(text):
     """Find colors in text buffer."""
 
-    try:
-        from coloraide_extras.everything import ColorAll as Color
-    except ImportError:
-        from coloraide.everything import ColorAll as Color
-
     colors = []
     for m in RE_COLOR_START.finditer(text):
         start = m.start()
-        mcolor = Color.match(text, start=start)
+        mcolor = ColorAll.match(text, start=start)
         if mcolor is not None:
             colors.append(ColorTuple(text[mcolor.start:mcolor.end], mcolor.color))
     return colors
@@ -146,29 +155,15 @@ def find_colors(text):
 def execute(cmd, no_except=True, inline=False):
     """Execute color commands."""
 
-    import coloraide
-    from coloraide.everything import ColorAll
-    try:
-        import coloraide_extras
-        import coloraide_extras.everything as extras
-    except ImportError:
-        coloraide_extras = None
-        extras = None
+    g = {k: getattr(coloraide, k) for k in coloraide.__all__}
+    g['coloraide'] = coloraide
+    g['Color'] = ColorAll
+    g['HtmlRow'] = HtmlRow
+    g['HtmlSteps'] = HtmlSteps
+    g['HtmlGradient'] = HtmlGradient
 
-    g = {
-        'Color': ColorAll,
-        'coloraide': coloraide,
-        'NaN': coloraide.NaN,
-        'stop': coloraide.stop,
-        'hint': coloraide.hint,
-        'HtmlRow': HtmlRow,
-        'HtmlSteps': HtmlSteps,
-        'HtmlGradient': HtmlGradient
-    }
-
-    if extras is not None:
+    if coloraide_extras is not None:
         g['coloraide_extras'] = coloraide_extras
-        g['Color'] = extras.ColorAll
 
     console = ''
     colors = []
@@ -257,11 +252,7 @@ def execute(cmd, no_except=True, inline=False):
 def colorize(src, lang, **options):
     """Colorize."""
 
-    from pygments import highlight
-    from pygments.lexers import get_lexer_by_name
-    from pygments.formatters import find_formatter_class
     HtmlFormatter = find_formatter_class('html')
-
     lexer = get_lexer_by_name(lang, **options)
     formatter = HtmlFormatter(cssclass="highlight", wrapcode=True)
     return highlight(src, lexer, formatter).strip()
@@ -330,8 +321,8 @@ def _color_command_console(colors):
                 bar = False
 
             bar = True
-            base_classes = "swatch"
             for color in item:
+                base_classes = "swatch"
                 if not color.color.in_gamut(WEBSPACE):
                     base_classes += " out-of-gamut"
                 color.color.fit(WEBSPACE)
@@ -401,16 +392,12 @@ def color_formatter(src="", language="", class_name=None, md="", exceptions=True
     """Formatter wrapper."""
 
     from pymdownx.inlinehilite import InlineHiliteException
-    try:
-        from coloraide_extras.everything import ColorAll as Color
-    except ImportError:
-        from coloraide.everything import ColorAll as Color
 
     try:
         result = src.strip()
 
         try:
-            color = Color(result.strip())
+            color = ColorAll(result.strip())
         except Exception:
             console, colors = execute(result, exceptions, inline=True)
             if len(colors) != 1 or len(colors[0]) != 1:
@@ -518,7 +505,7 @@ def render_notebook(*args):
     """Render notebook."""
 
     import markdown
-    from pymdownx import slugs
+    from pymdownx import slugs, superfences
     from js import document
 
     text = globals().get('content', '')
@@ -548,7 +535,8 @@ def render_notebook(*args):
         'pymdownx.keys',
         'pymdownx.details',
         'pymdownx.saneheaders',
-        'pymdownx.tabbed'
+        'pymdownx.tabbed',
+        'pymdownx.arithmatex'
     ]
     extension_configs = {
         'markdown.extensions.toc': {
@@ -558,9 +546,19 @@ def render_notebook(*args):
         'markdown.extensions.smarty': {
             "smart_quotes": False,
         },
+        'pymdownx.arithmatex': {
+            'generic': True,
+            'block_tag': 'pre'
+        },
         'pymdownx.superfences': {
             'preserve_tabs': True,
             'custom_fences': [
+                {
+
+                    "name": "diagram",
+                    "class": "diagram",
+                    "format": superfences.fence_code_format
+                },
                 {
                     "name": 'playground',
                     "class": 'playground',
@@ -587,6 +585,9 @@ def render_notebook(*args):
         },
         'pymdownx.keys': {
             'separator': "\uff0b"
+        },
+        'pymdownx.tabbed': {
+            'alternate_style': True
         }
     }
 
