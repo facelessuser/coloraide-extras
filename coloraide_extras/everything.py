@@ -1,4 +1,5 @@
 """Everything but the kitchen sink."""
+from __future__ import annotations
 from coloraide.everything import ColorAll as Base
 from coloraide import stop, hint, NaN
 from .spaces.ucs import UCS

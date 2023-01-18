@@ -3,13 +3,13 @@ CIE 1964 UVW class.
 
 https://en.wikipedia.org/wiki/CIE_1964_color_space
 """
+from __future__ import annotations
 from coloraide.spaces import Space
 from coloraide.channels import Channel, FLG_MIRROR_PERCENT
 from coloraide.cat import WHITES
 from coloraide import util
 from coloraide import algebra as alg
 from coloraide.types import Vector, VectorLike
-from typing import Tuple
 
 
 def xyz_to_uvw(xyz: Vector, white: VectorLike) -> Vector:
@@ -52,7 +52,7 @@ class UVW(Space):
 
     BASE = "xyz-d65"
     NAME = "uvw"
-    SERIALIZE = ("--uvw",)  # type: Tuple[str, ...]
+    SERIALIZE = ("--uvw",)  # type: tuple[str, ...]
     CHANNELS = (
         Channel("u", -100.0, 100.0, flags=FLG_MIRROR_PERCENT),
         Channel("v", -100.0, 100.0, flags=FLG_MIRROR_PERCENT),
