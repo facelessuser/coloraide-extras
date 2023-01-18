@@ -1,4 +1,5 @@
 """Delta E CAM16."""
+from __future__ import annotations
 import math
 from coloraide.distance import DeltaE
 from coloraide import algebra as alg
@@ -15,7 +16,7 @@ class DECAM16(DeltaE):
     NAME = "cam16"
 
     @classmethod
-    def distance(cls, color: 'Color', sample: 'Color', magnitude: str = 'ucs', **kwargs: Any) -> float:
+    def distance(cls, color: Color, sample: Color, magnitude: str = 'ucs', **kwargs: Any) -> float:
         """Delta E z color distance formula."""
 
         space = 'cam16-{}'.format(magnitude)

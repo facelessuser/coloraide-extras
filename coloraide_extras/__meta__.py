@@ -1,4 +1,5 @@
 """Meta related things."""
+from __future__ import annotations
 from collections import namedtuple
 import re
 
@@ -83,7 +84,7 @@ class Version(namedtuple("Version", ["major", "minor", "micro", "release", "pre"
         cls,
         major: int, minor: int, micro: int, release: str = "final",
         pre: int = 0, post: int = 0, dev: int = 0
-    ) -> "Version":
+    ) -> Version:
         """Validate version info."""
 
         # Ensure all parts are positive integers.
@@ -192,5 +193,5 @@ def parse_version(ver: str) -> Version:
     return Version(major, minor, micro, release, pre, post, dev)
 
 
-__version_info__ = Version(1, 2, 0, ".dev")
+__version_info__ = Version(1, 1, 0, "final")
 __version__ = __version_info__._get_canonical()

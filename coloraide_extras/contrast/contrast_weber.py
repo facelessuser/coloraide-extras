@@ -3,6 +3,7 @@ Weber color contrast.
 
 https://en.wikipedia.org/wiki/Contrast_(vision)#Weber_contrast.
 """
+from __future__ import annotations
 from coloraide.contrast import ColorContrast
 from typing import Any, TYPE_CHECKING
 
@@ -18,7 +19,7 @@ class ContrastWeber(ColorContrast):
     NAME = "weber"
 
     @classmethod
-    def contrast(cls, color1: 'Color', color2: 'Color', **kwargs: Any) -> float:
+    def contrast(cls, color1: Color, color2: Color, **kwargs: Any) -> float:
         """Contrast."""
 
         lum1 = max(color1.luminance(), 0.0)

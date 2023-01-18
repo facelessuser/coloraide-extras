@@ -1,4 +1,5 @@
 """CAM16 class."""
+from __future__ import annotations
 import math
 import bisect
 from coloraide.spaces import Space, Labish

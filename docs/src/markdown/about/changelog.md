@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+
+- **NEW**: Require stable ColorAide 1.5.
+- **NEW**: Formally support Python 3.11.
+
 ## 1.0.1
 
 - **FIX**: `coloraide_extras.everything.ColorAll` should derive from `coloraide.everything.ColorAll`, not

@@ -3,11 +3,11 @@ CIE 1960 UCS color class.
 
 http://en.wikipedia.org/wiki/CIE_1960_color_space#Relation_to_CIE_XYZ
 """
+from __future__ import annotations
 from coloraide.spaces import Space
 from coloraide.channels import Channel
 from coloraide.cat import WHITES
 from coloraide.types import Vector
-from typing import Tuple
 
 
 def xyz_to_ucs(xyz: Vector) -> Vector:
@@ -29,7 +29,7 @@ class UCS(Space):
 
     BASE = "xyz-d65"
     NAME = "ucs"
-    SERIALIZE = ("--ucs",)  # type: Tuple[str, ...]
+    SERIALIZE = ("--ucs",)  # type: tuple[str, ...]
     CHANNELS = (
         Channel("u", 0.0, 1.0),
         Channel("v", 0.0, 1.0),
