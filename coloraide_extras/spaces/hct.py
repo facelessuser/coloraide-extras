@@ -1,4 +1,54 @@
-"""HCT color space."""
+"""
+HCT color space.
+
+This implements the HCT color space as described. This is not a port of the Material library.
+We simply, as described, create a color space with CIELAB L* and CAM16's C and h components.
+Environment settings are calculated with the assumption of L* 50.
+
+Our approach getting back to sRGB is likely different as we are using a simple binary search
+to help calculate the missing piece (J) needed to convert CAM16 C and h back to XYZ such that
+Y matches the L* conversion back to Y. I am certain the Material library is most likely
+employing further tricks to resolve faster. We also try to get as good round trip as possible,
+which forces us to probably make more iterations than Material does (none of this as been confirmed).
+
+As ColorAide usually cares about setting powerless hues as NaN, especially for good interpolation,
+we've also calculated the cut off for chromatic colors and will properly enforce achromatic,powerless
+hues. This is because CAM16 actually resolves colors as achromatic before chroma reaches zero as
+lightness increases. In the SDR range, a Tone of 100 will have a cut off as high as ~2.87 chroma.
+
+Generally, the HCT color space is restricted to SDR range. lightness above this range will be clamped.
+This is required in order for us to properly gauge and search for the appropriate CAM16 J when
+converting back to other SDR color spaces. We do not clamp chroma's maximum, but we will clamp minimum
+to zero. This allows HCT to work with Display P3 and other SDR RGB spaces.
+
+Though we did not port HCT from Material Color Utilities, we did test against it, and are pretty
+much on point. The only differences are due to matrix precision and white point precision. Material
+uses an RGB <-> XYZ matrix that rounds values off significantly more than we do. Also, while we
+calculate the XYZ points from the `xy` points without rounding, they have rounded XYZ points. All of
+this just makes it so that after about 2 decimal points, things can differ some:
+
+Material:
+
+```
+> hct.Hct.fromInt(0xff305077)
+Hct {
+  argb: 4281356407,
+  internalHue: 256.8040416857594,
+  internalChroma: 31.761442797741243,
+  internalTone: 33.34501410942328
+}
+```
+
+ColorAide:
+
+```
+>>> from coloraide_extras.everything import ColorAll as Color
+>>> Color('#305077').convert('hct')
+color(--hct 256.79 31.766 33.344 / 1)
+```
+
+Differences are inconsequential.
+"""
 from __future__ import annotations
 from .cam16_ucs import Environment, cam16_to_xyz_d65, xyz_d65_to_cam16
 from coloraide.spaces import Space, LChish
@@ -8,9 +58,9 @@ from coloraide.channels import Channel, FLG_ANGLE
 from coloraide import algebra as alg
 from coloraide.types import Vector, VectorLike
 from typing import cast
+from coloraide import util
 import math
 
-CHROMA_SCALE = 1 / 2.871588955286716
 ACHROMATIC_HUE = 209.5429359788321
 POLY_COEF = [2.152855223146154e-07, -7.728527926423952e-05, 0.028943531871995574, 0.5362688035299501]
 LOG_COEF1 = [0.1923535302908369, 0.3526144857763279]
@@ -132,7 +182,7 @@ def xyz_to_hct(coords: Vector, env: Environment) -> Vector:
 
 
 class HCT(LChish, Space):
-    """CAM16 UCS class."""
+    """HCT class."""
 
     BASE = "xyz-d65"
     NAME = "hct"
@@ -149,7 +199,15 @@ class HCT(LChish, Space):
         "hue": "h"
     }
     WHITE = WHITES['2deg']['D65']
-    ENV = Environment('ucs', WHITE, 11.725677948856951, 0.18418651851244416 * 100, 'average', False)
+    Y_LSTAR_50 = lstar_to_y(50.0, util.xy_to_xyz(WHITE))
+    ENV = Environment(
+        'ucs',
+        WHITE,
+        200 / math.pi * Y_LSTAR_50,
+        Y_LSTAR_50 * 100,
+        'average',
+        False
+    )
 
     def normalize(self, coords: Vector) -> Vector:
         """Normalize the color ensuring no unexpected NaN and achromatic hues are NaN."""

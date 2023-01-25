@@ -4,7 +4,10 @@ from coloraide.spaces import Cylindrical
 from coloraide import algebra as alg
 import pytest
 
-SPACES = Color.CS_MAP.keys()
+SPACES = {k: 5 for k in Color.CS_MAP.keys()}
+# Drop precision requirement for HCT
+# Since we are approximating back to sRGB, there is only so close we can get.
+SPACES['hct'] = 3
 
 
 class TestRoundTrip:
@@ -49,22 +52,23 @@ class TestRoundTrip:
         """Cycle through all the other colors and convert to them and back and check the results."""
 
         c1 = Color(color).convert(space)
-        for space in SPACES:
+        for space, p in SPACES.items():
             # Print the color space to easily identify which color space broke.
             c2 = c1.convert(space)
             c2.convert(c1.space(), in_place=True)
             # Catch cases where we are really close to 360 which should wrap to 0
             for c in (c1, c2):
                 if isinstance(c._space, Cylindrical):
-                    if alg.round_half_up(alg.no_nan(c['hue']), c.PRECISION) == 360:
+                    if alg.round_half_up(alg.no_nan(c['hue']), p) == 360:
                         c['hue'] = 0
             # Run rounded string back through parsing in case we hit something like a hue that needs normalization.
-            str1 = Color(c1.to_string(color=True, fit=False)).to_string(color=True, fit=False)
-            str2 = Color(c2.to_string(color=True, fit=False)).to_string(color=True, fit=False)
+            str1 = Color(c1.to_string(color=True, fit=False)).to_string(color=True, fit=False, precision=p)
+            str2 = Color(c2.to_string(color=True, fit=False)).to_string(color=True, fit=False, precision=p)
             # Print failing results for debug purposes
-            if str1 != str2 and not self.exception('{}:{}'.format(c1.space(), space), str2):
+            if str1 != str2:
                 print('----- Convert: {} <=> {} -----'.format(c1.space(), space))
-                print('Original: ', color.to_string(color=True, fit=False))
+                print('Precision: ', p)
+                print('Original: ', color.to_string(color=True, fit=False, precision=p))
                 print(c1.space() + ': ', str1, c1[:])
                 print(space + ': ', str2, c2[:])
                 assert str1 == str2

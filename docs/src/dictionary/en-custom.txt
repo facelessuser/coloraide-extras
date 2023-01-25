@@ -54,6 +54,7 @@ accessor
 al
 barycentric
 chroma
+chroma's
 chromaticity
 colorimetrically
 config
