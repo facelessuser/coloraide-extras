@@ -119,7 +119,8 @@ class Environment:
         initialize anything that we can ahead of time to speed up the process.
         """
 
-        xyz_w = alg.multiply(util.xy_to_xyz(ref_white), 100, dims=alg.D1_SC)
+        self.ref_white = util.xy_to_xyz(ref_white)
+        xyz_w = alg.multiply(self.ref_white, 100, dims=alg.D1_SC)
 
         # The average luminance of the environment in `cd/m^2cd/m` (a.k.a. nits)
         la = adapting_luminance

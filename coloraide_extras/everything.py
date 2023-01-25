@@ -5,6 +5,7 @@ from coloraide import stop, hint, NaN
 from .spaces.ucs import UCS
 from .spaces.uvw import UVW
 from .spaces.cam16_ucs import CAM16UCS, CAM16SCD, CAM16LCD
+from .spaces.hct import HCT
 from .distance.delta_e_cam16 import DECAM16
 from .contrast.contrast_weber import ContrastWeber
 from .contrast.contrast_michelson import ContrastMichelson
@@ -23,6 +24,7 @@ ColorAll.register(
     [
         UCS(),
         UVW(),
+        HCT(),
         CAM16UCS(),
         CAM16SCD(),
         CAM16LCD(),

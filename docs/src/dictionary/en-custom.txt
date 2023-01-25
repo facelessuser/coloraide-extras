@@ -15,11 +15,13 @@ Ebner
 Estevez
 Fairchild
 Glasser
+HCT
 HSI
 HSL
 HSV
 IPT
 IgPgTg
+LCh
 LMS
 Ladd
 MERCHANTABILITY
@@ -27,11 +29,13 @@ MHPE
 MacAdam
 MkDocs
 NONINFRINGEMENT
+NaN
 Pinney
 PyPI
 RGB
 Rlab
 SCD
+SDR
 Twemoji
 UCS
 UVW
@@ -52,6 +56,7 @@ config
 differencing
 et
 illuminant
+ish
 luminance
 luminances
 oRGB
