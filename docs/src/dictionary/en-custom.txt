@@ -4,6 +4,8 @@ Berns
 CIE
 CIECAM
 CIELAB
+CIELAB
+CIELAB's
 CIEXYZ
 CMY
 CMYK
@@ -24,6 +26,8 @@ IgPgTg
 LCh
 LMS
 Ladd
+Lstar
+Lstar's
 MERCHANTABILITY
 MHPE
 MacAdam
