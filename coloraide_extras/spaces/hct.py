@@ -107,8 +107,9 @@ def detect_achromatic(c: float, t: float) -> bool:
     elif t >= 8:
         c2 = POLY_COEF[0] * t ** 3 + POLY_COEF[1] * t ** 2 + POLY_COEF[2] * t + POLY_COEF[3]
     elif t >= 2:
-        c2 = max(0.0, LOG_COEF1[0] * math.log(t) + LOG_COEF1[1])
+        c2 = LOG_COEF1[0] * math.log(t) + LOG_COEF1[1]
     else:
+        # Very small tone may produce a small negative value, ensure we don't return such a value.
         c2 = max(0.0, LOG_COEF2[0] * math.log(t) + LOG_COEF2[1])
 
     return c < c2 or abs(c - c2) < 0.08
