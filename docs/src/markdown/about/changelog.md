@@ -3,6 +3,7 @@
 ## 1.2
 
 - **NEW**: Add HCT color space.
+- **NEW**: Add Lstar contrast (contrast based on lightness difference in the Lab color space).
 
 ## 1.1
 
