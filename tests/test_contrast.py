@@ -5,7 +5,7 @@ from . import util
 
 
 class TestContrastWeber(util.ColorAsserts, unittest.TestCase):
-    """Test Weber contrast ration specifics."""
+    """Test Weber contrast ratio specifics."""
 
     def test_contrast_same(self):
         """Test contrast of to same colors."""
@@ -32,7 +32,7 @@ class TestContrastWeber(util.ColorAsserts, unittest.TestCase):
 
 
 class TestContrastMichelson(util.ColorAsserts, unittest.TestCase):
-    """Test Michelson contrast ration specifics."""
+    """Test Michelson contrast ratio specifics."""
 
     def test_contrast_same(self):
         """Test contrast of two same colors."""
@@ -55,4 +55,26 @@ class TestContrastMichelson(util.ColorAsserts, unittest.TestCase):
         self.assertEqual(
             Color('white').contrast('blue', method='michelson'),
             Color('blue').contrast('white', method='michelson')
+        )
+
+
+class TestContrastLstar(util.ColorAsserts, unittest.TestCase):
+    """Test L* contrast difference."""
+
+    def test_contrast_same(self):
+        """Test contrast of to same colors."""
+
+        self.assertEqual(Color('blue').contrast('blue', method='lstar'), 0)
+
+    def test_contrast_bigger(self):
+        """Test greater contrast."""
+
+        self.assertCompare(Color('orange').contrast('blue', method='lstar'), 42.63303)
+
+    def test_symmetry(self):
+        """Test symmetry."""
+
+        self.assertEqual(
+            Color('orange').contrast('blue', method='lstar'),
+            Color('blue').contrast('orange', method='lstar')
         )

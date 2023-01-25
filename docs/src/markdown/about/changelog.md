@@ -1,6 +1,10 @@
 # Changelog
 
-## 1.1.0
+## 1.2
+
+- **NEW**: Add HCT color space.
+
+## 1.1
 
 - **NEW**: Require stable ColorAide 1.5.
 - **NEW**: Formally support Python 3.11.

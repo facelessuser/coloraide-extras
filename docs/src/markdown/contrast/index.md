@@ -9,3 +9,4 @@ Methods                       | Symmetrical         | Description
 ----------------------------- | ------------------  | -----------
 [`weber`](./weber.md)         | :octicons-check-16: | Contrast that uses the measure also referred to as Weber fraction.
 [`michelson`](./michelson.md) | :octicons-check-16: | Peak-to-peak contrast.
+[`lstar`](./lstar.md)         | :octicons-check-16: | Contrast measurement determined by lightness difference in the L\* component in CIELAB.
