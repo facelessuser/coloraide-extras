@@ -76,15 +76,15 @@ def run(rgb, res):
         print('=== Threshold ===')
         print(diff)
 
-    # Upper T segment - linear-ish (lower lightness section and associated chroma)
+    # Upper T segment - linear-ish
     tu = []
     cu = []
 
-    # Mid T segment
+    # Mid T segment - log-ish
     tm = []
     cm = []
 
-    # Big T segment - log-ish (upper lightness section and associated chroma)
+    # Big T segment - log-ish
     tl = []
     cl = []
 
