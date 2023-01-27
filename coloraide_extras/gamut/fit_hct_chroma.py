@@ -37,7 +37,9 @@ class HCTChroma(Fit):
         if lightness >= self.MAX_LIGHTNESS:
             clip_channels(color.update('srgb', [1.0, 1.0, 1.0], mapcolor[-1]))
             return
-        elif lightness <= self.MIN_LIGHTNESS:
+        elif lightness <= self.MIN_LIGHTNESS:  # pragma: no cover
+            # We may never actually hit this due to the way black is cleaned up by HCT,
+            # but we'll leave this in just in case something changes and we need this check.
             clip_channels(color.update('srgb', [0.0, 0.0, 0.0], mapcolor[-1]))
             return
 
