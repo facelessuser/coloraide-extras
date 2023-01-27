@@ -6,6 +6,7 @@ CIECAM
 CIELAB
 CIELAB
 CIELAB's
+CIELCh
 CIEXYZ
 CMY
 CMYK
@@ -18,11 +19,13 @@ Estevez
 Fairchild
 Glasser
 HCT
+HDR
 HSI
 HSL
 HSV
 IPT
 IgPgTg
+JND
 LCh
 LMS
 Ladd

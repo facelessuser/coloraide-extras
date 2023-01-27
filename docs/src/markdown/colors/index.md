@@ -12,14 +12,17 @@ flowchart TB
     cam16-ucs --- xyz-d65
     ucs --- xyz-d65
     uvw --- xyz-d65
+    hct --- xyz-d65
 
     xyz-d65(XYZ D65)
     cam16-ucs(CAM16 UCS)
+    hct(HCT)
     ucs(CIE 1960 UCS)
     uvw(CIE 1964 UVW)
 
     click xyz-d65 "https://facelessuser.github.io/coloraide/colors/xyz_d65/" _blank
     click cam16-ucs "./cam16_ucs/" _self
+    click hct "./hct/" _self
     click ucs "./ucs/" _self
     click uvw "./uvw" _self
 ```

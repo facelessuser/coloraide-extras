@@ -142,6 +142,11 @@ def hct_to_xyz(coords: Vector, env: Environment) -> Vector:
     if alg.is_nan(h):  # pragma: no cover
         h = 0
 
+    if t == 0:
+        return [0.0, 0.0, 0.0]
+    elif t == 100.0:
+        return env.ref_white[:]
+
     # Initialize J with our T, set our bisect bounds,
     # and get our target XYZ Y from T
     y = lstar_to_y(t, env.ref_white)

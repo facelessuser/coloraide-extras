@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0
+
+- **NEW**: Add `hct-chroma` gamut mapping algorithm that reduces chroma in HCT until the color is in gamut.
+- **FIX**: When converting from HCT and tone is 0 or 100, shortcut and return white or black.
+
 ## 1.2
 
 - **NEW**: Add HCT color space.

@@ -10,6 +10,7 @@ from .distance.delta_e_cam16 import DECAM16
 from .contrast.contrast_weber import ContrastWeber
 from .contrast.contrast_michelson import ContrastMichelson
 from .contrast.contrast_lstar import ContrastLstar
+from .gamut.fit_hct_chroma import HCTChroma
 
 __all__ = ("ColorAll", 'NaN', 'stop', 'hint')
 
@@ -37,7 +38,10 @@ ColorAll.register(
         # Contrast
         ContrastWeber(),
         ContrastMichelson(),
-        ContrastLstar()
+        ContrastLstar(),
+
+        # Gamut
+        HCTChroma()
     ],
     silent=True
 )

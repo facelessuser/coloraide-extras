@@ -48,6 +48,9 @@ nav:
         - Weber Contrast: contrast/weber.md
         - Michelson Contrast: contrast/michelson.md
         - Lstar: contrast/lstar.md
+      - Gamut Mapping:
+        - gamut/index.md
+        - HCT Chroma: gamut/hct_chroma.md
   - Playground: playground.md
   - About:
       - Contributing &amp; Support: about/contributing.md
@@ -133,7 +136,7 @@ extra_css:
   - assets/coloraide-extras/extra-753860a807.css
 extra_javascript:
   - https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js
-  - playground-config-bc6e1114.js
+  - playground-config-3af70972.js
   - https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js
   - assets/coloraide-extras/extra-notebook-ec2e5ee3.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
