@@ -42,7 +42,7 @@ def jmh_to_cam16(jmh: Vector) -> Vector:
     return [J, a, b]
 
 
-def xyz_d65_to_cam16_ucs_jmh(xyzd65: Vector, env: Environment):
+def xyz_d65_to_cam16_ucs_jmh(xyzd65: Vector, env: Environment) -> Vector:
     """XYZ to CAM16 UCS JMh."""
 
     cam16 = xyz_d65_to_cam16(xyzd65, env)
