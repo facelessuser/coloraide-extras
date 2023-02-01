@@ -1,6 +1,13 @@
 # Changelog
 
-## 1.3.0
+## 1.4
+
+- **NEW**: Add CAM16 UCS JMh
+- **NEW**: Allow HCT to work with HDR color spaces.
+- **NEW**: Add ∆E~HCT~ for use in `hct-chroma` gamut mapping.
+- **FIX**: Improve results of `hct-chroma` gamut mapping for better tonal pallets.
+
+## 1.3
 
 - **NEW**: Add `hct-chroma` gamut mapping algorithm that reduces chroma in HCT until the color is in gamut.
 - **FIX**: When converting from HCT and tone is 0 or 100, shortcut and return white or black.

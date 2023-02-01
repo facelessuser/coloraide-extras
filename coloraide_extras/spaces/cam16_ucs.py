@@ -1,4 +1,10 @@
-"""CAM16 class."""
+"""
+CAM16 class.
+
+https://observablehq.com/@jrus/cam16
+https://arxiv.org/abs/1802.06067
+https://doi.org/10.1002/col.22131
+"""
 from __future__ import annotations
 import math
 import bisect
@@ -297,10 +303,10 @@ def xyz_d65_to_cam16_ucs(xyzd65: Vector, env: Environment) -> Vector:
     cam16 = xyz_d65_to_cam16(xyzd65, env)
     J, M, h = cam16[0], cam16[5], cam16[2]
 
-    h = math.radians(h)
+    hrad = math.radians(h)
     M = math.log(1 + env.c2 * M) / env.c2
-    a = M * math.cos(h)
-    b = M * math.sin(h)
+    a = M * math.cos(hrad)
+    b = M * math.sin(hrad)
 
     return [
         (1 + 100 * env.c1) * J / (1 + env.c1 * J),

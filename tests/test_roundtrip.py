@@ -37,17 +37,6 @@ class TestRoundTrip:
         Color('black')
     ]
 
-    EXCEPTIONS = {
-        'a98-rgb:hct': True  # For some reason we just can't get precision of round trip up to 5 places.
-    }
-
-    def exception(self, entry, result):
-        """Test if there is an exception."""
-
-        if entry in self.EXCEPTIONS:
-            return self.EXCEPTIONS[entry] is True or result in self.EXCEPTIONS[entry]
-        return False
-
     def assert_round_trip(self, color, space):
         """Cycle through all the other colors and convert to them and back and check the results."""
 

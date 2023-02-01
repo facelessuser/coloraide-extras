@@ -11,6 +11,42 @@ class TestDistance(util.ColorAssertsPyTest):
         'color1,color2,value',
         [
             ('red', 'red', 0),
+            ('red', 'orange', 42.8509),
+            ('red', 'yellow', 74.4457),
+            ('red', 'green', 83.4201),
+            ('red', 'blue', 84.6664),
+            ('red', 'indigo', 65.9625),
+            ('red', 'violet', 49.2374),
+            ('red', 'white', 63.1829),
+            ('red', 'black', 68.5789),
+            ('red', 'gray', 54.3509),
+            ('red', 'red', 0),
+            ('orange', 'red', 42.8509),
+            ('yellow', 'red', 74.4457),
+            ('green', 'red', 83.4201),
+            ('blue', 'red', 84.6664),
+            ('indigo', 'red', 65.9625),
+            ('violet', 'red', 49.2374),
+            ('white', 'red', 63.1829),
+            ('black', 'red', 68.5789),
+            ('gray', 'red', 54.3509)
+        ]
+    )
+    def test_delta_e_hct(self, color1, color2, value):
+        """Test delta e HCT."""
+
+        print('color1: ', color1)
+        print('color2: ', color2)
+        self.assertCompare(
+            Color(color1).delta_e(color2, method="hct"),
+            value,
+            rounding=4
+        )
+
+    @pytest.mark.parametrize(
+        'color1,color2,value',
+        [
+            ('red', 'red', 0),
             ('red', 'orange', 37.32),
             ('red', 'yellow', 66.5558),
             ('red', 'green', 68.7175),

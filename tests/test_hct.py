@@ -102,5 +102,5 @@ class TestNull(util.ColorAsserts, unittest.TestCase):
         for space in ('srgb', 'display-p3', 'rec2020', 'a98-rgb', 'prophoto-rgb'):
             for x in range(0, 256):
                 color = Color('color({space} {num:f} {num:f} {num:f})'.format(space=space, num=x / 255))
-                color2 = color.convert('oklch')
+                color2 = color.convert('hct')
                 self.assertTrue(color2.is_nan('hue'))

@@ -11,22 +11,19 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, os.getcwd())
 
 from coloraide_extras.everything import ColorAll as Color  # noqa: E402
-from coloraide_extras.spaces.hct import HCT, xyz_to_hct, HCTAchromaTest  # noqa: E402
+from coloraide_extras.spaces.cam16_ucs_jmh import CAM16UCSJMh, xyz_d65_to_cam16_ucs_jmh, AchromaTest  # noqa: E402
 
 
 def main():
     """Main."""
 
     parser = argparse.ArgumentParser(
-        prog='calc_hct_min_chroma.py',
-        description='Calculate minimum chroma for achromatic colors in HCT and maps current spline against real values.'
+        prog='calc_cam16_ucs_jmh_min_m.py',
+        description='Calculate min M for achromatic colors in CAM16 UCS JMh and map current spline against real values.'
     )
     # Flag arguments
     parser.add_argument(
-        '--rgb', '-r', action='store', default='srgb', help="The RGB space which the color will be sized against."
-    )
-    parser.add_argument(
-        '--res', '-s', type=int, default=50000, help="Resolution to use when calculating range, default is 10000."
+        '--res', '-s', type=int, default=50000, help="Resolution to use when calculating range, default is 50000."
     )
     args = parser.parse_args()
 
@@ -36,7 +33,7 @@ def main():
 def run(res):
     """Run."""
 
-    test = HCTAchromaTest(HCT.ENV)
+    test = AchromaTest(CAM16UCSJMh.ENV)
 
     color = Color('srgb', [0, 0, 0])
     points1 = {}
@@ -48,7 +45,7 @@ def run(res):
         div = res / 5
         color.update('srgb', [i / div, i / div, i / div])
         xyz = color.convert('xyz-d65')
-        m, l = xyz_to_hct(xyz[:-1], HCT.ENV)[1:]
+        l, m = xyz_d65_to_cam16_ucs_jmh(xyz[:-1], CAM16UCSJMh.ENV)[:2]
 
         if m > max_m:
             max_m = m
@@ -64,7 +61,7 @@ def run(res):
         points2[calc[0]] = calc[1]
 
     print('Delta: ', diff)
-    print('Max Chroma: ', max_m)
+    print('Max M: ', max_m)
 
     l1 = []
     l2 = []
@@ -81,11 +78,11 @@ def run(res):
 
     # Create axes
     ax = plt.axes(
-        xlabel='C',
-        ylabel='T'
+        xlabel='M',
+        ylabel='J'
     )
     ax.set_aspect('auto')
-    ax.set_title('HCT: Delta = {} - Max C = {}'.format(diff, max_m))
+    ax.set_title('JMh: Delta = {} - Max M = {}'.format(diff, max_m))
     figure.add_axes(ax)
 
     # Print the calculated line against the real line
