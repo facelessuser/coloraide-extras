@@ -9,16 +9,40 @@ from __future__ import annotations
 import math
 import bisect
 from coloraide.spaces import Space, LChish
-from .cam16_ucs import Environment, cam16_to_xyz_d65, xyz_d65_to_cam16
+from .cam16_ucs import Environment, xyz_d65_to_cam16
 from coloraide.spaces.srgb import lin_srgb
 from coloraide.spaces.srgb_linear import lin_srgb_to_xyz
 from coloraide.cat import WHITES
 from coloraide.channels import Channel, FLG_ANGLE
 from coloraide.types import Vector
 from coloraide import algebra as alg
+from coloraide import util
 
 
-def xyz_d65_to_cam16_ucs_jmh(xyzd65: Vector, env: Environment) -> Vector:
+def cam16_to_jmh(jab: Vector) -> Vector:
+    """CAM16 Jab to CAM16 JMh (UCS/SCD/LCD)."""
+
+    J, a, b = jab
+    M = math.sqrt(a ** 2 + b ** 2)
+    h = math.degrees(math.atan2(b, a))
+    return [J, M, util.constrain_hue(h)]
+
+
+def jmh_to_cam16(jmh: Vector) -> Vector:
+    """CAM16 JMh to CAM16 Jab (UCS/SCD/LCD)."""
+
+    J, M, h = jmh
+
+    if alg.is_nan(h): # pragma: no cover
+        h = 0
+
+    hrad = math.radians(h)
+    a = M * math.cos(hrad)
+    b = M * math.sin(hrad)
+    return [J, a, b]
+
+
+def xyz_d65_to_cam16_ucs_jmh(xyzd65: Vector, env: Environment):
     """XYZ to CAM16 UCS JMh."""
 
     cam16 = xyz_d65_to_cam16(xyzd65, env)
@@ -30,16 +54,6 @@ def xyz_d65_to_cam16_ucs_jmh(xyzd65: Vector, env: Environment) -> Vector:
         M,
         h
     ]
-
-
-def cam16_ucs_jmh_to_xyz_d65(ucs: Vector, env: Environment) -> Vector:
-    """XYZ to CAM16 UCS JMh."""
-
-    J, M, h = ucs
-    M = (math.exp(M * env.c2) - 1) / env.c2
-    J = J / (1 - env.c1 * (J - 100))
-
-    return cam16_to_xyz_d65(J=J, M=M, h=h, env=env)
 
 
 class Achromatic:
@@ -142,7 +156,7 @@ class Achromatic:
 class CAM16UCSJMh(LChish, Space):
     """CAM16 UCS class."""
 
-    BASE = "xyz-d65"
+    BASE = "cam16-ucs"
     NAME = "cam16-ucs-jmh"
     SERIALIZE = ("--cam16-ucs-jmh",)
     CHANNELS = (
@@ -186,10 +200,10 @@ class CAM16UCSJMh(LChish, Space):
         if self.ACHROMATIC.test(j, m):
             coords[2] = self.ACHROMATIC.hue
 
-        return cam16_ucs_jmh_to_xyz_d65(coords, env=self.ENV)
+        return jmh_to_cam16(coords)
 
     def from_base(self, coords: Vector) -> Vector:
         """From XYZ to CAM16."""
 
-        jmh = xyz_d65_to_cam16_ucs_jmh(coords, env=self.ENV)
+        jmh = cam16_to_jmh(coords)
         return self.normalize(jmh)
