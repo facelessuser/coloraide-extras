@@ -37,12 +37,14 @@ nav:
       - Color Spaces:
         - colors/index.md
         - CAM16 UCS: colors/cam16_ucs.md
+        - CAM16 UCS JMh: colors/cam16_ucs_jmh.md
         - HCT: colors/hct.md
         - CIE 1960 UCS: colors/ucs.md
         - CIE 1964 UVW: colors/uvw.md
       - Color Distance and Delta E:
         - distance/index.md
         - CAM16: distance/cam16.md
+        - HCT: distance/hct.md
       - Color Contrast:
         - contrast/index.md
         - Weber Contrast: contrast/weber.md
@@ -136,7 +138,7 @@ extra_css:
   - assets/coloraide-extras/extra-753860a807.css
 extra_javascript:
   - https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js
-  - playground-config-3af70972.js
+  - playground-config-cf857e5a.js
   - https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js
   - assets/coloraide-extras/extra-notebook-ec2e5ee3.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6

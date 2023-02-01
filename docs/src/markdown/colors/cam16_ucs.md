@@ -35,7 +35,7 @@ Because CIECAM16 UCS is a perceptually uniform color space, color distancing can
 the sake of color difference, two other spaces called CAM16 LCD and CAM16 SCD are also included for large scale and
 small scale color differencing. They are available as `cam16-lcd` and `cam16-scd`.
 
-[Learn more](https://en.wikipedia.org/wiki/Color_appearance_model).
+[Learn more](https://doi.org/10.1002/col.22131).
 </div>
 
 ## Channel Aliases
@@ -56,7 +56,7 @@ color(--cam16-ucs j a b / a)  // Color function
 ```
 
 The string representation of the color object and the default string output use the
-`#!css-color color(--cam16-ucs u v w / a)` form.
+`#!css-color color(--cam16-ucs j a b / a)` form.
 
 ```playground
 Color("cam16-ucs", [59.178, 40.82, 21.153], 1)

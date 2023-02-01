@@ -13,6 +13,7 @@ CMYK
 Changelog
 Chromaticity
 ColorAide
+ColorAide's
 Ctrl
 Ebner
 Estevez
@@ -25,6 +26,7 @@ HSL
 HSV
 IPT
 IgPgTg
+JMh
 JND
 LCh
 LMS

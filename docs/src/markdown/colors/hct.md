@@ -36,22 +36,6 @@ In general, CAM16 is not a cheap color space to calculate, and all the glue to h
 bit more expensive, but considering the use case that it was designed for, creating better color schemes with decent
 contrast, it has attractive benefits.
 
-!!! note "Implementation Notes"
-
-    Conversions in our library may be slightly different in some cases compared to the Material Color Utilities, where
-    Google has implemented the HCT color space. This is because we have implemented the library as _described_, we did
-    not port their implementation.
-
-    Material uses RGB matrices and white point vectors that utilize less precision than we do. That doesn't make their
-    implementation worse or better, but their results will be slightly different at times because of these differences.
-    Additionally, the Material library uses more coarse steps in things like chroma when converting back to XYZ which
-    most likely allows for faster conversions, but not as much fine resolution for great round tripping of values.
-
-    The differences, at most, will cause a channel to differ by a value of +/-1 in a range of 0 - 255. Overall, this
-    isn't visually noticeable, and makes perfect sense due to the variation of precision used for the conversion
-    matrices.
-
-
 [Learn more](https://material.io/blog/science-of-color-design).
 </div>
 

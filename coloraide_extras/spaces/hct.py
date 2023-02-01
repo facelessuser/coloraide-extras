@@ -51,20 +51,18 @@ Differences are inconsequential.
 """
 from __future__ import annotations
 from .cam16_ucs import Environment, cam16_to_xyz_d65, xyz_d65_to_cam16
+from .cam16_ucs_jmh import AchromaTest, ACHROMATIC_HUE
+from coloraide.spaces.srgb import lin_srgb
+from coloraide.spaces.srgb_linear import lin_srgb_to_xyz
 from coloraide.spaces import Space, LChish
 from coloraide.spaces.lab import EPSILON, KAPPA, KE
 from coloraide.cat import WHITES
 from coloraide.channels import Channel, FLG_ANGLE
 from coloraide import algebra as alg
 from coloraide.types import Vector, VectorLike
-from typing import cast
+from typing import Any, cast
 from coloraide import util
 import math
-
-ACHROMATIC_HUE = 209.5429359788321
-POLY_COEF = [2.152855223146154e-07, -7.728527926423952e-05, 0.028943531871995574, 0.5362688035299501]
-LOG_COEF1 = [0.1923535302908369, 0.3526144857763279]
-LOG_COEF2 = [0.09746113539113359, 0.40076619448389467]
 
 
 def y_to_lstar(y: float, white: VectorLike) -> float:
@@ -81,38 +79,6 @@ def lstar_to_y(lstar: float, white: VectorLike) -> float:
     fy = (lstar + 16) / 116
     y = fy ** 3 if lstar > KE else lstar / KAPPA
     return y * white[1]
-
-
-def detect_achromatic(c: float, t: float) -> bool:
-    """
-    Detect if chroma indicates an achromatic color.
-
-    Normally, with LCh-ish color spaces, a color becomes more achromatic as it
-    approaches zero. Many, when you get very close to zero, can safely be
-    considered achromatic. HCT (and CAM16 in general) can become achromatic as early
-    as 2.8 for chroma, which wouldn't normally be considered close to zero. This is
-    response actually increases as lightness increases. So, black it would be zero,
-    but at white, it would be ~2.8. The response is mostly linear, but more logarithmic
-    near black.
-
-    Luckily, achromatic behavior is fairly easy to predict. Analyzing the behavior,
-    we were able to graph the response. Breaking it up into three parts, and fitting
-    some curves to the data, we can predict the achromatic using the tone, within
-    somewhere around ~+/-0.078 in the tested data. We give it a buffer and use +/- 0.08
-    to accommodate any areas that are maybe less precise that we didn't explicitly test.
-    """
-
-    if t <= 0:
-        c2 = 0.0
-    elif t >= 8:
-        c2 = POLY_COEF[0] * t ** 3 + POLY_COEF[1] * t ** 2 + POLY_COEF[2] * t + POLY_COEF[3]
-    elif t >= 2:
-        c2 = LOG_COEF1[0] * math.log(t) + LOG_COEF1[1]
-    else:
-        # Very small tone may produce a small negative value, ensure we don't return such a value.
-        c2 = max(0.0, LOG_COEF2[0] * math.log(t) + LOG_COEF2[1])
-
-    return c < c2 or abs(c - c2) < 0.08
 
 
 def hct_to_xyz(coords: Vector, env: Environment) -> Vector:
@@ -133,11 +99,6 @@ def hct_to_xyz(coords: Vector, env: Environment) -> Vector:
 
     h, c, t = coords[:]
 
-    # If we are achromatic, make sure to set the hue such that the algorithm
-    # will get us back to the right achromatic color. The hue is ~209.5.
-    if detect_achromatic(c, t):
-        h = ACHROMATIC_HUE
-
     # No NaN
     if alg.is_nan(h):  # pragma: no cover
         h = 0
@@ -149,8 +110,10 @@ def hct_to_xyz(coords: Vector, env: Environment) -> Vector:
 
     # Initialize J with our T, set our bisect bounds,
     # and get our target XYZ Y from T
+    j = t
+    low = 0.0
+    high = 100.0 if t <= 100.0 else 1000.0  # SDR or HDR
     y = lstar_to_y(t, env.ref_white)
-    low, high, j = 0.0, 100.0, t
 
     # Try to find a J such that the returned y matches the returned y of the L*
     while (high - low) > threshold:
@@ -180,11 +143,60 @@ def xyz_to_hct(coords: Vector, env: Environment) -> Vector:
     t = y_to_lstar(coords[1], env.ref_white)
     c, h = cam16[1:3]
 
-    # If we are achromatic, set the hue as such.
-    if detect_achromatic(c, t):
-        h = alg.NaN
+    return [h, c, alg.clamp(t, 0.0)]
 
-    return [h, c, alg.clamp(t, 0.0, 100.0)]
+
+class HCTAchromaTest(AchromaTest):
+    """
+    Test HCT achromatic response.
+
+    This replaces are first approximation below and does just about as well. We use the spline
+    approach to consolidate approaches with CAM16 UCS JMh. For others, below is much easier to
+    implement if you don't already have access to a spline implementation.
+
+    ```
+    POLY_COEF = [2.152855223146154e-07, -7.728527926423952e-05, 0.028943531871995574, 0.5362688035299501]
+    LOG_COEF1 = [0.1923535302908369, 0.3526144857763279]
+    LOG_COEF2 = [0.09746113539113359, 0.40076619448389467]
+
+    if t <= 0:
+        c2 = 0.0
+    elif t >= 8:
+        c2 = POLY_COEF[0] * t ** 3 + POLY_COEF[1] * t ** 2 + POLY_COEF[2] * t + POLY_COEF[3]
+    elif t >= 2:
+        c2 = LOG_COEF1[0] * math.log(t) + LOG_COEF1[1]
+    else:
+        # Very small tone may produce a small negative value, ensure we don't return such a value.
+        c2 = max(0.0, LOG_COEF2[0] * math.log(t) + LOG_COEF2[1])
+    ```
+    """
+
+    CONVERTER = staticmethod(xyz_to_hct)
+    THRESHOLD = 0.085
+    MAX_COLORFULNESS = 7.5
+
+    def __init__(self, env: Environment, method: str = 'natural') -> None:
+        """Initialize."""
+
+        # Create a spline that maps the achromatic range for the SDR range
+        points = []  # type: list[list[float]]
+        self.domain = []  # type: list[float]
+        # We need higher resolution in this first bend.
+        for p in range(51):
+            m, j = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / 200.0] * 3)), env)[1:]
+            self.domain.append(j)
+            points.append([j, m])
+        # This is fairly straight, so about 10 points should do.
+        for p in range(50, 101, 5):
+            m, j = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / 100.0] * 3)), env)[1:]
+            self.domain.append(j)
+            points.append([j, m])
+        for p in range(101, 502, 25):
+            m, j = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / 75.0] * 3)), env)[1:]
+            self.domain.append(j)
+            points.append([j, m])
+
+        self.spline = alg.interpolate(points, method=method)
 
 
 class HCT(LChish, Space):
@@ -196,7 +208,7 @@ class HCT(LChish, Space):
     CHANNELS = (
         Channel("h", 0.0, 360.0, flags=FLG_ANGLE),
         Channel("c", 0.0, 145.0, limit=(0.0, None)),
-        Channel("t", 0.0, 100.0, limit=(0.0, 100.0))
+        Channel("t", 0.0, 100.0, limit=(0.0, None))
     )
     CHANNEL_ALIASES = {
         "lightness": "t",
@@ -215,12 +227,20 @@ class HCT(LChish, Space):
         False
     )
 
+    def __init__(self, **kwargs: Any) -> None:
+        """Initialize."""
+
+        super().__init__(**kwargs)
+
+        # Calculate the achromatic line with the given environment
+        self.achromatic = HCTAchromaTest(self.ENV)
+
     def normalize(self, coords: Vector) -> Vector:
         """Normalize the color ensuring no unexpected NaN and achromatic hues are NaN."""
 
         coords = alg.no_nans(coords)
-        c, t = coords[1:-1]
-        if detect_achromatic(c, t):
+        m, j = coords[1:3]
+        if self.achromatic.test(j, m):
             coords[0] = alg.NaN
         return coords
 
@@ -230,14 +250,17 @@ class HCT(LChish, Space):
         channels = cast(Space, self).channels
         return channels[2], channels[1], channels[0]
 
-    @classmethod
-    def to_base(cls, coords: Vector) -> Vector:
+    def to_base(self, coords: Vector) -> Vector:
         """To XYZ from HCT."""
 
-        return hct_to_xyz(coords, cls.ENV)
+        m, j = coords[1:3]
+        if self.achromatic.test(j, m):
+            coords[0] = ACHROMATIC_HUE
 
-    @classmethod
-    def from_base(cls, coords: Vector) -> Vector:
+        return hct_to_xyz(coords, self.ENV)
+
+    def from_base(self, coords: Vector) -> Vector:
         """From XYZ to HCT."""
 
-        return xyz_to_hct(coords, cls.ENV)
+        hct = xyz_to_hct(coords, self.ENV)
+        return self.normalize(hct)
