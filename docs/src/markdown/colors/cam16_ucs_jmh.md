@@ -9,11 +9,14 @@
 
     **Coordinates:**
 
-    Name | Range
+    Name | Range~\*~
     ---- | -----
     `j`  | [0, 100]
     `m`  | [0, 55]
     `h`  | [0, 360]
+
+    ^\*^ Space is not bound to the range and is only used as a reference to define percentage inputs/outputs in
+    relation to the Display P3 color space.
 
 <figure markdown>
 

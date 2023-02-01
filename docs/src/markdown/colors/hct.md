@@ -15,8 +15,8 @@
     `c`  | [0, 145]
     `t`  | [0, 100]
 
-    ^\*^ Space is necessarily bound to the range and is only used as a reference to define percentage inputs/outputs in
-    relation to the Display P3 color space. Lightness is bound to the SDR range.
+    ^\*^ Space is not bound to the range and is only used as a reference to define percentage inputs/outputs in
+    relation to the Display P3 color space.
 
 <figure markdown>
 
