@@ -125,7 +125,7 @@ class CAM16UCSJMh(LChish, Space):
     SERIALIZE = ("--cam16-ucs-jmh",)
     CHANNELS = (
         Channel("j", 0.0, 100.0),
-        Channel("m", 0, 100.0, limit=(0.0, None)),
+        Channel("m", 0, 55.0, limit=(0.0, None)),
         Channel("h", 0.0, 360.0, flags=FLG_ANGLE)
     )
     CHANNEL_ALIASES = {

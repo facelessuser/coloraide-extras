@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1
+
+- **FIX**: Fix ranges on CAM16 UCS JMh.
+
 ## 1.4
 
 - **NEW**: Add CAM16 UCS JMh
