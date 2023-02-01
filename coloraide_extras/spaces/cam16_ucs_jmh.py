@@ -33,7 +33,7 @@ def jmh_to_cam16(jmh: Vector) -> Vector:
 
     J, M, h = jmh
 
-    if alg.is_nan(h): # pragma: no cover
+    if alg.is_nan(h):  # pragma: no cover
         h = 0
 
     hrad = math.radians(h)
