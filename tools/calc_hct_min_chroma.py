@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, os.getcwd())
 
 from coloraide_extras.everything import ColorAll as Color  # noqa: E402
-from coloraide_extras.spaces.hct import HCT, xyz_to_hct, HCTAchromaTest  # noqa: E402
+from coloraide_extras.spaces.hct import HCT, xyz_to_hct, AchromaticHCT  # noqa: E402
 
 
 def main():
@@ -23,20 +23,38 @@ def main():
     )
     # Flag arguments
     parser.add_argument(
-        '--rgb', '-r', action='store', default='srgb', help="The RGB space which the color will be sized against."
+        '--res', '-r', type=int, default=50000, help="Resolution to use when calculating range, default is 10000."
     )
     parser.add_argument(
-        '--res', '-s', type=int, default=50000, help="Resolution to use when calculating range, default is 10000."
+        '--spline', '-S', type=str, default='catrom', help="Spline to use for approximation of achromatic line"
+    )
+    parser.add_argument(
+        '--low', '-L', type=str, default='0:51:1:200.0',
+        help="Tuning for low range: start:end:step:scale (int:int:int:float)"
+    )
+    parser.add_argument(
+        '--mid', '-M', type=str, default='50:101:5:100.0',
+        help="Tuning for mid range: start:end:step:scale (int:int:int:float)"
+    )
+    parser.add_argument(
+        '--high', '-H', type=str, default='101:502:25:75.0',
+        help="Tuning for high range: start:end:step:scale (int:int:int:float)"
     )
     args = parser.parse_args()
 
-    return run(args.res)
+    return run(args.spline, args.low, args.mid, args.high, args.res)
 
 
-def run(res):
+def run(spline, low, mid, high, res):
     """Run."""
 
-    test = HCTAchromaTest(HCT.ENV)
+    tuning = {
+        "low": [int(i) if e < 3 else float(i) for e, i in enumerate(low.split(':'))],
+        "mid": [int(i) if e < 3 else float(i) for e, i in enumerate(mid.split(':'))],
+        "high": [int(i) if e < 3 else float(i) for e, i in enumerate(high.split(':'))]
+    }
+    env = HCT.ENV
+    test = AchromaticHCT(tuning, 0.06, env, spline)
 
     color = Color('srgb', [0, 0, 0])
     points1 = {}

@@ -15,10 +15,10 @@ from coloraide.spaces.srgb_linear import lin_srgb_to_xyz
 from coloraide.cat import WHITES
 from coloraide.channels import Channel, FLG_ANGLE
 from coloraide.types import Vector
-from typing import Any
 from coloraide import algebra as alg
 
-ACHROMATIC_HUE = 209.5429359788321
+# Average achromatic hue
+ACHROMATIC_HUE = 209.52412994958826
 
 
 def xyz_d65_to_cam16_ucs_jmh(xyzd65: Vector, env: Environment) -> Vector:
@@ -45,7 +45,7 @@ def cam16_ucs_jmh_to_xyz_d65(ucs: Vector, env: Environment) -> Vector:
     return cam16_to_xyz_d65(J=J, M=M, h=h, env=env)
 
 
-class AchromaTest:
+class Achromatic:
     """
     Test if color is achromatic.
 
@@ -55,30 +55,53 @@ class AchromaTest:
     We use a spline mainly to quickly fit the line in a way we do not have to analyze and tune.
     """
 
-    THRESHOLD = 0.06
-    MAX_COLORFULNESS = 6.0
     CONVERTER = staticmethod(xyz_d65_to_cam16_ucs_jmh)
+    L_IDX = 0
+    C_IDX = 1
 
-    def __init__(self, env: Environment, method: str = 'monotone') -> None:
+    def __init__(
+        self,
+        tuning: dict[str, tuple[int, int, int, float]],
+        threshold: float,
+        env: Environment,
+        spline: str
+    ) -> None:
         """Initialize."""
+
+        self.threshold = threshold
 
         # Create a spline that maps the achromatic range for the SDR range
         points = []  # type: list[list[float]]
         self.domain = []  # type: list[float]
-        for p in range(25):
-            j, m = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / 100.0] * 3)), env)[:2]
-            self.domain.append(j)
-            points.append([j, m])
-        for p in range(25, 101, 5):
-            j, m = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / 55.0] * 3)), env)[:2]
-            self.domain.append(j)
-            points.append([j, m])
-        for p in range(101, 252, 25):
-            j, m = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / 45.0] * 3)), env)[:2]
-            self.domain.append(j)
-            points.append([j, m])
+        self.max_colorfulness = 0.0
+        self.iter_achromatic_response(env, points, *tuning['low'])
+        self.iter_achromatic_response(env, points, *tuning['mid'])
+        self.iter_achromatic_response(env, points, *tuning['high'])
+        self.max_colorfulness = round(self.max_colorfulness, 3) + 1
+        self.spline = alg.interpolate(points, method=spline)
 
-        self.spline = alg.interpolate(points, method=method)
+    def iter_achromatic_response(
+        self,
+        env: Environment,
+        points: list[list[float]],
+        start: int,
+        end: int,
+        step: int,
+        scale: float
+    ) -> None:
+        """
+        Iterate the achromatic response of the space.
+
+        Save points of lightness vs colorfulness. Also, track the domain.
+        """
+
+        for p in range(start, end, step):
+            c = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / scale] * 3)), env)
+            j, m = c[self.L_IDX], c[self.C_IDX]
+            if m > self.max_colorfulness:
+                self.max_colorfulness = m
+            self.domain.append(j)
+            points.append([j, m])
 
     def scale(self, point: float) -> float:
         """Scale the lightness to match the range."""
@@ -104,7 +127,7 @@ class AchromaTest:
 
         # If colorfulness is past this limit, we'd have to have a lightness
         # so high, that our test has already broken down.
-        if m > self.MAX_COLORFULNESS:
+        if m > self.max_colorfulness:
             return False
 
         # If we are higher than 1, we are extrapolating;
@@ -114,7 +137,7 @@ class AchromaTest:
             m2 = 0.0
         else:
             m2 = self.spline(point)[1]
-        return m < m2 or abs(m2 - m) < self.THRESHOLD
+        return m < m2 or abs(m2 - m) < self.threshold
 
 
 class CAM16UCSJMh(LChish, Space):
@@ -136,20 +159,24 @@ class CAM16UCSJMh(LChish, Space):
     WHITE = WHITES['2deg']['D65']
     ENV = Environment('ucs', WHITE, 64 / math.pi * 0.2, 20, 'average', False)
 
-    def __init__(self, **kwargs: Any) -> None:
-        """Initialize."""
-
-        super().__init__(**kwargs)
-
-        # Calculate the achromatic line with the given environment
-        self.achromatic = AchromaTest(self.ENV)
+    # Achromatic detection
+    ACHROMATIC = Achromatic(
+        {
+            'low': (0, 25, 1, 100.0),
+            'mid': (25, 101, 25, 55.0),
+            'high': (101, 252, 25, 45.0)
+        },
+        0.06,
+        ENV,
+        'catrom'
+    )
 
     def normalize(self, coords: Vector) -> Vector:
         """Normalize the color ensuring no unexpected NaN and achromatic hues are NaN."""
 
         coords = alg.no_nans(coords)
         j, m = coords[:2]
-        if self.achromatic.test(j, m):
+        if self.ACHROMATIC.test(j, m):
             coords[2] = alg.NaN
         return coords
 
@@ -157,7 +184,7 @@ class CAM16UCSJMh(LChish, Space):
         """To XYZ from CAM16."""
 
         j, m = coords[:2]
-        if self.achromatic.test(j, m):
+        if self.ACHROMATIC.test(j, m):
             coords[2] = ACHROMATIC_HUE
 
         return cam16_ucs_jmh_to_xyz_d65(coords, env=self.ENV)

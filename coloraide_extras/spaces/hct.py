@@ -51,16 +51,14 @@ Differences are inconsequential.
 """
 from __future__ import annotations
 from .cam16_ucs import Environment, cam16_to_xyz_d65, xyz_d65_to_cam16
-from .cam16_ucs_jmh import AchromaTest, ACHROMATIC_HUE
-from coloraide.spaces.srgb import lin_srgb
-from coloraide.spaces.srgb_linear import lin_srgb_to_xyz
+from .cam16_ucs_jmh import Achromatic, ACHROMATIC_HUE
 from coloraide.spaces import Space, LChish
 from coloraide.spaces.lab import EPSILON, KAPPA, KE
 from coloraide.cat import WHITES
 from coloraide.channels import Channel, FLG_ANGLE
 from coloraide import algebra as alg
 from coloraide.types import Vector, VectorLike
-from typing import Any, cast
+from typing import cast
 from coloraide import util
 import math
 
@@ -146,13 +144,14 @@ def xyz_to_hct(coords: Vector, env: Environment) -> Vector:
     return [h, c, alg.clamp(t, 0.0)]
 
 
-class HCTAchromaTest(AchromaTest):
+class AchromaticHCT(Achromatic):
     """
     Test HCT achromatic response.
 
     This replaces are first approximation below and does just about as well. We use the spline
     approach to consolidate approaches with CAM16 UCS JMh. For others, below is much easier to
-    implement if you don't already have access to a spline implementation.
+    implement if you don't already have access to a spline implementation and are okay with just
+    an SDR range.
 
     ```
     POLY_COEF = [2.152855223146154e-07, -7.728527926423952e-05, 0.028943531871995574, 0.5362688035299501]
@@ -172,31 +171,9 @@ class HCTAchromaTest(AchromaTest):
     """
 
     CONVERTER = staticmethod(xyz_to_hct)
-    THRESHOLD = 0.085
-    MAX_COLORFULNESS = 7.5
-
-    def __init__(self, env: Environment, method: str = 'natural') -> None:
-        """Initialize."""
-
-        # Create a spline that maps the achromatic range for the SDR range
-        points = []  # type: list[list[float]]
-        self.domain = []  # type: list[float]
-        # We need higher resolution in this first bend.
-        for p in range(51):
-            m, j = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / 200.0] * 3)), env)[1:]
-            self.domain.append(j)
-            points.append([j, m])
-        # This is fairly straight, so about 10 points should do.
-        for p in range(50, 101, 5):
-            m, j = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / 100.0] * 3)), env)[1:]
-            self.domain.append(j)
-            points.append([j, m])
-        for p in range(101, 502, 25):
-            m, j = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([p / 75.0] * 3)), env)[1:]
-            self.domain.append(j)
-            points.append([j, m])
-
-        self.spline = alg.interpolate(points, method=method)
+    # Lightness and chroma (equivalent) index.
+    L_IDX = 2
+    C_IDX = 1
 
 
 class HCT(LChish, Space):
@@ -217,30 +194,33 @@ class HCT(LChish, Space):
         "hue": "h"
     }
     WHITE = WHITES['2deg']['D65']
-    Y_LSTAR_50 = lstar_to_y(50.0, util.xy_to_xyz(WHITE))
     ENV = Environment(
         'ucs',
         WHITE,
-        200 / math.pi * Y_LSTAR_50,
-        Y_LSTAR_50 * 100,
+        200 / math.pi * lstar_to_y(50.0, util.xy_to_xyz(WHITE)),
+        lstar_to_y(50.0, util.xy_to_xyz(WHITE)) * 100,
         'average',
         False
     )
 
-    def __init__(self, **kwargs: Any) -> None:
-        """Initialize."""
-
-        super().__init__(**kwargs)
-
-        # Calculate the achromatic line with the given environment
-        self.achromatic = HCTAchromaTest(self.ENV)
+    # Achromatic detection
+    ACHROMATIC = AchromaticHCT(
+        {
+            'low': (0, 51, 1, 200.0),
+            'mid': (50, 101, 5, 100.0),
+            'high': (101, 502, 25, 75.0)
+        },
+        0.085,
+        ENV,
+        'natural'
+    )
 
     def normalize(self, coords: Vector) -> Vector:
         """Normalize the color ensuring no unexpected NaN and achromatic hues are NaN."""
 
         coords = alg.no_nans(coords)
         m, j = coords[1:3]
-        if self.achromatic.test(j, m):
+        if self.ACHROMATIC.test(j, m):
             coords[0] = alg.NaN
         return coords
 
@@ -254,7 +234,7 @@ class HCT(LChish, Space):
         """To XYZ from HCT."""
 
         m, j = coords[1:3]
-        if self.achromatic.test(j, m):
+        if self.ACHROMATIC.test(j, m):
             coords[0] = ACHROMATIC_HUE
 
         return hct_to_xyz(coords, self.ENV)
