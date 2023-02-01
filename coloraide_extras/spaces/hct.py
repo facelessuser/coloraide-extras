@@ -51,7 +51,7 @@ Differences are inconsequential.
 """
 from __future__ import annotations
 from .cam16_ucs import Environment, cam16_to_xyz_d65, xyz_d65_to_cam16
-from .cam16_ucs_jmh import Achromatic, ACHROMATIC_HUE
+from .cam16_ucs_jmh import Achromatic
 from coloraide.spaces import Space, LChish
 from coloraide.spaces.lab import EPSILON, KAPPA, KE
 from coloraide.cat import WHITES
@@ -174,6 +174,7 @@ class AchromaticHCT(Achromatic):
     # Lightness and chroma (equivalent) index.
     L_IDX = 2
     C_IDX = 1
+    H_IDZ = 0
 
 
 class HCT(LChish, Space):
@@ -235,7 +236,7 @@ class HCT(LChish, Space):
 
         m, j = coords[1:3]
         if self.ACHROMATIC.test(j, m):
-            coords[0] = ACHROMATIC_HUE
+            coords[0] = self.ACHROMATIC.hue
 
         return hct_to_xyz(coords, self.ENV)
 

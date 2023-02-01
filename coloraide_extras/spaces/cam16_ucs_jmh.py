@@ -17,9 +17,6 @@ from coloraide.channels import Channel, FLG_ANGLE
 from coloraide.types import Vector
 from coloraide import algebra as alg
 
-# Average achromatic hue
-ACHROMATIC_HUE = 209.52412994958826
-
 
 def xyz_d65_to_cam16_ucs_jmh(xyzd65: Vector, env: Environment) -> Vector:
     """XYZ to CAM16 UCS JMh."""
@@ -58,6 +55,7 @@ class Achromatic:
     CONVERTER = staticmethod(xyz_d65_to_cam16_ucs_jmh)
     L_IDX = 0
     C_IDX = 1
+    H_IDX = 2
 
     def __init__(
         self,
@@ -77,6 +75,7 @@ class Achromatic:
         self.iter_achromatic_response(env, points, *tuning['low'])
         self.iter_achromatic_response(env, points, *tuning['mid'])
         self.iter_achromatic_response(env, points, *tuning['high'])
+        self.hue = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([1] * 3)), env)[self.H_IDX]
         self.max_colorfulness = round(self.max_colorfulness, 3) + 1
         self.spline = alg.interpolate(points, method=spline)
 
@@ -185,7 +184,7 @@ class CAM16UCSJMh(LChish, Space):
 
         j, m = coords[:2]
         if self.ACHROMATIC.test(j, m):
-            coords[2] = ACHROMATIC_HUE
+            coords[2] = self.ACHROMATIC.hue
 
         return cam16_ucs_jmh_to_xyz_d65(coords, env=self.ENV)
 
