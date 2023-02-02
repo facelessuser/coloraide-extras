@@ -125,6 +125,7 @@ class Environment:
         initialize anything that we can ahead of time to speed up the process.
         """
 
+        self.discounting = discounting
         self.ref_white = util.xy_to_xyz(ref_white)
         xyz_w = alg.multiply(self.ref_white, 100, dims=alg.D1_SC)
 

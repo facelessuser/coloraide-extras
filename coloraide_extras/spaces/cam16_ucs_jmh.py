@@ -85,13 +85,15 @@ class Achromatic:
         # Create a spline that maps the achromatic range for the SDR range
         points = []  # type: list[list[float]]
         self.domain = []  # type: list[float]
-        self.max_colorfulness = 0.0
-        self.iter_achromatic_response(env, points, *tuning['low'])
-        self.iter_achromatic_response(env, points, *tuning['mid'])
-        self.iter_achromatic_response(env, points, *tuning['high'])
+        self.max_colorfulness = 1e-10
+        self.spline = None
+        if not env.discounting:
+            self.iter_achromatic_response(env, points, *tuning['low'])
+            self.iter_achromatic_response(env, points, *tuning['mid'])
+            self.iter_achromatic_response(env, points, *tuning['high'])
+            self.max_colorfulness = round(self.max_colorfulness, 3) + 1
+            self.spline = alg.interpolate(points, method=spline)
         self.hue = self.CONVERTER(lin_srgb_to_xyz(lin_srgb([1] * 3)), env)[self.H_IDX]
-        self.max_colorfulness = round(self.max_colorfulness, 3) + 1
-        self.spline = alg.interpolate(points, method=spline)
 
     def iter_achromatic_response(
         self,
@@ -142,6 +144,10 @@ class Achromatic:
         # so high, that our test has already broken down.
         if m > self.max_colorfulness:
             return False
+
+        # This is for when "discounting" as colorfulness should be very near zero
+        if self.spline is None:  # pragma: no cover
+            return True
 
         # If we are higher than 1, we are extrapolating;
         # otherwise, use the spline.
