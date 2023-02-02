@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.2
+
+- **FIX**: Rework some internals to make tuning achromatic response easier.
+- **FIX**: Simplify ∆E~HCT~ to just simple Euclidean logic against the components.
+- **FIX**: Fix slowness of converting between CAM16 UCS Jab and JMh. JMh will convert from the Jab form instead of XYZ
+  directly to make translation between the Jab form and the JMh form much quicker.
+- **FIX**: Calculation of achromatic response in CAM16 UCS JMh should take into account whether discounting is enabled.
+
 ## 1.4.1
 
 - **FIX**: Fix ranges on CAM16 UCS JMh.

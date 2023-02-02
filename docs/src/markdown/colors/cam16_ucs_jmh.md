@@ -72,3 +72,32 @@ Color.register(CAM16UCSJMh())
 <style>
 .info-container {display: inline-block;}
 </style>
+
+
+## Subclassing
+
+As described in [CAM16 UCS](./cam16_ucs.md), CAM16's transformation of colors is influenced greatly by the viewing
+conditions. As CAM16 UCS JMh has its transformation based off of CAM16 UCS, a subclassed `CAM16UCSJMh` should be
+associated with a subclassed `CAM16UCS` class using the same viewing conditions. The alternative is to ensure
+`CAM16UCSJMh` is translating from XYZ directly instead of from CAM16 UCS Jab.
+
+Additionally, a new `Achromatic` class should be set to the subclassed `CAM16UCSJMh` class. The `Achromatic` object is
+responsible for determining if a given JMh color is achromatic or not. When "discounting" is enabled, colorfulness (M)
+will be zero or near zero when a color is achromatic, but when disabled, an achromatic color may have a noticeably
+higher M depending on how bright the color is.
+
+The `Achromatic` class takes the viewing conditions color space object and can determine when a color is achromatic.
+When "discounting" is enabled, it uses a simple threshold, but when "discounting" is not enabled, it maps a spline along
+this achromatic response so that ColorAide can properly determine when a color is achromatic, and in turn, interpolate
+them in a logical way.
+
+If you are just changing between UCS, SCD, and LCD or even the surround from average to dim or dark, the same parameters
+that ColorAide uses out of the box should be sufficient, but if you are changing the adapting luminance, background
+luminance, or even the white space, you may need to tune the response and the threshold of the `Achromatic` object.
+
+While not shipped with the library, we do have a tool on the ColorAide repository called `calc_cam16_ucs_jmh_min_m.py`
+which is useful for tuning the achromatic response. This is of course a more advanced task, and we are happy to answer
+questions related to it over on the repository.
+
+When subclassing, always use a new, unique name, like `jmh-custom` as other features or color spaces may depend on the
+`cam16-ucs-jmh` name converting a certain way.
