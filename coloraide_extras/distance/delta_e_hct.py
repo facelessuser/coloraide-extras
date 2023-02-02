@@ -17,7 +17,7 @@ class DEHCT(DeltaE):
 
     @classmethod
     def distance(cls, color: Color, sample: Color, **kwargs: Any) -> float:
-        """Delta E z color distance formula."""
+        """Delta E HCT color distance formula."""
 
         hct = cast("HCT", color.CS_MAP['hct'])
         h1, c1, t1 = alg.no_nans(color.convert('hct')[:-1])
@@ -34,9 +34,5 @@ class DEHCT(DeltaE):
         a2 = m * math.cos(hrad)
         b2 = m * math.sin(hrad)
 
-        # Lightness adjustments from DE 2000
-        lpm = (t1 + t2) / 2
-        l_temp = (lpm - 50) ** 2
-        sl = 1 + ((0.015 * l_temp) / math.sqrt(20 + l_temp))
-
-        return math.sqrt(((t1 - t2) / sl) ** 2 + (a1 - a2) ** 2 + (b1 - b2) ** 2)
+        # Use simple euclidean distance
+        return math.sqrt((t1 - t2) ** 2 + (a1 - a2) ** 2 + (b1 - b2) ** 2)

@@ -13,8 +13,8 @@ want to convert out of HCT and pay the conversion cost just to determine color d
 created this distancing method which we will call ∆E~hct~.
 
 The actual implementation simply takes the tone, which is the same as CIELAB's, and converts the hue and colorfulness
-to CAM16 UCS _a_ and _b_. We apply the same adjustment to tone that ∆E~2000~ applies to CIELAB's lightness. We won't
-make any claims compared to other methods, but it was sufficient for use in the HCT gamut mapping method.
+to CAM16 UCS _a_ and _b_ and then we apply simple, Euclidean distancing on the coordinates. We don't make any claims of
+how well it performs compared to other methods, but it was sufficient for use in the HCT gamut mapping method.
 
 ```playground
 Color('red').delta_e('blue', method='hct')

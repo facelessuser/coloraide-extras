@@ -45,6 +45,8 @@ RGB
 Rlab
 SCD
 SDR
+Subclassed
+Subclassing
 Twemoji
 UCS
 UVW
@@ -76,6 +78,8 @@ prerelease
 prereleases
 rc
 sRGB
+subclassed
+subclassing
 sublicense
 subtractive
 workgroup
