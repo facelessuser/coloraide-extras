@@ -146,30 +146,7 @@ def xyz_to_hct(coords: Vector, env: Environment) -> Vector:
 
 
 class AchromaticHCT(Achromatic):
-    """
-    Test HCT achromatic response.
-
-    This replaces are first approximation below and does just about as well. We use the spline
-    approach to consolidate approaches with CAM16 UCS JMh. For others, below is much easier to
-    implement if you don't already have access to a spline implementation and are okay with just
-    an SDR range.
-
-    ```
-    POLY_COEF = [2.152855223146154e-07, -7.728527926423952e-05, 0.028943531871995574, 0.5362688035299501]
-    LOG_COEF1 = [0.1923535302908369, 0.3526144857763279]
-    LOG_COEF2 = [0.09746113539113359, 0.40076619448389467]
-
-    if t <= 0:
-        c2 = 0.0
-    elif t >= 8:
-        c2 = POLY_COEF[0] * t ** 3 + POLY_COEF[1] * t ** 2 + POLY_COEF[2] * t + POLY_COEF[3]
-    elif t >= 2:
-        c2 = LOG_COEF1[0] * math.log(t) + LOG_COEF1[1]
-    else:
-        # Very small tone may produce a small negative value, ensure we don't return such a value.
-        c2 = max(0.0, LOG_COEF2[0] * math.log(t) + LOG_COEF2[1])
-    ```
-    """
+    """Test HCT achromatic response."""
 
     CONVERTER = staticmethod(xyz_to_hct)
     # Lightness and chroma (equivalent) index.
