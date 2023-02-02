@@ -110,7 +110,8 @@ def hct_to_xyz(coords: Vector, env: Environment) -> Vector:
     # and get our target XYZ Y from T
     j = t
     low = 0.0
-    high = 100.0 if t <= 100.0 else 1000.0  # SDR or HDR
+    # SDR or HDR, give a little room for SDR colors a little over the limit
+    high = 105.0 if t <= 100.1 else 1000.0
     y = lstar_to_y(t, env.ref_white)
 
     # Try to find a J such that the returned y matches the returned y of the L*

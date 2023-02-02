@@ -156,7 +156,7 @@ class Environment:
         self.nbb = 0.725 * math.pow(self.n, -0.2)
         self.ncb = self.nbb
 
-        # Degree of adaptation calculating if discounting illuminant (assumed eye is fully adapted)
+        # Degree of adaptation calculating if not discounting illuminant (assumed eye is fully adapted)
         d = alg.clamp(f * (1 - 1 / 3.6 * math.exp((-la - 42) / 92)), 0, 1) if not discounting else 1
         self.d_rgb = [alg.lerp(1, yw / coord, d) for coord in rgb_w]
         self.d_rgb_inv = [1 / coord for coord in self.d_rgb]
