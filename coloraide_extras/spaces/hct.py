@@ -111,7 +111,7 @@ def hct_to_xyz(coords: Vector, env: Environment) -> Vector:
     j = t
     low = 0.0
     # SDR or HDR, give a little room for SDR colors a little over the limit
-    high = 105.0 if t <= 100.1 else 1000.0
+    high = 105.0 if t < 100.05 else 1000.0
     y = lstar_to_y(t, env.ref_white)
 
     # Try to find a J such that the returned y matches the returned y of the L*
@@ -175,7 +175,7 @@ class AchromaticHCT(Achromatic):
     # Lightness and chroma (equivalent) index.
     L_IDX = 2
     C_IDX = 1
-    H_IDZ = 0
+    H_IDX = 0
 
 
 class HCT(LChish, Space):
