@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0
+
+- **NEW**: All CAM16 related spaces, and distancing plugins moved to official ColorAide.
+- **NEW**: All HCT related spaces, gamut mapping, distancing, and contrast plugins moved to official ColorAide.
+
 ## 1.4.2
 
 - **FIX**: Rework some internals to make tuning achromatic response easier.
