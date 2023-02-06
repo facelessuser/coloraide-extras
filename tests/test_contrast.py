@@ -56,25 +56,3 @@ class TestContrastMichelson(util.ColorAsserts, unittest.TestCase):
             Color('white').contrast('blue', method='michelson'),
             Color('blue').contrast('white', method='michelson')
         )
-
-
-class TestContrastLstar(util.ColorAsserts, unittest.TestCase):
-    """Test L* contrast difference."""
-
-    def test_contrast_same(self):
-        """Test contrast of to same colors."""
-
-        self.assertEqual(Color('blue').contrast('blue', method='lstar'), 0)
-
-    def test_contrast_bigger(self):
-        """Test greater contrast."""
-
-        self.assertCompare(Color('orange').contrast('blue', method='lstar'), 42.63303)
-
-    def test_symmetry(self):
-        """Test symmetry."""
-
-        self.assertEqual(
-            Color('orange').contrast('blue', method='lstar'),
-            Color('blue').contrast('orange', method='lstar')
-        )

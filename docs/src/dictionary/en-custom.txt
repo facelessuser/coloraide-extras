@@ -3,9 +3,9 @@ Accessors
 Berns
 CIE
 CIECAM
-CIELAB
-CIELAB
-CIELAB's
+CIELab
+CIELab
+CIELab's
 CIELCh
 CIEXYZ
 CMY
