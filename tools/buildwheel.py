@@ -18,7 +18,7 @@ NOTEBOOK_WHEELS = [
 # Wheels required in addition to the current project
 PLAYGROUND_WHEELS = [
     "https://files.pythonhosted.org/packages/5c/8e/1d9017950034297fffa336c72e693a5b51bbf85141b24a763882cf1977b5/Pygments-2.12.0-py3-none-any.whl",  # noqa: E501
-    "https://files.pythonhosted.org/packages/8f/73/dd1d493e343be4dfe2b70e93c240de8cb9ac866b29af3220b83a010811d9/coloraide-1.6-py3-none-any.whl"  # noqa: E501
+    "https://files.pythonhosted.org/packages/e1/64/c3cdb445025422f31647ce91d997e613fb8eeafe5b59d5d9b8448d003821/coloraide-1.7-py3-none-any.whl"  # noqa: E501
 ]
 
 MKDOCS_YML = 'mkdocs.yml'
