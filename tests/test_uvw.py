@@ -18,7 +18,16 @@ class TestUVW(util.ColorAssertsPyTest):
         ('violet', 'color(--uvw 51.118 -44.069 68.724)'),
         ('white', 'color(--uvw 0 0 99.04)'),
         ('gray', 'color(--uvw 0 0 52.609)'),
-        ('black', 'color(--uvw 0 0 -17)')
+        ('black', 'color(--uvw 0 0 -17)'),
+        # Test color
+        ('color(--uvw 50 10 -10)', 'color(--uvw 50 10 -10)'),
+        ('color(--uvw 50 10 -10 / 0.5)', 'color(--uvw 50 10 -10 / 0.5)'),
+        ('color(--uvw 50% 50% -50% / 50%)', 'color(--uvw 50 50 -50 / 0.5)'),
+        ('color(--uvw none none none / none)', 'color(--uvw none none none / none)'),
+        # Test percent ranges
+        ('color(--uvw 0% 0% 0%)', 'color(--uvw 0 0 0)'),
+        ('color(--uvw 100% 100% 100%)', 'color(--uvw 100 100 100)'),
+        ('color(--uvw -100% -100% -100%)', 'color(--uvw -100 -100 -100)')
     ]
 
     @pytest.mark.parametrize('color1,color2', COLORS)
@@ -26,6 +35,30 @@ class TestUVW(util.ColorAssertsPyTest):
         """Test colors."""
 
         self.assertColorEqual(Color(color1).convert('uvw'), Color(color2))
+
+
+class TestUVWSerialize(util.ColorAssertsPyTest):
+    """Test UVW serialization."""
+
+    COLORS = [
+        # Test color
+        ('color(--uvw 75 10 -10 / 0.5)', {}, 'color(--uvw 75 10 -10 / 0.5)'),
+        # Test alpha
+        ('color(--uvw 75 10 -10)', {'alpha': True}, 'color(--uvw 75 10 -10 / 1)'),
+        ('color(--uvw 75 10 -10 / 0.5)', {'alpha': False}, 'color(--uvw 75 10 -10)'),
+        # Test None
+        ('color(--uvw none 10 -10)', {}, 'color(--uvw 0 10 -10)'),
+        ('color(--uvw none 10 -10)', {'none': True}, 'color(--uvw none 10 -10)'),
+        # Test Fit
+        ('color(--uvw 75 102 -10)', {}, 'color(--uvw 75 102 -10)'),
+        ('color(--uvw 75 102 -10)', {'fit': False}, 'color(--uvw 75 102 -10)')
+    ]
+
+    @pytest.mark.parametrize('color1,options,color2', COLORS)
+    def test_colors(self, color1, options, color2):
+        """Test colors."""
+
+        self.assertEqual(Color(color1).to_string(**options), color2)
 
 
 class TestUVWPoperties(util.ColorAsserts, unittest.TestCase):
