@@ -6,6 +6,7 @@ and some are fairly new and a bit experimental.
 
 Click a color space to learn more.
 
+/// html | div.data-search-exclude
 ```diagram
 flowchart TB
 
@@ -20,3 +21,4 @@ flowchart TB
     click ucs "./ucs/" _self
     click uvw "./uvw" _self
 ```
+///

@@ -10,7 +10,7 @@ $$
 \frac{L_{max} - L_{min}}{L_{max} + L_{min}}
 $$
 
-```playground
+```py play
 Color('red').contrast('blue', method='michelson')
 ```
 

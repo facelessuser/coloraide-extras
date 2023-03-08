@@ -13,49 +13,81 @@ Transform Python code by executing it, transforming to a Python console output,
 and finding and outputting color previews.
 """
 import xml.etree.ElementTree as Etree
-from collections.abc import Sequence
+from collections.abc import Sequence, Mapping
 from collections import namedtuple
 import ast
 from io import StringIO
-import contextlib
 import sys
 import re
+from functools import partial
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import find_formatter_class
-import coloraide
 from coloraide import Color
 from coloraide.interpolate import Interpolator, normalize_domain
 try:
     from coloraide_extras.everything import ColorAll
 except ImportError:
     from coloraide.everything import ColorAll
-try:
-    import coloraide_extras
-except ImportError:
-    coloraide_extras = None
+
+PY310 = (3, 10) <= sys.version_info
+PY311 = (3, 11) <= sys.version_info
 
 WEBSPACE = "srgb"
-AST_BLOCKS = (ast.If, ast.For, ast.While, ast.Try, ast.With, ast.FunctionDef, ast.ClassDef)
+
+AST_BLOCKS = (
+    ast.If,
+    ast.For,
+    ast.While,
+    ast.Try,
+    ast.With,
+    ast.FunctionDef,
+    ast.ClassDef,
+    ast.AsyncFor,
+    ast.AsyncWith,
+    ast.AsyncFunctionDef
+)
+
+if PY310:
+    AST_BLOCKS = AST_BLOCKS + (ast.Match,)
+
+
+if PY311:
+    AST_BLOCKS = AST_BLOCKS + (ast.TryStar,)
+
+
+RE_INIT = re.compile(r'^\s*#\s*pragma:\s*init\n(.*?)#\s*pragma:\s*init\n', re.DOTALL | re.I)
 
 RE_COLOR_START = re.compile(
     r"(?i)(?:\b(?<![-#&$])(?:color|hsla?|lch|lab|hwb|rgba?)\(|\b(?<![-#&$])[\w]{3,}(?![(-])\b|(?<![&])#)"
 )
 
+LIVE_INIT = """
+from coloraide import *
+import coloraide
+try:
+    import coloraide_extras
+    from coloraide_extras.everything import ColorAll as Color
+except ImportError:
+    from coloraide.everything import ColorAll as Color
+"""
+
 template = '''<div class="playground" id="__playground_{el_id}">
 <div class="playground-results" id="__playground-results_{el_id}">
 {results}
 </div>
-<div class="playground-code hidden" id="__playground-code_{el_id}">
+<div class="playground-code hidden" id="__playground-code_{el_id}" data-search-exclude>
 <form autocomplete="off">
 <textarea class="playground-inputs" id="__playground-inputs_{el_id}" spellcheck="false">{raw_source}</textarea>
 </form>
 </div>
 
+<div data-search-exclude>
 <button id="__playground-edit_{el_id}" class="playground-edit" title="Edit the current snippet">Edit</button>
 <button id="__playground-share_{el_id}" class="playground-share" title="Copy URL to current snippet">Share</button>
 <button id="__playground-run_{el_id}" class="playground-run hidden" title="Run code (Ctrl + Enter)">Run</button>
 <button id="__playground-cancel_{el_id}" class="playground-cancel hidden" title="Cancel edit (Escape)">Cancel</button>
+</div>
 </div>'''
 
 code_id = 0
@@ -77,6 +109,18 @@ class HtmlRow(list):
     """Create a row with the given colors."""
 
 
+class AtomicString(str):
+    """Atomic string."""
+
+
+class Break(Exception):
+    """Break exception."""
+
+
+class Continue(Exception):
+    """Continue exception."""
+
+
 def _escape(txt):
     """Basic HTML escaping."""
 
@@ -86,24 +130,47 @@ def _escape(txt):
     return txt
 
 
-@contextlib.contextmanager
-def std_output(stdout=None):
-    """Capture standard out."""
-    old = sys.stdout
-    if stdout is None:
-        stdout = StringIO()
-    sys.stdout = stdout
-    yield stdout
-    sys.stdout = old
+class StreamOut:
+    """Override the standard out."""
+
+    def __init__(self):
+        """Initialize."""
+        self.old = sys.stdout
+        self.stdout = StringIO()
+        sys.stdout = self.stdout
+
+    def read(self):
+        """Read the stringIO buffer."""
+
+        value = ''
+        if self.stdout is not None:
+            self.stdout.flush()
+            value = self.stdout.getvalue()
+            self.stdout = StringIO()
+            sys.stdout = self.stdout
+        return value
+
+    def __enter__(self):
+        """Enter."""
+        return self
+
+    def __exit__(self, type, value, traceback):  # noqa: A002
+        """Exit."""
+
+        sys.stdout = self.old
+        self.old = None
+        self.stdout = None
 
 
 def get_colors(result):
     """Get color from results."""
 
-    colors = []
     domain = []
+    if isinstance(result, AtomicString):
+        yield find_colors(result)
+
     if isinstance(result, HtmlRow):
-        colors = HtmlRow(
+        yield HtmlRow(
             [
                 ColorTuple(c.to_string(fit=False), c.clone()) if isinstance(c, Color) else ColorTuple(c, ColorAll(c))
                 for c in result
@@ -111,33 +178,29 @@ def get_colors(result):
         )
     elif isinstance(result, (HtmlSteps, HtmlGradient)):
         t = type(result)
-        colors = t([c.clone() if isinstance(c, Color) else ColorAll(c) for c in result])
+        yield t([c.clone() if isinstance(c, Color) else ColorAll(c) for c in result])
     elif isinstance(result, Color):
-        colors.append(ColorTuple(result.to_string(fit=False), result.clone()))
+        yield [ColorTuple(result.to_string(fit=False), result.clone())]
     elif isinstance(result, Interpolator):
         # Since we are auto showing the gradient, we need to scale the domain to something we expect.
         if result.domain:
             domain = result.domain
             result.domain = normalize_domain(result.domain)
-        colors = HtmlGradient(result.steps(steps=5, max_delta_e=2.3))
+        grad = HtmlGradient(result.steps(steps=5, max_delta_e=2.3))
         if domain:
             result.domain = domain
             domain = []
+        yield grad
     elif isinstance(result, str):
         try:
-            colors.append(ColorTuple(result, ColorAll(result)))
+            yield [ColorTuple(result, ColorAll(result))]
         except Exception:
             pass
-    elif isinstance(result, Sequence):
-        for x in result:
-            if isinstance(x, Color):
-                colors.append(ColorTuple(x.to_string(fit=False), x.clone()))
-            elif isinstance(x, str):
-                try:
-                    colors.append(ColorTuple(x, ColorAll(x)))
-                except Exception:
-                    pass
-    return colors
+    elif isinstance(result, (list, tuple)):
+        for r in result:
+            for x in get_colors(r):
+                if x:
+                    yield x
 
 
 def find_colors(text):
@@ -152,24 +215,241 @@ def find_colors(text):
     return colors
 
 
-def execute(cmd, no_except=True, inline=False):
+def evaluate_with(node, g, loop, index=0):
+    """Evaluate with."""
+
+    l = len(node.items) - 1
+    withitem = node.items[index]
+    if withitem.context_expr:
+        with eval(compile(ast.Expression(withitem.context_expr), '<string>', 'eval'), g) as w:
+            g[withitem.optional_vars.id] = w
+            if index < l:
+                evaluate_with(node, g, loop, index + 1)
+            else:
+                for n in node.body:
+                    yield from evaluate(n, g, loop)
+    else:
+        with eval(compile(ast.Expression(withitem.context_expr), '<string>', 'eval'), g):
+            if index < l:
+                evaluate_with(node, g, loop, index + 1)
+            else:
+                for n in node.body:
+                    yield from evaluate(n, g, loop)
+
+
+def compare_match(s, g, node):
+    """Compare a match."""
+
+    if isinstance(node, ast.MatchOr):
+        for pattern in node.patterns:
+            if compare_match(s, g, pattern):
+                return True
+    else:
+        if isinstance(node, ast.MatchValue):
+            p = eval(compile(ast.Expression(node.value), '<string>', 'eval'), g)
+            return s == p
+        elif isinstance(node, ast.MatchSingleton):
+            return s is node.value
+        elif isinstance(node, ast.MatchSequence):
+            if isinstance(s, Sequence):
+                star = isinstance(node.patterns[-1], ast.MatchStar)
+                l1, l2 = len(s), len(node.patterns)
+                if (star and l1 >= l2 - 1) or (l1 == l2):
+                    for e, p in enumerate(node.patterns[:-1] if star else node.patterns):
+                        if not compare_match(s[e], g, p):
+                            return False
+                    if star and node.patterns[-1].name:
+                        g[node.patterns[-1].name] = s[l2 - 1:]
+                    return True
+            return False
+        elif isinstance(node, ast.MatchMapping):
+            if isinstance(s, Mapping):
+                star = node.rest
+                l1, l2 = len(s), len(node.patterns)
+                if (star and l1 >= l2) or (l1 == l2):
+                    keys = set()
+                    for kp, vp in zip(node.keys, node.patterns):
+                        key = eval(compile(ast.Expression(kp), '<string>', 'eval'), g)
+                        keys.add(key)
+                        if key not in s:
+                            return False
+                        if not compare_match(s[key], g, vp):
+                            return False
+                    if star:
+                        g[star] = {k: v for k, v in s.items() if k not in keys}
+                    return True
+            return False
+        elif isinstance(node, ast.MatchClass):
+            name = g.get(node.cls.id, None)
+            if name is None:
+                raise NameError("name '{}' is not defined".format(node.cls.id))
+            if not isinstance(s, name):
+                return False
+            ma = getattr(s, '__match_args__', tuple())
+            l1 = len(ma)
+            l2 = len(node.patterns)
+            if l1 < l2:
+                raise TypeError("{}() accepts {} positional sub-patterns ({} given)".format(name, l1, l2))
+            for e, p in enumerate(node.patterns):
+                if not hasattr(s, ma[e]):
+                    return False
+                if not compare_match(getattr(s, ma[e]), g, p):
+                    return False
+            for a, p in zip(node.kwd_attrs, node.kwd_patterns):
+                if not hasattr(s, a):
+                    return False
+                if not compare_match(getattr(s, a), g, p):
+                    return False
+            return True
+        elif isinstance(node, ast.MatchAs):
+            if node.name is not None:
+                g[node.name] = s
+            if node.pattern:
+                return compare_match(s, g, node.pattern)
+            return True
+
+    raise RuntimeError('Unknown Match pattern {}'.format(str(node)))
+
+
+def evaluate_except(node, e, g, loop=False):
+    """Evaluate normal except block."""
+
+    for n in node.handlers:
+        if n.name:
+            g[n.name] = e
+        if n.type is None:
+            for ne in n.body:
+                yield from evaluate(ne, g, loop)
+            break
+        else:
+            if isinstance(e, eval(compile(ast.Expression(n.type), '<string>', 'eval'), g)):
+                for ne in n.body:
+                    yield from evaluate(ne, g, loop)
+                break
+    else:
+        raise
+
+
+def evaluate(node, g, loop=False):
+    """Evaluate."""
+
+    if loop and isinstance(node, ast.Break):
+        raise Break
+
+    if loop and isinstance(node, ast.Continue):
+        raise Continue
+
+    if isinstance(node, ast.Expr):
+        _eval = ast.Expression(node.value)
+        yield eval(compile(_eval, '<string>', 'eval'), g)
+    elif isinstance(node, ast.If):
+        if eval(compile(ast.Expression(node.test), '<string>', 'eval'), g):
+            for n in node.body:
+                yield from evaluate(n, g, loop)
+        elif node.orelse:
+            for n in node.orelse:
+                yield from evaluate(n, g, loop)
+    elif isinstance(node, ast.While):
+        while eval(compile(ast.Expression(node.test), '<string>', 'eval'), g):
+            try:
+                for n in node.body:
+                    yield from evaluate(n, g, True)
+            except Break:
+                break
+            except Continue:
+                continue
+        else:
+            for n in node.orelse:
+                yield from evaluate(n, g, loop)
+    elif isinstance(node, ast.For):
+        for x in eval(compile(ast.Expression(node.iter), '<string>', 'eval'), g):
+            g[node.target.id] = x
+            try:
+                for n in node.body:
+                    yield from evaluate(n, g, True)
+            except Break:
+                break
+            except Continue:
+                continue
+        else:
+            for n in node.orelse:
+                yield from evaluate(n, g, loop)
+    elif isinstance(node, ast.Try):
+        try:
+            for n in node.body:
+                yield from evaluate(n, g, loop)
+        except Exception as e:
+            yield from evaluate_except(node, e, g, loop)
+        else:
+            for n in node.orelse:
+                yield from evaluate(n, g, loop)
+        finally:
+            for n in node.finalbody:
+                yield from evaluate(n, g, loop)
+    elif PY311 and isinstance(node, ast.TryStar):
+        try:
+            for n in node.body:
+                yield from evaluate(n, g, loop)
+        except ExceptionGroup as e:
+            for n in node.handlers:
+                if n.name:
+                    g[n.name] = e
+                m, e = e.split(eval(compile(ast.Expression(n.type), '<string>', 'eval'), g))
+                if m is not None:
+                    for ne in n.body:
+                        yield from evaluate(ne, g, loop)
+                if e is None:
+                    break
+            if e is not None:
+                raise e
+        except Exception as e:
+            yield from evaluate_except(node, e, g, loop)
+        else:
+            for n in node.orelse:
+                yield from evaluate(n, g, loop)
+        finally:
+            for n in node.finalbody:
+                yield from evaluate(n, g, loop)
+    elif PY310 and isinstance(node, ast.Match):
+        s = eval(compile(ast.Expression(node.subject), '<string>', 'eval'), g)
+        for c in node.cases:
+            if compare_match(s, g, c.pattern):
+                if not c.guard or eval(compile(ast.Expression(c.guard), '<string>', 'eval'), g):
+                    for n in c.body:
+                        yield from evaluate(n, g, loop)
+                    break
+    elif isinstance(node, ast.With):
+        yield from evaluate_with(node, g, loop)
+    else:
+        _exec = ast.Module([node], [])
+        exec(compile(_exec, '<string>', 'exec'), g)
+        yield None
+
+
+def execute(cmd, no_except=True, inline=False, init='', g=None):
     """Execute color commands."""
-
-    g = {k: getattr(coloraide, k) for k in coloraide.__all__}
-    g['coloraide'] = coloraide
-    g['Color'] = ColorAll
-    g['HtmlRow'] = HtmlRow
-    g['HtmlSteps'] = HtmlSteps
-    g['HtmlGradient'] = HtmlGradient
-
-    if coloraide_extras is not None:
-        g['coloraide_extras'] = coloraide_extras
 
     console = ''
     colors = []
 
+    # Setup global initialization
+    if g is None:
+        g = {
+            'HtmlRow': HtmlRow,
+            'HtmlSteps': HtmlSteps,
+            'HtmlGradient': HtmlGradient
+        }
+    if init:
+        execute(init.strip(), g=g)
+
     # Build AST tree
-    src = cmd.strip()
+    m = RE_INIT.match(cmd)
+    if m:
+        block_init = m.group(1)
+        src = cmd[m.end():]
+        execute(block_init, g=g)
+    else:
+        src = cmd
     lines = src.split('\n')
     try:
         tree = ast.parse(src)
@@ -185,7 +465,7 @@ def execute(cmd, no_except=True, inline=False):
         return '{}'.format(traceback.format_exc()), colors
 
     for node in tree.body:
-        result = None
+        result = []
 
         # Format source as Python console statements
         start = node.lineno
@@ -203,27 +483,19 @@ def execute(cmd, no_except=True, inline=False):
 
         try:
             # Capture anything sent to standard out
-            text = ''
-            with std_output() as s:
+            with StreamOut() as s:
                 # Execute code
-                if isinstance(node, ast.Expr):
-                    _eval = ast.Expression(node.value)
-                    result = eval(compile(_eval, '<string>', 'eval'), g)
-                else:
-                    _exec = ast.Module([node], [])
-                    exec(compile(_exec, '<string>', 'exec'), g)
+                for x in evaluate(node, g):
+                    result.append(x)
+
+                    # Output captured standard out after statements
+                    text = s.read()
+                    if text:
+                        result.append(AtomicString(text))
 
                 # Execution went well, so append command
                 console += command
 
-                # Output captured standard out after statements
-                text = s.getvalue()
-                if text:
-                    clist = find_colors(text)
-                    if clist:
-                        colors.append(clist)
-                    console += '\n{}'.format(text)
-                s.flush()
         except Exception as e:
             if no_except:
                 if not inline:
@@ -238,13 +510,15 @@ def execute(cmd, no_except=True, inline=False):
             break
 
         # If we got a result, output it as well
-        if result is not None:
-            clist = get_colors(result)
-            if clist:
-                colors.append(clist)
-            console += '{}{}\n'.format('\n' if not text else '', str(result))
-        else:
-            console += '\n' if not text else ''
+        result_text = '\n'
+        for r in result:
+            if r is None:
+                continue
+            for clist in get_colors(r):
+                if clist:
+                    colors.append(clist)
+            result_text += '{}{}'.format(str(r), '\n' if not isinstance(r, AtomicString) else '')
+        console += result_text
 
     return console, colors
 
@@ -261,7 +535,7 @@ def colorize(src, lang, **options):
 def color_command_validator(language, inputs, options, attrs, md):
     """Color validator."""
 
-    valid_inputs = set(['exceptions'])
+    valid_inputs = set(['exceptions', 'play'])
 
     for k, v in inputs.items():
         if k in valid_inputs:
@@ -351,11 +625,27 @@ def _color_command_console(colors):
     return el
 
 
-def color_command_formatter(src="", language="", class_name=None, options=None, md="", **kwargs):
+def _color_command_formatter(src="", language="", class_name=None, options=None, md="", init='', **kwargs):
     """Formatter wrapper."""
 
     global code_id
     from pymdownx.superfences import SuperFencesException
+
+    # Support the new way
+    play = options.get('play', False) if options is not None else False
+    # Support the old way
+    if not play and language == 'playground':
+        play = True
+
+    if not play:
+        return md.preprocessors['fenced_code_block'].extension.superfences[0]['formatter'](
+            src=src,
+            class_name=class_name,
+            language='py',
+            md=md,
+            options=options,
+            **kwargs
+        )
 
     try:
         if len(md.preprocessors['fenced_code_block'].extension.stash) == 0:
@@ -364,7 +654,7 @@ def color_command_formatter(src="", language="", class_name=None, options=None, 
         # Check if we should allow exceptions
         exceptions = options.get('exceptions', False) if options is not None else False
 
-        console, colors = execute(src.strip(), not exceptions)
+        console, colors = execute(src.strip(), not exceptions, init=init)
         el = _color_command_console(colors)
 
         el += md.preprocessors['fenced_code_block'].extension.superfences[0]['formatter'](
@@ -388,7 +678,13 @@ def color_command_formatter(src="", language="", class_name=None, options=None, 
     return el
 
 
-def color_formatter(src="", language="", class_name=None, md="", exceptions=True):
+def color_command_formatter(init='', interactive=False):
+    """Return a Python command formatter with the provided imports."""
+
+    return partial(_color_command_formatter, init=init, interactive=interactive)
+
+
+def _color_formatter(src="", language="", class_name=None, md="", exceptions=True, init=''):
     """Formatter wrapper."""
 
     from pymdownx.inlinehilite import InlineHiliteException
@@ -399,7 +695,7 @@ def color_formatter(src="", language="", class_name=None, md="", exceptions=True
         try:
             color = ColorAll(result.strip())
         except Exception:
-            console, colors = execute(result, exceptions, inline=True)
+            _, colors = execute(result, exceptions, inline=True, init=init)
             if len(colors) != 1 or len(colors[0]) != 1:
                 if exceptions:
                     raise InlineHiliteException('Only one color allowed')
@@ -450,14 +746,20 @@ def color_formatter(src="", language="", class_name=None, md="", exceptions=True
     return el
 
 
+def color_formatter(init=''):
+    """Return a Python command formatter with the provided imports."""
+
+    return partial(_color_formatter, init=init)
+
+
 #############################
 # Pyodide specific code
 #############################
-def live_color_command_formatter(src):
+def _live_color_command_formatter(src, init=''):
     """Formatter wrapper."""
 
     try:
-        console, colors = execute(src.strip(), False)
+        console, colors = execute(src.strip(), False, init=init)
         el = _color_command_console(colors)
 
         if not colors:
@@ -466,8 +768,17 @@ def live_color_command_formatter(src):
         el += colorize(console, 'pycon', **{'python3': True, 'stripnl': False})
         el = '<div class="color-command">{}</div>'.format(el)
     except Exception:
-        return '<div class="color-command"><div class="swatch-bar"></div>{}</div>'.format(colorize('', 'text'))
+        import traceback
+        return '<div class="color-command"><div class="swatch-bar"></div>{}</div>'.format(
+            colorize(traceback.format_exc(), 'pycon')
+        )
     return el
+
+
+def live_color_command_formatter(init=''):
+    """Return a Python command formatter with the provided imports."""
+
+    return partial(_live_color_command_formatter, init=init)
 
 
 def live_color_command_validator(language, inputs, options, attrs, md):
@@ -479,12 +790,6 @@ def live_color_command_validator(language, inputs, options, attrs, md):
     return value
 
 
-def live_color_formatter(src="", language="", class_name=None, md=""):
-    """Color formatter for a live environment."""
-
-    return color_formatter(src, language, class_name, md, exceptions=False)
-
-
 def render_console(*args):
     """Render console update."""
 
@@ -494,7 +799,25 @@ def render_console(*args):
         # Run code
         inputs = document.getElementById("__playground-inputs_{}".format(globals()['id_num']))
         results = document.getElementById("__playground-results_{}".format(globals()['id_num']))
-        results.innerHTML = live_color_command_formatter(inputs.value)
+        result = live_color_command_formatter(LIVE_INIT)(inputs.value)
+        temp = document.createElement('div')
+        temp.innerHTML = result
+
+        # Replace swatch bars
+        cmd = results.querySelector('.color-command')
+        for el in cmd.querySelectorAll('.swatch-bar'):
+            el.remove()
+        for el in temp.querySelectorAll('.swatch-bar'):
+            cmd.insertBefore(el, cmd.lastChild)
+
+        # Update code content
+        pre = cmd.querySelector('pre')
+        pre.replaceChild(temp.querySelector('code'), pre.querySelector('code'))
+
+        # Clean up stray element.
+        temp.remove()
+
+        # Adjust scorlling
         scrollingElement = results.querySelector('code')
         scrollingElement.scrollTop = scrollingElement.scrollHeight
     except Exception as e:
@@ -511,15 +834,12 @@ def render_notebook(*args):
     text = globals().get('content', '')
     extensions = [
         'markdown.extensions.toc',
-        'markdown.extensions.admonition',
         'markdown.extensions.smarty',
         'pymdownx.betterem',
         'markdown.extensions.attr_list',
-        'markdown.extensions.def_list',
         'markdown.extensions.tables',
         'markdown.extensions.abbr',
         'markdown.extensions.footnotes',
-        'markdown.extensions.md_in_html',
         'pymdownx.superfences',
         'pymdownx.highlight',
         'pymdownx.inlinehilite',
@@ -533,10 +853,13 @@ def render_notebook(*args):
         'pymdownx.striphtml',
         'pymdownx.snippets',
         'pymdownx.keys',
-        'pymdownx.details',
         'pymdownx.saneheaders',
-        'pymdownx.tabbed',
-        'pymdownx.arithmatex'
+        'pymdownx.arithmatex',
+        'pymdownx.blocks.admonition',
+        'pymdownx.blocks.details',
+        'pymdownx.blocks.html',
+        'pymdownx.blocks.definition',
+        'pymdownx.blocks.tab'
     ]
     extension_configs = {
         'markdown.extensions.toc': {
@@ -562,7 +885,19 @@ def render_notebook(*args):
                 {
                     "name": 'playground',
                     "class": 'playground',
-                    "format": color_command_formatter,
+                    "format": color_command_formatter(LIVE_INIT),
+                    "validator": live_color_command_validator
+                },
+                {
+                    "name": 'python',
+                    "class": 'highlight',
+                    "format": color_command_formatter(LIVE_INIT),
+                    "validator": live_color_command_validator
+                },
+                {
+                    "name": 'py',
+                    "class": 'highlight',
+                    "format": color_command_formatter(LIVE_INIT),
                     "validator": live_color_command_validator
                 }
             ]
@@ -572,7 +907,7 @@ def render_notebook(*args):
                 {
                     'name': 'color',
                     'class': 'color',
-                    'format': live_color_formatter
+                    'format': color_formatter(LIVE_INIT)
                 }
             ]
         },
@@ -586,8 +921,14 @@ def render_notebook(*args):
         'pymdownx.keys': {
             'separator': "\uff0b"
         },
-        'pymdownx.tabbed': {
+        'pymdownx.blocks.tab': {
             'alternate_style': True
+        },
+        'pymdownx.blocks.admonition': {
+            'types': [
+                'new', 'settings', 'note', 'abstract', 'info', 'tip', 'success',
+                'question', 'warning', 'failure', 'danger', 'bug', 'example', 'quote'
+            ]
         }
     }
 

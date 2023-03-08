@@ -52,16 +52,13 @@ markdown_extensions:
   - markdown.extensions.toc:
       slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
       permalink: ""
-  - markdown.extensions.admonition:
   - markdown.extensions.smarty:
       smart_quotes: false
   - pymdownx.betterem:
   - markdown.extensions.attr_list:
-  - markdown.extensions.def_list:
   - markdown.extensions.tables:
   - markdown.extensions.abbr:
   - markdown.extensions.footnotes:
-  - markdown.extensions.md_in_html:
   - pymdownx.superfences:
       preserve_tabs: true
       custom_fences:
@@ -71,7 +68,33 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
         - name: playground
           class: playground
-          format: !!python/name:docs.src.py.notebook.color_command_formatter
+          format: !!python/object/apply:docs.src.py.notebook.color_command_formatter
+            kwds:
+              init: |
+                import coloraide
+                import coloraide_extras
+                from coloraide import *
+                from coloraide_extras.everything import ColorAll as Color
+          validator: !!python/name:docs.src.py.notebook.color_command_validator
+        - name: py
+          class: 'highlight'
+          format: !!python/object/apply:docs.src.py.notebook.color_command_formatter
+            kwds:
+              init: |
+                import coloraide
+                import coloraide_extras
+                from coloraide import *
+                from coloraide_extras.everything import ColorAll as Color
+          validator: !!python/name:docs.src.py.notebook.color_command_validator
+        - name: python
+          class: 'highlight'
+          format: !!python/object/apply:docs.src.py.notebook.color_command_formatter
+            kwds:
+              init: |
+                import coloraide
+                import coloraide_extras
+                from coloraide import *
+                from coloraide_extras.everything import ColorAll as Color
           validator: !!python/name:docs.src.py.notebook.color_command_validator
   - pymdownx.highlight:
       extend_pygments_lang:
@@ -87,7 +110,13 @@ markdown_extensions:
       custom_inline:
         - name: color
           class: color
-          format: !!python/name:docs.src.py.notebook.color_formatter
+          format: !!python/object/apply:docs.src.py.notebook.color_formatter
+            kwds:
+              init: |
+                import coloraide
+                import coloraide_extras
+                from coloraide import *
+                from coloraide_extras.everything import ColorAll as Color
   - pymdownx.magiclink:
       repo_url_shortener: true
       repo_url_shorthand: true
@@ -115,21 +144,39 @@ markdown_extensions:
       - refs.md
   - pymdownx.keys:
       separator: "\uff0b"
-  - pymdownx.details:
   - pymdownx.saneheaders:
-  - pymdownx.tabbed:
-      alternate_style: true
   - pymdownx.arithmatex:
       generic: true
       block_tag: 'pre'
+  - pymdownx.blocks.admonition:
+      types:
+      - new
+      - settings
+      - note
+      - abstract
+      - info
+      - tip
+      - success
+      - question
+      - warning
+      - failure
+      - danger
+      - bug
+      - example
+      - quote
+  - pymdownx.blocks.details:
+  - pymdownx.blocks.html:
+  - pymdownx.blocks.definition:
+  - pymdownx.blocks.tab:
+      alternate_style: True
 
 extra_css:
-  - assets/coloraide-extras/extra-753860a807.css
+  - assets/coloraide-extras/extra-d44d9d3485.css
 extra_javascript:
   - https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js
-  - playground-config-954024d3.js
-  - https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js
-  - assets/coloraide-extras/extra-notebook-ec2e5ee3.js
+  - playground-config-cb40c737.js
+  - https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js
+  - assets/coloraide-extras/extra-notebook-820ca0b0.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 

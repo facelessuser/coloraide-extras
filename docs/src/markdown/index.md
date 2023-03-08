@@ -1,8 +1,9 @@
 # Introduction
 
-!!! warning "Experimental"
-    Plugins provided by ColorAide Extras is essentially an experimental playground. Regardless of how polished a given
-    plugin may seem, they should be considered experimental.
+/// warning | Experimental
+Plugins provided by ColorAide Extras is essentially an experimental playground. Regardless of how polished a given
+plugin may seem, they should be considered experimental.
+///
 
 ## Overview
 
@@ -23,7 +24,7 @@ $ pip install coloraide_extras
 Normally, it is advisable to only cherry pick color spaces you need. Rarely do people need every color space. This can
 be done simply by registering the color spaces you'd like.
 
-```playground
+```py play
 from coloraide import Color as Base
 from coloraide_extras.spaces.ucs import UCS
 class Color(Base): ...
@@ -35,7 +36,7 @@ But, if you want access to all the color spaces for both ColorAide and ColorAide
 `coloraide_extras.everything` instead of `coloraide`:
 
 
-```playground
+```py play
 from coloraide_extras.everything import ColorAll as Color
 Color('color(--ucs 0.27493 0.21264 0.12243 / 1)')
 ```

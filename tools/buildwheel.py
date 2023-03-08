@@ -12,14 +12,20 @@ import hashlib
 # Notebook specific wheels
 NOTEBOOK_WHEELS = [
     "https://files.pythonhosted.org/packages/6e/33/1ae0f71395e618d6140fbbc9587cc3156591f748226075e0f7d6f9176522/Markdown-3.3.4-py3-none-any.whl",  # noqa: E501
-    "https://files.pythonhosted.org/packages/f1/e0/1ed09f66cd1648f8e009120debf9b7d67596fb688e53e71522da1daa02a0/pymdown_extensions-9.5-py3-none-any.whl",  # noqa: E501
+    "https://files.pythonhosted.org/packages/34/30/a16f0671c64c996726c48811b0d2c6c97f8d12926c9ad1c34e21a3d7155b/pymdown_extensions-9.10-py3-none-any.whl",  # noqa: E501
+]
+
+NOTEBOOK_PYODIDE_PKGS = [
+    'pyyaml'
 ]
 
 # Wheels required in addition to the current project
 PLAYGROUND_WHEELS = [
     "https://files.pythonhosted.org/packages/5c/8e/1d9017950034297fffa336c72e693a5b51bbf85141b24a763882cf1977b5/Pygments-2.12.0-py3-none-any.whl",  # noqa: E501
-    "https://files.pythonhosted.org/packages/fb/0e/7306d7c94cadc7a8b76c38abcd6b1b6017b10ff34e96d7cf7be6c345f47c/coloraide-1.7.1-py3-none-any.whl"  # noqa: E501
+    "https://files.pythonhosted.org/packages/0b/87/eae8ebf2000a2eb4c75ae0d0ed3b4569ac09e5f6c75d295fdea9d7389b32/coloraide-1.8.1-py3-none-any.whl"  # noqa: E501
 ]
+
+PLAYGROUND_PYODIDE_PKGS = []
 
 MKDOCS_YML = 'mkdocs.yml'
 
@@ -27,10 +33,10 @@ RE_CONFIG = re.compile(r'playground-config.*?\.js')
 RE_BUILD = re.compile(r'Successfully built ([-_0-9.a-zA-Z]+?\.whl)')
 
 CONFIG = """\
-var color_notebook = {{
-    "playground_wheels": {},
-    "notebook_wheels": {},
-    "default_playground": "from coloraide_extras.everything import ColorAll as Color\\ncoloraide.__version__\\ncoloraide_extras.__version__\\nColor('color(--ucs 0.27493 0.21264 0.12243 / 1)')"
+var colorNotebook = {{
+    "playgroundWheels": {},
+    "notebookWheels": {},
+    "defaultPlayground": "from coloraide_extras.everything import ColorAll as Color\\ncoloraide.__version__\\ncoloraide_extras.__version__\\nColor('color(--ucs 0.27493 0.21264 0.12243 / 1)')"
 }}
 """  # noqa: E501
 
@@ -132,8 +138,8 @@ if __name__ == "__main__":
 
     if not status:
         # Build up a list of wheels needed for playgrounds and notebooks
-        playground = [os.path.basename(x) for x in PLAYGROUND.keys()] + [package]
-        notebook = [os.path.basename(x) for x in NOTEBOOK.keys()] + playground
+        playground = PLAYGROUND_PYODIDE_PKGS + [os.path.basename(x) for x in PLAYGROUND.keys()] + [package]
+        notebook = NOTEBOOK_PYODIDE_PKGS + [os.path.basename(x) for x in NOTEBOOK.keys()] + playground
 
         # Create the config that specifies which wheels need to be used
         config = CONFIG.format(str(playground), str(notebook)).replace('\r', '').encode('utf-8')
