@@ -370,7 +370,11 @@ def evaluate(node, g, loop=False):
                 yield from evaluate(n, g, loop)
     elif isinstance(node, ast.For):
         for x in eval(compile(ast.Expression(node.iter), '<string>', 'eval'), g):
-            g[node.target.id] = x
+            if isinstance(node.target, ast.Tuple):
+                for e, t in enumerate(node.target.dims):
+                    g[t.id] = x[e]
+            else:
+                g[node.target.id] = x
             try:
                 for n in node.body:
                     yield from evaluate(n, g, True)
@@ -565,7 +569,9 @@ def _color_command_console(colors, gamut=WEBSPACE):
     bar = False
     values = []
     for item in colors:
-        if isinstance(item, (HtmlGradient, Steps)):
+        is_grad = isinstance(item, HtmlGradient)
+        is_steps = isinstance(item, Steps)
+        if is_grad or is_steps:
             current = total = percent = last = 0
             if isinstance(item, Steps):
                 total = len(item)
@@ -580,16 +586,20 @@ def _color_command_console(colors, gamut=WEBSPACE):
             stops = []
             for e, color in enumerate(item):
                 color.fit(gamut)
+                color_str = color.convert(gamut).to_string()
                 if current:
-                    stops.append('{} {}%'.format(color.convert(gamut).to_string(), str(last)))
-                    stops.append('{} {}%'.format(color.convert(gamut).to_string(), str(current)))
+                    if is_steps:
+                        stops.append('{} {}%'.format(color_str, str(last)))
+                        stops.append('{} {}%'.format(color_str, str(current)))
+                    else:
+                        stops.append(color_str)
                     last = current
                     if e < (total - 1):
                         current += percent
                     else:
                         current = 100
                 else:
-                    stops.append(color.convert(gamut).to_string())
+                    stops.append(color_str)
             if not stops:
                 stops.extend(['transparent'] * 2)
             if len(stops) == 1:
