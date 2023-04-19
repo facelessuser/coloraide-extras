@@ -20,7 +20,7 @@ Name | Range^\*^
 ////
 
 //// html | figure
-![UVW](../images/uvw.png)
+![UVW](../images/uvw-3d.png)
 
 ///// html | figcaption
 The sRGB gamut represented within the UVW color space.

@@ -20,7 +20,7 @@ Name | Range^\*^
 ////
 
 //// html | figure
-![xyY](../images/ucs.png)
+![xyY](../images/ucs-3d.png)
 
 ///// html | figcaption
 The sRGB gamut represented within the CIE 1960 UCS color space.
