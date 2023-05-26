@@ -22,7 +22,7 @@ NOTEBOOK_PYODIDE_PKGS = [
 # Wheels required in addition to the current project
 PLAYGROUND_WHEELS = [
     "https://files.pythonhosted.org/packages/5c/8e/1d9017950034297fffa336c72e693a5b51bbf85141b24a763882cf1977b5/Pygments-2.12.0-py3-none-any.whl",  # noqa: E501
-    "https://files.pythonhosted.org/packages/ee/91/935e8e6e51e367753e29a9a39b4db81c9231b21a5ed3885c22a302763222/coloraide-2.2.1-py3-none-any.whl"  # noqa: E501
+    "https://files.pythonhosted.org/packages/a4/0e/1c163baafa7b3444d60b876af689182c397e1eb7aff51d08090b33f972d9/coloraide-2.3-py3-none-any.whl"  # noqa: E501
 ]
 
 PLAYGROUND_PYODIDE_PKGS = []

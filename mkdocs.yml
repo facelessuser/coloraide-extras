@@ -174,9 +174,9 @@ extra_css:
   - assets/coloraide-extras/extra-391b1ef8ad.css
 extra_javascript:
   - https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js
-  - playground-config-48e6b4a2.js
-  - https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js
-  - assets/coloraide-extras/extra-notebook-b5858b87.js
+  - playground-config-4e896852.js
+  - https://cdn.jsdelivr.net/pyodide/v0.23.2/full/pyodide.js
+  - assets/coloraide-extras/extra-notebook-ecf5a790.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
