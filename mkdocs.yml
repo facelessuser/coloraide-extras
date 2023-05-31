@@ -36,7 +36,6 @@ nav:
       - Introduction: index.md
       - Color Spaces:
         - colors/index.md
-        - CIE 1960 UCS: colors/ucs.md
         - CIE 1964 UVW: colors/uvw.md
       - Color Contrast:
         - contrast/index.md

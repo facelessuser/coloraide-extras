@@ -2,7 +2,6 @@
 from __future__ import annotations
 from coloraide.everything import ColorAll as Base
 from coloraide import stop, hint, NaN
-from .spaces.ucs import UCS
 from .spaces.uvw import UVW
 from .contrast.contrast_weber import ContrastWeber
 from .contrast.contrast_michelson import ContrastMichelson
@@ -20,7 +19,6 @@ class ColorAll(Base):
 ColorAll.register(
     [
         # Spaces
-        UCS(),
         UVW(),
 
         # Delta E
