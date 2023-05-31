@@ -26,10 +26,10 @@ be done simply by registering the color spaces you'd like.
 
 ```py play
 from coloraide import Color as Base
-from coloraide_extras.spaces.ucs import UCS
+from coloraide_extras.spaces.uvw import UVW
 class Color(Base): ...
-Color.register(UCS())
-Color('red').convert('ucs')
+Color.register(UVW())
+Color('red').convert('uvw')
 ```
 
 But, if you want access to all the color spaces for both ColorAide and ColorAide Extras, simply import `ColorAll` from
@@ -38,5 +38,5 @@ But, if you want access to all the color spaces for both ColorAide and ColorAide
 
 ```py play
 from coloraide_extras.everything import ColorAll as Color
-Color('color(--ucs 0.27493 0.21264 0.12243 / 1)')
+Color('color(--uvw 171.8 24.715 52.261 / 1)')
 ```

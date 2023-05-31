@@ -10,15 +10,12 @@ Click a color space to learn more.
 ```diagram
 flowchart TB
 
-    ucs --- xyz-d65
     uvw --- xyz-d65
 
     xyz-d65(XYZ D65)
-    ucs(CIE 1960 UCS)
     uvw(CIE 1964 UVW)
 
     click xyz-d65 "https://facelessuser.github.io/coloraide/colors/xyz_d65/" _blank
-    click ucs "./ucs/" _self
     click uvw "./uvw" _self
 ```
 ///

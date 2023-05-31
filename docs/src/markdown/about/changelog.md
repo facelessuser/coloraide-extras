@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.0
+
+- **NEW**: CIE 1960 UCS moved to official ColorAide repository.
+
 ## 1.5.0
 
 - **NEW**: All CAM16 related spaces, and distancing plugins moved to official ColorAide.
