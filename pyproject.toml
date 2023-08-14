@@ -9,7 +9,7 @@ name = "coloraide_extras"
 description = "A color library for Python."
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 authors = [
     { name = "Isaac Muse", email = "Isaac.Muse@gmail.com" },
 ]
@@ -19,8 +19,11 @@ keywords = [
 ]
 dynamic = [
     "classifiers",
-    "dependencies",
     "version",
+]
+
+dependencies = [
+    "coloraide>=2.8"
 ]
 
 [project.urls]
@@ -48,8 +51,7 @@ include = [
     "/tools/**/*.py",
     "/.pyspelling.yml",
     "/.coveragerc",
-    "/mkdocs.yml",
-    "/tox.ini",
+    "/mkdocs.yml"
 ]
 
 [tool.mypy]
@@ -60,3 +62,72 @@ strict = true
 show_error_codes = true
 
 [tool.hatch.metadata.hooks.custom]
+
+[tool.ruff]
+line-length = 120
+
+select = [
+    "A",    # flake8-builtins
+    "B",    # flake8-bugbear
+    "D",    # pydocstyle
+    "C4",   # flake8-comprehensions
+    "N",    # pep8-naming
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "PGH",  # pygrep-hooks
+    "RUF",  # ruff
+    # "UP",   # pyupgrade
+    "W",    # pycodestyle
+    "YTT",  # flake8-2020,
+    "PERF"  # Perflint
+]
+
+ignore = [
+    "E741",
+    "D202",
+    "D401",
+    "D212",
+    "D203",
+    "N802",
+    "N801",
+    "N803",
+    "N806",
+    "N818",
+    "RUF012",
+    "RUF005",
+    "PGH004",
+    "RUF100"
+]
+
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    isolated_build = true
+    envlist=
+        py38,py39,py310,py311,
+        lint
+
+    [testenv]
+    passenv=LANG
+    deps=
+        -rrequirements/test.txt
+    commands=
+        {envbindir}/mypy
+        {envbindir}/py.test --cov coloraide_extras --cov-append tests
+        {envbindir}/coverage html -d {envtmpdir}/coverage
+        {envbindir}/coverage xml
+        {envbindir}/coverage report --show-missing
+
+    [testenv:lint]
+    deps=
+        -r requirements/lint.txt
+    commands=
+        "{envbindir}"/ruff check .
+
+    [testenv:documents]
+    deps=
+        -rrequirements/docs.txt
+    commands=
+        {envpython} -m mkdocs build --clean --verbose --strict
+        {envbindir}/pyspelling
+"""

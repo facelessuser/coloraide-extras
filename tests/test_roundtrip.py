@@ -19,6 +19,8 @@ class TestRoundTrip:
         """Local color object."""
 
     Color.deregister('space:hpluv')
+    Color.deregister('space:ryb')
+    Color.deregister('space:ryb-biased')
 
     SPACES = {k: 5 for k in Color.CS_MAP.keys()}
     # Not as accurate due to bisect back to CAM16
@@ -31,22 +33,8 @@ class TestRoundTrip:
         Color('green'),
         Color('blue'),
         Color('indigo'),
-        Color('violet'),
-        Color('darkgrey'),
-        Color('lightgrey'),
-        Color('gray'),
-        Color('black'),
-        Color('white')
+        Color('violet')
     ]
-
-    # Ignore non-black achromatic cases for spaces who's algorithm isn't precise enough
-    IGNORE_ACHROMA = ['okhsl', 'okhsv', 'uvw']
-
-    # Ignore gray cases. Spaces that don't offer enough precision near grey.
-    IGNORE_GREY = ['jzczhz', 'cam16-jmh', 'hct']
-
-    ACHROMA = {'grey', 'white', 'darkgrey', 'lightgrey'}
-    GREY = {'grey', 'darkgrey', 'lightgrey'}
 
     def assert_round_trip(self, color, space):
         """Cycle through all the other colors and convert to them and back and check the results."""
@@ -102,6 +90,8 @@ class TestAchromaticRoundTrip(TestRoundTrip):
         """Local color object."""
 
     Color.deregister('space:hpluv')
+    Color.deregister('space:ryb')
+    Color.deregister('space:ryb-biased')
 
     SPACES = {k: 5 for k in Color.CS_MAP.keys()}
     # Precision just isn't as high for these in achromatic region

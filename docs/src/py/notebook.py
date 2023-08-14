@@ -12,6 +12,7 @@ code snippets using `coloraide`.
 Transform Python code by executing it, transforming to a Python console output,
 and finding and outputting color previews.
 """
+# ruff: noqa: PGH001
 import xml.etree.ElementTree as Etree
 from collections.abc import Sequence, Mapping
 from collections import namedtuple
@@ -190,12 +191,12 @@ def get_colors(result):
         yield [ColorTuple(result.to_string(fit=False), result.clone())]
     elif isinstance(result, Interpolator):
         # Since we are auto showing the gradient, we need to scale the domain to something we expect.
-        if result.domain:
-            domain = result.domain
-            result.domain = normalize_domain(result.domain)
+        if result._domain:
+            domain = result._domain
+            result.domain(normalize_domain(result._domain))
         grad = Ramp(result.steps(steps=5, max_delta_e=2.3))
         if domain:
-            result.domain = domain
+            result._domain = domain
             domain = []
         yield grad
     elif isinstance(result, str):
@@ -292,7 +293,7 @@ def compare_match(s, g, node):
                 raise NameError("name '{}' is not defined".format(node.cls.id))
             if not isinstance(s, name):
                 return False
-            ma = getattr(s, '__match_args__', tuple())
+            ma = getattr(s, '__match_args__', ())
             l1 = len(ma)
             l2 = len(node.patterns)
             if l1 < l2:
@@ -361,7 +362,7 @@ def evaluate(node, g, loop=False):
             try:
                 for n in node.body:
                     yield from evaluate(n, g, True)
-            except Break:
+            except Break:  # noqa
                 break
             except Continue:
                 continue
@@ -378,7 +379,7 @@ def evaluate(node, g, loop=False):
             try:
                 for n in node.body:
                     yield from evaluate(n, g, True)
-            except Break:
+            except Break:  # noqa
                 break
             except Continue:
                 continue
@@ -510,7 +511,7 @@ def execute(cmd, no_except=True, inline=False, init='', g=None):
                 # Execution went well, so append command
                 console += command
 
-        except Exception as e:
+        except Exception as e:  # noqa:  PERF203
             if no_except:
                 if not inline:
                     from pymdownx.superfences import SuperFencesException
@@ -530,7 +531,7 @@ def execute(cmd, no_except=True, inline=False, init='', g=None):
                 continue
             for clist in get_colors(r):
                 if clist:
-                    colors.append(clist)
+                    colors.append(clist)  # noqa: PERF401
             result_text += '{}{}'.format(
                 repr(r) if isinstance(r, str) and not isinstance(r, AtomicString) else str(r),
                 '\n' if not isinstance(r, AtomicString) else ''
@@ -552,7 +553,7 @@ def colorize(src, lang, **options):
 def color_command_validator(language, inputs, options, attrs, md):
     """Color validator."""
 
-    valid_inputs = set(['exceptions', 'play'])
+    valid_inputs = {'exceptions', 'play', 'wheel'}
 
     for k, v in inputs.items():
         if k in valid_inputs:
@@ -656,6 +657,7 @@ def _color_command_formatter(src="", language="", class_name=None, options=None,
 
     # Support the new way
     gamut = kwargs.get('gamut', WEBSPACE)
+    wheel = options.get('wheel', False)
     play = options.get('play', False) if options is not None else False
     # Support the old way
     if not play and language == 'playground':
@@ -672,26 +674,94 @@ def _color_command_formatter(src="", language="", class_name=None, options=None,
         )
 
     try:
-        if len(md.preprocessors['fenced_code_block'].extension.stash) == 0:
-            code_id = 0
+        if wheel:
+            gamut = 'srgb'
+            exceptions = options.get('exceptions', False) if options is not None else False
 
-        # Check if we should allow exceptions
-        exceptions = options.get('exceptions', False) if options is not None else False
+            _, colors = execute(src.strip(), not exceptions, init=init)
 
-        console, colors = execute(src.strip(), not exceptions, init=init)
-        el = _color_command_console(colors, gamut=gamut)
+            l = len(colors)
+            if l not in (12, 24, 48):
+                raise SuperFencesException("Color wheel requires either 12, 24, or 48 colors")
 
-        el += md.preprocessors['fenced_code_block'].extension.superfences[0]['formatter'](
-            src=console,
-            class_name="highlight",
-            language='pycon',
-            md=md,
-            options=options,
-            **kwargs
-        )
-        el = '<div class="color-command">{}</div>'.format(el)
-        el = template.format(el_id=code_id, raw_source=_escape(src), results=el, gamut=gamut)
-        code_id += 1
+            colors = [c[0].color for c in colors]
+
+            if l == 12:
+                freq = 4
+                offset = 6
+            elif l == 24:
+                freq = 8
+                offset = 12
+            else:
+                freq = 16
+                offset = 24
+
+            primary = list(reversed(colors[::freq]))
+            secondary = list(reversed(colors[offset::freq] + [colors[offset // 3]]))
+            tertiary = list(reversed(colors[::offset // 6]))
+            color_rings = [primary, secondary, tertiary]
+
+            extra_rings_start = ''
+            extra_rings_end = ''
+            if l > 12:
+                extra_rings_start = '<div class="tertiary2">'
+                extra_rings_end += '</div>'
+                color_rings.append(list(reversed(colors[::offset // 12])))
+            if l > 24:
+                extra_rings_start = '<div class="tertiary3">' + extra_rings_start
+                extra_rings_end += '</div>'
+                color_rings.append(list(reversed(colors)))
+
+            color_stops = ''
+            for i, colors in enumerate(color_rings, 1):
+                total = len(colors)
+                percent = 100 / total
+                current = percent
+                last = -1
+
+                stops = []
+                for e, color in enumerate(colors):
+                    color.fit(gamut)
+                    color_str = color.convert(gamut).to_string()
+                    if current:
+                        stops.append('{} {}%'.format(color_str, str(last)))
+                        stops.append('{} {}%'.format(color_str, str(current)))
+                        last = current
+                        if e < (total - 1):
+                            current += percent
+                        else:
+                            current = 100
+                    else:
+                        stops.append(color_str)
+                color_stops += "--color-wheel-stops{}: {};".format(i, ','.join(stops))
+
+            color_wheel = """<div class="color-wheel" style="{}"><div class="wheel">
+{}<div class="tertiary"><div class="secondary"><div class="secondary-inner"><div class="primary"><div class="primary-inner"></div></div></div></div></div></div></div>{}""" .format(  # noqa: E501
+                color_stops, extra_rings_start, extra_rings_end
+            )
+            return color_wheel
+
+        else:
+            if len(md.preprocessors['fenced_code_block'].extension.stash) == 0:
+                code_id = 0
+
+            # Check if we should allow exceptions
+            exceptions = options.get('exceptions', False) if options is not None else False
+
+            console, colors = execute(src.strip(), not exceptions, init=init)
+            el = _color_command_console(colors, gamut=gamut)
+
+            el += md.preprocessors['fenced_code_block'].extension.superfences[0]['formatter'](
+                src=console,
+                class_name="highlight",
+                language='pycon',
+                md=md,
+                options=options,
+                **kwargs
+            )
+            el = '<div class="color-command">{}</div>'.format(el)
+            el = template.format(el_id=code_id, raw_source=_escape(src), results=el, gamut=gamut)
+            code_id += 1
     except SuperFencesException:
         raise
     except Exception:
@@ -718,13 +788,13 @@ def _color_formatter(src="", language="", class_name=None, md="", exceptions=Tru
 
         try:
             color = ColorAll(result.strip())
-        except Exception:
+        except Exception as e:
             _, colors = execute(result, exceptions, inline=True, init=init)
             if len(colors) != 1 or len(colors[0]) != 1:
                 if exceptions:
-                    raise InlineHiliteException('Only one color allowed')
+                    raise InlineHiliteException('Only one color allowed') from e
                 else:
-                    raise ValueError('Only one color allowed')
+                    raise ValueError('Only one color allowed') from e
             color = colors[0][0].color
             result = colors[0][0].string
 
