@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7
+
+-   **NEW**: Officially support Python 3.12.
+
 ## 1.6
 
 -   **NEW**: Drop Python 3.7.
