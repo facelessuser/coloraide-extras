@@ -23,7 +23,7 @@ dynamic = [
 ]
 
 dependencies = [
-    "coloraide>=2.8"
+    "coloraide>=2.10"
 ]
 
 [project.urls]
@@ -104,7 +104,7 @@ legacy_tox_ini = """
     [tox]
     isolated_build = true
     envlist=
-        py38,py39,py310,py311,
+        py38,py39,py310,py311,py312,
         lint
 
     [testenv]

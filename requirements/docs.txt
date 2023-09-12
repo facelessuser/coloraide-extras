@@ -4,3 +4,4 @@ mkdocs-git-revision-date-localized-plugin
 mkdocs-minify-plugin
 pyspelling
 build
+coloraide>=2.10
