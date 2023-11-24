@@ -46,9 +46,7 @@ https://facelessuser.github.io/coloraide-extras
 MIT
 
 [github-ci-image]: https://github.com/facelessuser/coloraide-extras/workflows/build/badge.svg?branch=main&event=push
-[github-ci-link]: https://github.com/facelessuser/coloraide-extras/actions?query=workflow%3Abuild+branch%3Amaster
-[discord-image]: https://img.shields.io/discord/678289859768745989?logo=discord&logoColor=aaaaaa&color=mediumpurple&labelColor=333333
-[discord-link]:https://discord.gg/TWs8Tgr
+[github-ci-link]: https://github.com/facelessuser/coloraide-extras/actions?query=workflow%3Abuild+branch%3Amain
 [codecov-image]: https://img.shields.io/codecov/c/github/facelessuser/coloraide-extras/main.svg?logo=codecov&logoColor=aaaaaa&labelColor=333333
 [codecov-link]: https://codecov.io/github/facelessuser/coloraide-extras
 [pypi-image]: https://img.shields.io/pypi/v/coloraide-extras.svg?logo=pypi&logoColor=aaaaaa&labelColor=333333
