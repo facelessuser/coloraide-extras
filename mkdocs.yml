@@ -176,7 +176,6 @@ extra_javascript:
   - playground-config-ea54609d.js
   - https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js
   - assets/coloraide-extras/extra-notebook-61fde54c.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 extra:
