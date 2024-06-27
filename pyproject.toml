@@ -66,6 +66,10 @@ show_error_codes = true
 [tool.ruff]
 line-length = 120
 
+extend-exclude = [
+    "docs/src/py/notebook.py"
+]
+
 lint.select = [
     "A",    # flake8-builtins
     "B",    # flake8-bugbear
