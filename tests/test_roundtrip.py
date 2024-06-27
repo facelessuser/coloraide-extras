@@ -1,8 +1,9 @@
 """Sanity check that ensures all colors round trip back."""
 from coloraide_extras.everything import ColorAll as Base
-from coloraide.spaces import Cylindrical, HSLish, HSVish
+from coloraide.spaces import HSLish, HSVish
 from coloraide import algebra as alg
 import pytest
+import math
 
 
 class TestRoundTrip:
@@ -19,12 +20,9 @@ class TestRoundTrip:
         """Local color object."""
 
     Color.deregister('space:hpluv')
-    Color.deregister('space:ryb')
     Color.deregister('space:ryb-biased')
 
-    SPACES = {k: 5 for k in Color.CS_MAP.keys()}
-    # Not as accurate due to bisect back to CAM16
-    SPACES['hct'] = 3
+    SPACES = {k: 6 for k in Color.CS_MAP.keys()}
 
     COLORS = [
         Color('red'),
@@ -49,14 +47,14 @@ class TestRoundTrip:
             c2 = c1.convert(space)
             c2.convert(c1.space(), in_place=True)
             # Catch cases where we are really close to 360 which should wrap to 0
-            if isinstance(c2._space, Cylindrical):
-                if alg.round_half_up(alg.no_nan(c2['hue']), p) == 360:
+            if c2._space.is_polar():
+                if alg.round_half_up(c2.get('hue', nans=False), p) == 360:
                     c2.set('hue', 0)
             # In HSL and HSV spaces particularly, we can get nonsense saturation if lightness
             # is not exactly within 0 - 1 range. Ignore saturation in achromatic cases.
-            if isinstance(c2._space, (HSLish, HSVish)) and alg.is_nan(c2['hue']):
+            if isinstance(c2._space, (HSLish, HSVish)) and math.isnan(c2['hue']):
                 c2[c2._space.indexes()[1]] = 0.0
-            if isinstance(c1._space, (HSLish, HSVish)) and alg.is_nan(c1['hue']):
+            if isinstance(c1._space, (HSLish, HSVish)) and math.isnan(c1['hue']):
                 c1[c1._space.indexes()[1]] = 0.0
             # Run rounded string back through parsing in case we hit something like a hue that needs normalization.
             str1 = self.Color(c1.to_string(color=True, fit=False)).to_string(color=True, fit=False, precision=p)

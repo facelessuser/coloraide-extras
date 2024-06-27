@@ -18,3 +18,5 @@ hide:
 <button id="__notebook-submit" title="Submit">Submit</button>
 <button id="__notebook-cancel" title="Cancel">Cancel</button>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
