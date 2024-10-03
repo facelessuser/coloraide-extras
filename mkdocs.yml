@@ -4,7 +4,7 @@ repo_url: https://github.com/facelessuser/coloraide-extras
 edit_uri: ""
 site_description: Additional color spaces for ColorAide
 copyright: |
-  Copyright &copy; 2014 - 2023 <a href="https://github.com/facelessuser" target="_blank" rel="noopener">Isaac Muse</a>
+  Copyright &copy; 2014 - 2024 <a href="https://github.com/facelessuser" target="_blank" rel="noopener">Isaac Muse</a>
 
 docs_dir: docs/src/markdown
 theme:
@@ -197,12 +197,14 @@ markdown_extensions:
   - pymdownx.blocks.definition:
   - pymdownx.blocks.tab:
       alternate_style: True
+  - pymdownx.fancylists:
+      inject_style: True
 
 extra_css:
   - assets/coloraide-extras/extra-e1cd7ecf37.css
 extra_javascript:
   - https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js
-  - playground-config-6b95b8b7.js
+  - playground-config-f0823851.js
   - https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js
   - assets/coloraide-extras/extra-notebook-UYPnvA4p.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

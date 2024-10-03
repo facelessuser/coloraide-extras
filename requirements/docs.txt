@@ -1,7 +1,7 @@
-mkdocs_pymdownx_material_extras>=2.0
+mkdocs_pymdownx_material_extras>=2.6
 git+https://github.com/facelessuser/pymdown-lexers.git
 mkdocs-git-revision-date-localized-plugin
 mkdocs-minify-plugin
 pyspelling
 build
-coloraide>=3.3.1
+coloraide>=4.0
