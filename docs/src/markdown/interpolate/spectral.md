@@ -164,9 +164,8 @@ different.
 4.  While Spectral.js uses linear sRGB as their working space, we chose to work in XYZ D65. While the reflectance curves
     were calculated relative to the sRGB gamut, the actual mixing is not done in either sRGB or XYZ, but done with the
     K/S data coefficients, only the residual data is mixed directly in a color space and we opted to measure and mix it
-    in a space non-specific to a specific to the sRGB gamut. Measuring and mixing the residual in linear sRGB would have
-    been fine as well with likely little noticeable difference, but this is one area that could be experimented with
-    more.
+    in a space non-specific to the sRGB gamut. Measuring and mixing the residual in linear sRGB would have been fine as
+    well with likely little noticeable difference, but this is one area that could be experimented with more.
 
 ## Registering
 
