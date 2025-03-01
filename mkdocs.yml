@@ -37,6 +37,9 @@ nav:
       - Color Spaces:
         - colors/index.md
         - CIE 1964 UVW: colors/uvw.md
+      - Color Interpolation:
+        - interpolate/index.md
+        - Spectral: interpolate/spectral.md
       - Color Contrast:
         - contrast/index.md
         - Weber Contrast: contrast/weber.md
