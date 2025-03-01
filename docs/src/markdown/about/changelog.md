@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9
+
+-   **NEW**: Drop Python 3.8.
+-   **NEW**: Require ColorAide 4.3.
+
 ## 1.8
 
 -   **NEW**: Officially support Python 3.13.
