@@ -5,6 +5,7 @@ from coloraide import stop, hint, NaN
 from .spaces.uvw import UVW
 from .contrast.contrast_weber import ContrastWeber
 from .contrast.contrast_michelson import ContrastMichelson
+from .interpolate.spectral import Spectral, SpectralContinuous
 
 __all__ = ("ColorAll", 'NaN', 'stop', 'hint')
 
@@ -25,7 +26,11 @@ ColorAll.register(
 
         # Contrast
         ContrastWeber(),
-        ContrastMichelson()
+        ContrastMichelson(),
+
+        # Interpolation
+        Spectral(),
+        SpectralContinuous()
 
         # Gamut
     ],
