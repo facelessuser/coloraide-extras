@@ -4,6 +4,7 @@
 
 -   **NEW**: Drop Python 3.8.
 -   **NEW**: Require ColorAide 4.3.
+-   **NEW**: Add spectral interpolation that leverages Kubelka-Munk theory for color mixing.
 
 ## 1.8
 
