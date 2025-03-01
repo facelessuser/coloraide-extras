@@ -9,7 +9,7 @@ name = "coloraide_extras"
 description = "Experimental plugins for ColorAide."
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 authors = [
     { name = "Isaac Muse", email = "Isaac.Muse@gmail.com" },
 ]
@@ -23,7 +23,7 @@ dynamic = [
 ]
 
 dependencies = [
-    "coloraide>=4.0"
+    "coloraide>=4.3"
 ]
 
 [project.urls]
@@ -100,7 +100,8 @@ lint.ignore = [
     "RUF012",
     "RUF005",
     "PGH004",
-    "RUF100"
+    "RUF100",
+    "RUF022"
 ]
 
 [tool.tox]

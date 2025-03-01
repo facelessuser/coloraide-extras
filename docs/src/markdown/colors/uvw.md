@@ -19,12 +19,10 @@ Name | Range^\*^
 ^\*^ Range is currently quite arbitrary.
 ////
 
-//// html | figure
 ![UVW](../images/uvw-3d.png)
 
-///// html | figcaption
+//// figure-caption
 The sRGB gamut represented within the UVW color space.
-/////
 ////
 
 //// note

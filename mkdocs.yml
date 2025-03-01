@@ -4,7 +4,7 @@ repo_url: https://github.com/facelessuser/coloraide-extras
 edit_uri: ""
 site_description: Additional color spaces for ColorAide
 copyright: |
-  Copyright &copy; 2014 - 2024 <a href="https://github.com/facelessuser" target="_blank" rel="noopener">Isaac Muse</a>
+  Copyright &copy; 2014 - 2025 <a href="https://github.com/facelessuser" target="_blank" rel="noopener">Isaac Muse</a>
 
 docs_dir: docs/src/markdown
 theme:
@@ -199,14 +199,17 @@ markdown_extensions:
       alternate_style: True
   - pymdownx.fancylists:
       inject_style: True
+  - pymdownx.blocks.caption:
 
 extra_css:
-  - assets/coloraide-extras/extra-e1cd7ecf37.css
+  - assets/coloraide-extras/extra-fb70a42784.css
+  - https://cdn.jsdelivr.net/npm/ace-builds@1.39.0/css/ace.css
 extra_javascript:
-  - https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js
-  - playground-config-f0823851.js
-  - https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js
-  - assets/coloraide-extras/extra-notebook-UYPnvA4p.js
+  - https://cdn.jsdelivr.net/npm/ace-builds@1.39.0/src-min-noconflict/ace.js
+  - https://cdn.jsdelivr.net/npm/mermaid@11.3.0/dist/mermaid.min.js
+  - playground-config-23e7f56c.js
+  - https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js
+  - assets/coloraide-extras/extra-notebook-BuQ8qEc0.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 extra:

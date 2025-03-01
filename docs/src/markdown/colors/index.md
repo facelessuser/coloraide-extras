@@ -8,6 +8,7 @@ Click a color space to learn more.
 
 /// html | div.data-search-exclude
 ```diagram
+%%{init: {"flowchart": {"useMaxWidth": true}}}%%
 flowchart TB
 
     uvw --- xyz-d65

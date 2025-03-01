@@ -1,5 +1,9 @@
-_N='swatch'
-_M='transparent'
+_R='content'
+_Q='swatch'
+_P='transparent'
+_O='session_name'
+_N='session'
+_M='SESSIONS'
 _L='pycon'
 _K='playground'
 _J='gamut'
@@ -8,8 +12,8 @@ _H='exceptions'
 _G='highlight'
 _F='eval'
 _E='<string>'
-_D=None
-_C='class'
+_D='class'
+_C=None
 _B=True
 _A=False
 import xml.etree.ElementTree as Etree
@@ -35,27 +39,28 @@ if PY311:AST_BLOCKS=AST_BLOCKS+(ast.TryStar,)
 RE_INIT=re.compile('^\\s*#\\s*pragma:\\s*init\\n(.*?)#\\s*pragma:\\s*init\\n',re.DOTALL|re.I)
 RE_COLOR_START=re.compile('(?i)(?:\\b(?<![-#&$])(?:color|hsla?|lch|lab|hwb|rgba?)\\(|\\b(?<![-#&$])[\\w]{3,}(?![(-])\\b|(?<![&])#)')
 LIVE_INIT='\nfrom coloraide import *\nimport coloraide\ntry:\n    import coloraide_extras\n    from coloraide_extras.everything import ColorAll as Color\nexcept ImportError:\n    from coloraide.everything import ColorAll as Color\n'
-template='<div class="playground" id="__playground_{el_id}">\n<div class="playground-results" id="__playground-results_{el_id}">\n{results}\n</div>\n<div class="playground-code hidden" id="__playground-code_{el_id}" data-search-exclude>\n<form autocomplete="off">\n<textarea class="playground-inputs" id="__playground-inputs_{el_id}" spellcheck="false">{raw_source}</textarea>\n</form>\n</div>\n<div class="playground-footer" data-search-exclude>\n<hr>\n<button id="__playground-edit_{el_id}" class="playground-edit" title="Edit the current snippet">Edit</button>\n<button id="__playground-share_{el_id}" class="playground-share" title="Copy URL to current snippet">Share</button>\n<button id="__playground-run_{el_id}" class="playground-run hidden" title="Run code (Ctrl + Enter)">Run</button>\n<button id="__playground-cancel_{el_id}" class="playground-cancel hidden" title="Cancel edit (Escape)">Cancel</button>\n<span class=\'gamut\'>Gamut: {gamut}</span>\n</div>\n</div>'
+template='<div class="playground" id="__playground_{el_id}">\n<div class="playground-results" id="__playground-results_{el_id}">\n{results}\n</div>\n<div class="playground-code hidden" id="__playground-code_{el_id}" session="{session}" data-search-exclude>\n<form autocomplete="off">\n<pre class="playground-inputs" id="__playground-inputs_{el_id}" spellcheck="false">{raw_source}</pre>\n</form>\n</div>\n<div class="playground-footer" data-search-exclude>\n<hr>\n<button id="__playground-edit_{el_id}" class="playground-edit" title="Edit the current snippet">Edit</button>\n<button id="__playground-share_{el_id}" class="playground-share" title="Copy URL to current snippet">Share</button>\n<button id="__playground-run_{el_id}" class="playground-run hidden" title="Run code (Ctrl + Enter)">Run</button>\n<button id="__playground-cancel_{el_id}" class="playground-cancel hidden" title="Cancel edit (Escape)">Cancel</button>\n<div class=\'spacer\'></div>\n<div class=\'footer-status\'>\n<span class=\'session\'>{session}</span>\n<span class=\'gamut\'>Gamut: {gamut}</span>\n</div>\n</div>\n</div>'
 code_id=0
-class Ramp(list):0
-class Steps(list):0
-class Row(list):0
-class ColorTuple(namedtuple('ColorTuple',['string',_I])):0
-class AtomicString(str):0
-class Break(Exception):0
-class Continue(Exception):0
-HtmlRow=Row
-HtmlSteps=Steps
-HtmlGradient=Ramp
+if _M not in globals()or not globals()[_M]:
+    SESSIONS={}
+    class Ramp(list):0
+    class Steps(list):0
+    class Row(list):0
+    class ColorTuple(namedtuple('ColorTuple',['string',_I])):0
+    class AtomicString(str):0
+    class Break(Exception):0
+    class Continue(Exception):0
+    HtmlRow=Row;HtmlSteps=Steps;HtmlGradient=Ramp
+def reset():SESSIONS.clear()
 def _escape(txt):txt=txt.replace('&','&amp;');txt=txt.replace('<','&lt;');txt=txt.replace('>','&gt;');return txt
 class StreamOut:
     def __init__(self):self.old=sys.stdout;self.stdout=StringIO();sys.stdout=self.stdout
     def read(self):
         value=''
-        if self.stdout is not _D:self.stdout.flush();value=self.stdout.getvalue();self.stdout=StringIO();sys.stdout=self.stdout
+        if self.stdout is not _C:self.stdout.flush();value=self.stdout.getvalue();self.stdout=StringIO();sys.stdout=self.stdout
         return value
     def __enter__(self):return self
-    def __exit__(self,type,value,traceback):sys.stdout=self.old;self.old=_D;self.stdout=_D
+    def __exit__(self,type,value,traceback):sys.stdout=self.old;self.old=_C;self.stdout=_C
 def get_colors(result):
     domain=[]
     if isinstance(result,AtomicString):yield find_colors(result)
@@ -78,7 +83,7 @@ def find_colors(text):
     colors=[]
     for m in RE_COLOR_START.finditer(text):
         start=m.start();mcolor=ColorAll.match(text,start=start)
-        if mcolor is not _D:colors.append(ColorTuple(text[mcolor.start:mcolor.end],mcolor.color))
+        if mcolor is not _C:colors.append(ColorTuple(text[mcolor.start:mcolor.end],mcolor.color))
     return colors
 def evaluate_with(node,g,loop,index=0):
     l=len(node.items)-1;withitem=node.items[index]
@@ -103,7 +108,7 @@ def compare_match(s,g,node):
         if isinstance(s,Sequence):
             star=isinstance(node.patterns[-1],ast.MatchStar);l1,l2=len(s),len(node.patterns)
             if star and l1>=l2-1 or l1==l2:
-                for (e,p) in enumerate(node.patterns[:-1]if star else node.patterns):
+                for(e,p)in enumerate(node.patterns[:-1]if star else node.patterns):
                     if not compare_match(s[e],g,p):return _A
                 if star and node.patterns[-1].name:g[node.patterns[-1].name]=s[l2-1:]
                 return _B
@@ -113,7 +118,7 @@ def compare_match(s,g,node):
             star=node.rest;l1,l2=len(s),len(node.patterns)
             if star and l1>=l2 or l1==l2:
                 keys=set()
-                for (kp,vp) in zip(node.keys,node.patterns):
+                for(kp,vp)in zip(node.keys,node.patterns):
                     key=eval(compile(ast.Expression(kp),_E,_F),g);keys.add(key)
                     if key not in s:return _A
                     if not compare_match(s[key],g,vp):return _A
@@ -121,27 +126,27 @@ def compare_match(s,g,node):
                 return _B
         return _A
     elif isinstance(node,ast.MatchClass):
-        name=g.get(node.cls.id,_D)
-        if name is _D:raise NameError(f"name '{node.cls.id}' is not defined")
+        name=g.get(node.cls.id,_C)
+        if name is _C:raise NameError(f"name '{node.cls.id}' is not defined")
         if not isinstance(s,name):return _A
         ma=getattr(s,'__match_args__',());l1=len(ma);l2=len(node.patterns)
         if l1<l2:raise TypeError(f"{name}() accepts {l1} positional sub-patterns ({l2} given)")
-        for (e,p) in enumerate(node.patterns):
+        for(e,p)in enumerate(node.patterns):
             if not hasattr(s,ma[e]):return _A
             if not compare_match(getattr(s,ma[e]),g,p):return _A
-        for (a,p) in zip(node.kwd_attrs,node.kwd_patterns):
+        for(a,p)in zip(node.kwd_attrs,node.kwd_patterns):
             if not hasattr(s,a):return _A
             if not compare_match(getattr(s,a),g,p):return _A
         return _B
     elif isinstance(node,ast.MatchAs):
-        if node.name is not _D:g[node.name]=s
+        if node.name is not _C:g[node.name]=s
         if node.pattern:return compare_match(s,g,node.pattern)
         return _B
     raise RuntimeError(f"Unknown Match pattern {node!s}")
 def evaluate_except(node,e,g,loop=_A):
     for n in node.handlers:
         if n.name:g[n.name]=e
-        if n.type is _D:
+        if n.type is _C:
             for ne in n.body:yield from evaluate(ne,g,loop)
             break
         elif isinstance(e,eval(compile(ast.Expression(n.type),_E,_F),g)):
@@ -168,7 +173,7 @@ def evaluate(node,g,loop=_A):
     elif isinstance(node,ast.For):
         for x in eval(compile(ast.Expression(node.iter),_E,_F),g):
             if isinstance(node.target,ast.Tuple):
-                for (e,t) in enumerate(node.target.dims):g[t.id]=x[e]
+                for(e,t)in enumerate(node.target.dims):g[t.id]=x[e]
             else:g[node.target.id]=x
             try:
                 for n in node.body:yield from evaluate(n,g,_B)
@@ -191,10 +196,10 @@ def evaluate(node,g,loop=_A):
             for n in node.handlers:
                 if n.name:g[n.name]=e
                 m,e=e.split(eval(compile(ast.Expression(n.type),_E,_F),g))
-                if m is not _D:
+                if m is not _C:
                     for ne in n.body:yield from evaluate(ne,g,loop)
-                if e is _D:break
-            if e is not _D:raise e
+                if e is _C:break
+            if e is not _C:raise e
         except Exception as e:yield from evaluate_except(node,e,g,loop)
         else:
             for n in node.orelse:yield from evaluate(n,g,loop)
@@ -208,11 +213,13 @@ def evaluate(node,g,loop=_A):
                     for n in c.body:yield from evaluate(n,g,loop)
                     break
     elif isinstance(node,ast.With):yield from evaluate_with(node,g,loop)
-    else:_exec=ast.Module([node],[]);exec(compile(_exec,_E,'exec'),g);yield _D
-def execute(cmd,no_except=_B,inline=_A,init='',g=_D):
+    else:_exec=ast.Module([node],[]);exec(compile(_exec,_E,'exec'),g);yield _C
+def execute(cmd,no_except=_B,inline=_A,init='',g=_C):
     A='\n';console='';colors=[]
-    if g is _D:g={'Ramp':Ramp,'Steps':Steps,'Row':Row,'HtmlRow':HtmlRow,'HtmlSteps':HtmlSteps,'HtmlGradient':HtmlGradient}
-    if init:execute(init.strip(),g=g)
+    if g is _C:g={}
+    if not g:
+        g['Ramp']=Ramp;g['Steps']=Steps;g['Row']=Row;g['HtmlRow']=HtmlRow;g['HtmlSteps']=HtmlSteps;g['HtmlGradient']=HtmlGradient
+        if init:execute(init.strip(),g=g)
     m=RE_INIT.match(cmd)
     if m:block_init=m.group(1);src=cmd[m.end():];execute(block_init,g=g)
     else:src=cmd
@@ -223,18 +230,22 @@ def execute(cmd,no_except=_B,inline=_A,init='',g=_D):
             if not inline:from pymdownx.superfences import SuperFencesException;raise SuperFencesException from e
             else:from pymdownx.inlinehilite import InlineHiliteException;raise InlineHiliteException from e
         import traceback;return f"{traceback.format_exc()}",colors
+    last=-1
     for node in tree.body:
-        result=[];start=node.lineno;end=node.end_lineno;stmt=lines[start-1:end];command=''
-        for (i,line) in enumerate(stmt,0):
-            if i==0:stmt[i]='>>> '+line
-            else:stmt[i]='... '+line
-        command+=A.join(stmt)
+        result=[];start=node.lineno;end=node.end_lineno;stmt=[];command=''
+        for(i,line)in enumerate(lines[start-1:end],0):
+            if line!=last:
+                if i==0:stmt.append('>>> '+line)
+                else:stmt.append('... '+line)
+            last=line
+        if stmt:command+=A.join(stmt)
         if isinstance(node,AST_BLOCKS):command+='\n... '
         try:
             with StreamOut()as s:
                 for x in evaluate(node,g):
-                    result.append(x);text=s.read()
+                    text=s.read()
                     if text:result.append(AtomicString(text))
+                    result.append(x)
                 console+=command
         except Exception as e:
             if no_except:
@@ -243,16 +254,19 @@ def execute(cmd,no_except=_B,inline=_A,init='',g=_D):
             import traceback;console+=f"{command}\n{traceback.format_exc()}";break
         result_text=A
         for r in result:
-            if r is _D:continue
+            if r is _C:continue
             for clist in get_colors(r):
                 if clist:colors.append(clist)
             result_text+='{}{}'.format(repr(r)if isinstance(r,str)and not isinstance(r,AtomicString)else str(r),A if not isinstance(r,AtomicString)else'')
-        console+=result_text
+        if stmt:console+=result_text
     return console,colors
 def colorize(src,lang,**options):HtmlFormatter=find_formatter_class('html');lexer=get_lexer_by_name(lang,**options);formatter=HtmlFormatter(cssclass=_G,wrapcode=_B);return highlight(src,lexer,formatter).strip()
 def color_command_validator(language,inputs,options,attrs,md):
     valid_inputs={_H,'play','wheel'}
-    for (k,v) in inputs.items():
+    for(k,v)in inputs.items():
+        if k==_N:
+            if k not in SESSIONS:SESSIONS[k]={}
+            options[k]=SESSIONS[k];options[_O]=v;continue
         if k in valid_inputs:options[k]=_B;continue
         attrs[k]=v
     return _B
@@ -265,7 +279,7 @@ def _color_command_console(colors,gamut=WEBSPACE):
             if isinstance(item,Steps):total=len(item);percent=100/total;current=percent
             if bar:el+=A.format(B.join(values));values=[]
             sub_el1='<div class="swatch-bar"><span class="swatch swatch-gradient">{}</span></div>';style='--swatch-stops: ';stops=[]
-            for (e,color) in enumerate(item):
+            for(e,color)in enumerate(item):
                 color.fit(gamut);color_str=color.convert(gamut).to_string()
                 if current:
                     if is_steps:stops.append(f"{color_str} {last!s}%");stops.append(f"{color_str} {current!s}%")
@@ -274,7 +288,7 @@ def _color_command_console(colors,gamut=WEBSPACE):
                     if e<total-1:current+=percent
                     else:current=100
                 else:stops.append(color_str)
-            if not stops:stops.extend([_M]*2)
+            if not stops:stops.extend([_P]*2)
             if len(stops)==1:stops.append(stops[0])
             style+=','.join(stops);sub_el2=f'<span class="swatch-color" style="{style}"></span>';el+=sub_el1.format(sub_el2);bar=_A
         else:
@@ -285,19 +299,19 @@ def _color_command_console(colors,gamut=WEBSPACE):
                 bar=_A
             bar=_B
             for color in item:
-                base_classes=_N
+                base_classes=_Q
                 if not color.color.in_gamut(gamut):base_classes+=' out-of-gamut'
                 color.color.fit(gamut);srgb=color.color.convert(gamut);value1=srgb.to_string(alpha=_A);value2=srgb.to_string();style=f"--swatch-stops: {value1} 50%, {value2} 50%";title=color.string;classes=base_classes;c=f'<span class="swatch-color" style="{style}"></span>';c='<span class="{classes}" title="{title}&#013;Copy to clipboard">{color}</span>'.format(classes=classes,color=c,title=title);values.append(c)
             if is_row and values:el+=A.format(B.join(values));values=[];bar=_A
     if bar:el+=A.format(B.join(values));values=[]
     return el
-def _color_command_formatter(src='',language='',class_name=_D,options=_D,md='',init='',**kwargs):
-    C='</div>';B='formatter';A='fenced_code_block';global code_id;from pymdownx.superfences import SuperFencesException;gamut=kwargs.get(_J,WEBSPACE);wheel=options.get('wheel',_A);play=options.get('play',_A)if options is not _D else _A
+def _color_command_formatter(src='',language='',class_name=_C,options=_C,md='',init='',**kwargs):
+    C='</div>';B='formatter';A='fenced_code_block';global code_id;from pymdownx.superfences import SuperFencesException;gamut=kwargs.get(_J,WEBSPACE);wheel=options.get('wheel',_A);play=options.get('play',_A)if options is not _C else _A;session=options.get(_N)if options is not _C else _C;session_name=options.get(_O,'')if options is not _C else''
     if not play and language==_K:play=_B
     if not play:return md.preprocessors[A].extension.superfences[0][B](src=src,class_name=class_name,language='py',md=md,options=options,**kwargs)
     try:
         if wheel:
-            gamut='srgb';exceptions=options.get(_H,_A)if options is not _D else _A;_,colors=execute(src.strip(),not exceptions,init=init);l=len(colors)
+            gamut='srgb';exceptions=options.get(_H,_A)if options is not _C else _A;_,colors=execute(src.strip(),not exceptions,init=init,g=session);l=len(colors)
             if l not in(12,24,48):raise SuperFencesException('Color wheel requires either 12, 24, or 48 colors')
             colors=[c[0].color for c in colors]
             if l==12:freq=4;offset=6
@@ -307,9 +321,9 @@ def _color_command_formatter(src='',language='',class_name=_D,options=_D,md='',i
             if l>12:extra_rings_start='<div class="tertiary2">';extra_rings_end+=C;color_rings.append(colors[::offset//12][::-1])
             if l>24:extra_rings_start='<div class="tertiary3">'+extra_rings_start;extra_rings_end+=C;color_rings.append(colors[::-1])
             color_stops=''
-            for (i,colors) in enumerate(color_rings,1):
+            for(i,colors)in enumerate(color_rings,1):
                 total=len(colors);percent=100/total;current=percent;last=-1;stops=[]
-                for (e,color) in enumerate(colors):
+                for(e,color)in enumerate(colors):
                     color.fit(gamut);color_str=color.convert(gamut).to_string()
                     if current:
                         stops.append(f"{color_str} {last!s}%");stops.append(f"{color_str} {current!s}%");last=current
@@ -320,12 +334,12 @@ def _color_command_formatter(src='',language='',class_name=_D,options=_D,md='',i
             color_wheel='<div class="color-wheel" style="{}"><div class="wheel">\n{}<div class="tertiary"><div class="secondary"><div class="secondary-inner"><div class="primary"><div class="primary-inner"></div></div></div></div></div></div></div>{}'.format(color_stops,extra_rings_start,extra_rings_end);return color_wheel
         else:
             if len(md.preprocessors[A].extension.stash)==0:code_id=0
-            exceptions=options.get(_H,_A)if options is not _D else _A;console,colors=execute(src.strip(),not exceptions,init=init);el=_color_command_console(colors,gamut=gamut);el+=md.preprocessors[A].extension.superfences[0][B](src=console,class_name=_G,language=_L,md=md,options=options,**kwargs);el=f'<div class="color-command">{el}</div>';el=template.format(el_id=code_id,raw_source=_escape(src),results=el,gamut=gamut);code_id+=1
+            exceptions=options.get(_H,_A)if options is not _C else _A;console,colors=execute(src.strip(),not exceptions,init=init,g=session);el=_color_command_console(colors,gamut=gamut);el+=md.preprocessors[A].extension.superfences[0][B](src=console,class_name=_G,language=_L,md=md,options=options,**kwargs);el=f'<div class="color-command">{el}</div>';el=template.format(el_id=code_id,raw_source=_escape(src),results=el,gamut=gamut,session=f"Session: {session_name}"if session_name else'');code_id+=1
     except SuperFencesException:raise
     except Exception:from pymdownx import superfences;import traceback;print(traceback.format_exc());return superfences.fence_code_format(src,'text',class_name,options,md,**kwargs)
     return el
 def color_command_formatter(init='',gamut=WEBSPACE):return partial(_color_command_formatter,init=init,gamut=gamut)
-def _color_formatter(src='',language='',class_name=_D,md='',exceptions=_B,init='',gamut=WEBSPACE):
+def _color_formatter(src='',language='',class_name=_C,md='',exceptions=_B,init='',gamut=WEBSPACE):
     E='backtick';D='title';C='Only one color allowed';B=' 50%';A='span';from pymdownx.inlinehilite import InlineHiliteException
     try:
         result=src.strip()
@@ -333,42 +347,46 @@ def _color_formatter(src='',language='',class_name=_D,md='',exceptions=_B,init='
         except Exception as e:
             _,colors=execute(result,exceptions,inline=_B,init=init)
             if len(colors)!=1 or len(colors[0])!=1:
-                if exceptions:raise InlineHiliteException(C) from e
-                else:raise ValueError(C) from e
+                if exceptions:raise InlineHiliteException(C)from e
+                else:raise ValueError(C)from e
             color=colors[0][0].color;result=colors[0][0].string
         el=Etree.Element(A);stops=[]
         if not color.in_gamut(gamut):
-            color.fit(gamut);attributes={_C:'swatch out-of-gamut',D:result};sub_el=Etree.SubElement(el,A,attributes);stops.append(color.convert(gamut).to_string(hex=_B,alpha=_A))
-            if color[-1]<1.0:stops[-1]+=B;stops.append(color.convert(gamut).to_string(hex=_B)+B)
+            color.fit(gamut);attributes={_D:'swatch out-of-gamut',D:result};sub_el=Etree.SubElement(el,A,attributes);stops.append(color.convert(gamut).to_string(hex=_B,alpha=_A))
+            if color[-1]<1.:stops[-1]+=B;stops.append(color.convert(gamut).to_string(hex=_B)+B)
         else:
-            attributes={_C:_N,D:result};sub_el=Etree.SubElement(el,A,attributes);stops.append(color.convert(gamut).to_string(hex=_B,alpha=_A))
-            if color[-1]<1.0:stops[-1]+=B;stops.append(color.convert(gamut).to_string(hex=_B)+B)
-        if not stops:stops.extend([_M]*2)
+            attributes={_D:_Q,D:result};sub_el=Etree.SubElement(el,A,attributes);stops.append(color.convert(gamut).to_string(hex=_B,alpha=_A))
+            if color[-1]<1.:stops[-1]+=B;stops.append(color.convert(gamut).to_string(hex=_B)+B)
+        if not stops:stops.extend([_P]*2)
         if len(stops)==1:stops.append(stops[0])
-        Etree.SubElement(sub_el,A,{_C:'swatch-color','style':'--swatch-stops: {};'.format(','.join(stops))});el.append(md.inlinePatterns[E].handle_code('css-color',result))
+        Etree.SubElement(sub_el,A,{_D:'swatch-color','style':'--swatch-stops: {};'.format(','.join(stops))});el.append(md.inlinePatterns[E].handle_code('css-color',result))
     except InlineHiliteException:raise
     except Exception:import traceback;print(traceback.format_exc());el=md.inlinePatterns[E].handle_code('text',src)
     return el
 def color_formatter(init='',gamut=WEBSPACE):return partial(_color_formatter,init=init,gamut=gamut)
-def _live_color_command_formatter(src,init='',gamut=WEBSPACE):
+def _live_color_command_formatter(src,init='',gamut=WEBSPACE,session=''):
     try:
-        console,colors=execute(src.strip(),_A,init=init);el=_color_command_console(colors,gamut=gamut)
+        if session:
+            if session not in SESSIONS:SESSIONS[session]={}
+            g=SESSIONS.get(session,{})
+        else:g={}
+        console,colors=execute(src.strip(),_A,init=init,g=g);el=_color_command_console(colors,gamut=gamut)
         if not colors:el+='<div class="swatch-bar"></div>'
         el+=colorize(console,_L,**{'python3':_B,'stripnl':_A});el=f'<div class="color-command">{el}</div>'
-    except Exception:import traceback;return '<div class="color-command"><div class="swatch-bar"></div>{}</div>'.format(colorize(traceback.format_exc(),_L))
+    except Exception:import traceback;return'<div class="color-command"><div class="swatch-bar"></div>{}</div>'.format(colorize(traceback.format_exc(),_L))
     return el
-def live_color_command_formatter(init='',gamut=WEBSPACE):return partial(_live_color_command_formatter,init=init,gamut=gamut)
+def live_color_command_formatter(init='',gamut=WEBSPACE,session=''):return partial(_live_color_command_formatter,init=init,gamut=gamut,session=session)
 def live_color_command_validator(language,inputs,options,attrs,md):value=color_command_validator(language,inputs,options,attrs,md);options[_H]=_B;return value
 def render_console(*args,**kwargs):
-    C='.swatch-bar';B='code';A='id_num';from js import document;gamut=kwargs.get(_J,WEBSPACE)
+    C='.swatch-bar';B='id_num';A='code';from js import document;gamut=kwargs.get(_J,WEBSPACE)
     try:
-        inputs=document.getElementById('__playground-inputs_{}'.format(globals()[A]));results=document.getElementById('__playground-results_{}'.format(globals()[A]));footer=document.querySelector('#__playground_{} .gamut'.format(globals()[A]));result=live_color_command_formatter(LIVE_INIT,gamut)(inputs.value);temp=document.createElement('div');temp.innerHTML=result;cmd=results.querySelector('.color-command')
+        results=document.getElementById('__playground-results_{}'.format(globals()[B]));footer=document.querySelector('#__playground_{} .gamut'.format(globals()[B]));session=globals()['session_id'];result=live_color_command_formatter(LIVE_INIT,gamut)(globals()[_R],session=session);temp=document.createElement('div');temp.innerHTML=result;cmd=results.querySelector('.color-command')
         for el in cmd.querySelectorAll(C):el.remove()
         for el in temp.querySelectorAll(C):cmd.insertBefore(el,cmd.lastChild)
-        footer.innerHTML=f"Gamut: {gamut}";pre=cmd.querySelector('pre');pre.replaceChild(temp.querySelector(B),pre.querySelector(B));temp.remove();scrollingElement=results.querySelector(B);scrollingElement.scrollTop=scrollingElement.scrollHeight
+        footer.innerHTML=f"Gamut: {gamut}";pre=cmd.querySelector('pre');pre.replaceChild(temp.querySelector(A),pre.querySelector(A));temp.remove();scrollingElement=results.querySelector(A);scrollingElement.scrollTop=scrollingElement.scrollHeight
     except Exception as e:print(e)
 def render_notebook(*args,**kwargs):
-    d='quote';c='example';b='bug';a='danger';Z='failure';Y='warning';X='question';W='success';V='tip';U='info';T='abstract';S='note';R='settings';Q='new';P='types';O='diagram';N='pymdownx.fancylists';M='pymdownx.blocks.tab';L='pymdownx.blocks.details';K='pymdownx.blocks.admonition';J='pymdownx.arithmatex';I='pymdownx.keys';H='pymdownx.magiclink';G='pymdownx.inlinehilite';F='pymdownx.superfences';E='markdown.extensions.smarty';D='markdown.extensions.toc';C='validator';B='format';A='name';import markdown;from pymdownx import slugs,superfences;from js import document;gamut=kwargs.get(_J,WEBSPACE);text=globals().get('content','');extensions=[D,E,'pymdownx.betterem','markdown.extensions.attr_list','markdown.extensions.tables','markdown.extensions.abbr','markdown.extensions.footnotes',F,'pymdownx.highlight',G,H,'pymdownx.tilde','pymdownx.caret','pymdownx.smartsymbols','pymdownx.emoji','pymdownx.escapeall','pymdownx.tasklist','pymdownx.striphtml','pymdownx.snippets',I,'pymdownx.saneheaders',J,K,L,'pymdownx.blocks.html','pymdownx.blocks.definition',M,N];extension_configs={D:{'slugify':slugs.slugify(case='lower'),'permalink':''},E:{'smart_quotes':_A},J:{'generic':_B,'block_tag':'pre'},F:{'preserve_tabs':_B,'custom_fences':[{A:O,_C:O,B:superfences.fence_code_format},{A:_K,_C:_K,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator},{A:'python',_C:_G,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator},{A:'py',_C:_G,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator}]},G:{'custom_inline':[{A:_I,_C:_I,B:color_formatter(LIVE_INIT,gamut)}]},H:{'repo_url_shortener':_B,'repo_url_shorthand':_B,'social_url_shorthand':_B,'user':'facelessuser','repo':'coloraide'},I:{'separator':'＋'},M:{'alternate_style':_B},K:{P:[Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d]},N:{'inject_style':_B},L:{P:[{A:'details-new',_C:Q},{A:'details-settings',_C:R},{A:'details-note',_C:S},{A:'details-abstract',_C:T},{A:'details-info',_C:U},{A:'details-tip',_C:V},{A:'details-success',_C:W},{A:'details-question',_C:X},{A:'details-warning',_C:Y},{A:'details-failure',_C:Z},{A:'details-danger',_C:a},{A:'details-bug',_C:b},{A:'details-example',_C:c},{A:'details-quote',_C:d}]}}
+    d='quote';c='example';b='bug';a='danger';Z='failure';Y='warning';X='question';W='success';V='tip';U='info';T='abstract';S='note';R='settings';Q='new';P='types';O='diagram';N='pymdownx.fancylists';M='pymdownx.blocks.tab';L='pymdownx.blocks.details';K='pymdownx.blocks.admonition';J='pymdownx.arithmatex';I='pymdownx.keys';H='pymdownx.magiclink';G='pymdownx.inlinehilite';F='pymdownx.superfences';E='markdown.extensions.smarty';D='markdown.extensions.toc';C='validator';B='format';A='name';import markdown;from pymdownx import slugs,superfences;from js import document;gamut=kwargs.get(_J,WEBSPACE);text=globals().get(_R,'');extensions=[D,E,'pymdownx.betterem','markdown.extensions.attr_list','markdown.extensions.tables','markdown.extensions.abbr','markdown.extensions.footnotes',F,'pymdownx.highlight',G,H,'pymdownx.tilde','pymdownx.caret','pymdownx.smartsymbols','pymdownx.emoji','pymdownx.escapeall','pymdownx.tasklist','pymdownx.striphtml','pymdownx.snippets',I,'pymdownx.saneheaders',J,K,L,'pymdownx.blocks.html','pymdownx.blocks.definition',M,N,'pymdownx.blocks.caption'];extension_configs={D:{'slugify':slugs.slugify(case='lower'),'permalink':''},E:{'smart_quotes':_A},J:{'generic':_B,'block_tag':'pre'},F:{'preserve_tabs':_B,'custom_fences':[{A:O,_D:O,B:superfences.fence_code_format},{A:_K,_D:_K,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator},{A:'python',_D:_G,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator},{A:'py',_D:_G,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator}]},G:{'custom_inline':[{A:_I,_D:_I,B:color_formatter(LIVE_INIT,gamut)}]},H:{'repo_url_shortener':_B,'repo_url_shorthand':_B,'social_url_shorthand':_B,'user':'facelessuser','repo':'coloraide'},I:{'separator':'＋'},M:{'alternate_style':_B},K:{P:[Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d]},N:{'inject_style':_B},L:{P:[{A:'details-new',_D:Q},{A:'details-settings',_D:R},{A:'details-note',_D:S},{A:'details-abstract',_D:T},{A:'details-info',_D:U},{A:'details-tip',_D:V},{A:'details-success',_D:W},{A:'details-question',_D:X},{A:'details-warning',_D:Y},{A:'details-failure',_D:Z},{A:'details-danger',_D:a},{A:'details-bug',_D:b},{A:'details-example',_D:c},{A:'details-quote',_D:d}]}}
     try:html=markdown.markdown(text,extensions=extensions,extension_configs=extension_configs)
     except Exception:html=''
     content=document.getElementById('__notebook-render');content.innerHTML=html
