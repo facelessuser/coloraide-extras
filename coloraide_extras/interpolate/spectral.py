@@ -177,7 +177,7 @@ def single_constant_xyz_to_reflectance(xyz: Vector) -> tuple[Vector, Vector]:
     Use least squares method to calculate concentration of our primary colors with the XYZ color.
     If within the sRGB gamut, we will not get non-negative results (after clipping some floating point noise).
 
-    For out of gamut colors, if our concentration concentration are clampped to 0 - 1. Lastly, we ensure the
+    For out of gamut colors, if our concentration concentration are clipped to 0 - 1. Lastly, we ensure the
     final reflectance result is never zero with a small epsilon.
 
     Because out of gamut colors may be attenuated due to constraints on concentrations, we must

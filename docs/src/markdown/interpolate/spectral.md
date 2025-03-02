@@ -138,7 +138,7 @@ different.
 
 	</div>
 
-	Out of gamut colors can produce negative solutions or solutions that exeed 1, these values must be cliped to stay
+	Out of gamut colors can produce negative solutions or solutions that exceed 1, these values must be clipped to stay
 	within range. This trimming of the concentrations can attenuate the intensity of out-of-gamut colors, but we've also
 	added a solution to compensate for this later.
 
