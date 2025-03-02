@@ -128,6 +128,8 @@ REF_B = [
     0.015764814770760138, 0.015764880108381563
 ]
 
+SIZE = len(X_BAR)
+
 REFLECTANCE = [REF_R, REF_G, REF_B]
 
 C_TO_XYZ = [
@@ -142,8 +144,6 @@ XYZ_TO_C = [
     [-0.9692436362808824, 1.8759675015077237, 0.041555057407175744],
     [0.055630079696993795, -0.20397695888897688, 1.0569715142428786]
 ]
-
-SIZE = len(X_BAR)
 
 
 def nonlinear_luminance_ease(l1: float, l2: float, t: float) -> float:
@@ -177,21 +177,17 @@ def single_constant_xyz_to_reflectance(xyz: Vector) -> tuple[Vector, Vector]:
     Use least squares method to calculate concentration of our primary colors with the XYZ color.
     If within the sRGB gamut, we will not get non-negative results (after clipping some floating point noise).
 
-    For out of gamut colors, if we get a negative concentration, those are treated as if there is no
-    concentration at all for that primary color.
+    For out of gamut colors, if our concentration concentration are clampped to 0 - 1. Lastly, we ensure the
+    final reflectance result is never zero with a small epsilon.
 
-    When returning a reflectance curve, we also must ensure that the values in the curve do not exceed 1
-    or the KM equations will have a difficult time. Additionally, we cannot have a value of zero, so
-    use a very small epsilon.
-
-    Because colors may be attenuated when we clip the concentrations or final reflectance values, we must
-    will also calculate the residual, left over weights of our XYZ value and return them as well. We can
+    Because out of gamut colors may be attenuated due to constraints on concentrations, we must
+    also calculate the residual, left over weights of our XYZ value and return them as well. We can
     use the residual later to better approximate colors out of gamut by adding them back in.
     """
 
     c = alg.matmul_x3(XYZ_TO_C, xyz, dims=alg.D2_D1)
-    c = [alg.clamp(i, 0.0) for i in c]
-    r = [alg.clamp(sum([c[j] * p[i] for j, p in enumerate(REFLECTANCE)]), EPSILON, 1.0) for i in range(SIZE)]
+    c = [alg.clamp(i, 0.0, 1.0) for i in c]
+    r = [alg.clamp(sum([c[j] * p[i] for j, p in enumerate(REFLECTANCE)]), EPSILON) for i in range(SIZE)]
     xyz2 = reflectance_to_xyz(r)
     return r, [xyz[0] - xyz2[0], xyz[1] - xyz2[1], xyz[2] - xyz2[2]]
 

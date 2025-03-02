@@ -50,7 +50,7 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
 
         self.assertColorEqual(
             Color.interpolate([red, green], method='spectral')(0.5),
-            Color('color(xyz-d65 0.11685 -0.06809 0.01726)')
+            Color('color(xyz-d65 0.13635 -0.05537 0.0189)')
         )
 
     def test_mix_black(self):

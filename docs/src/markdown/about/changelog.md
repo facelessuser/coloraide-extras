@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.1
+
+-   **FIX**: Fix issue with how spectral interpolation concentrations are clipped.
+
 ## 1.9
 
 -   **NEW**: Drop Python 3.8.

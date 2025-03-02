@@ -138,9 +138,9 @@ different.
 
 	</div>
 
-	Out of gamut colors can produce negative solutions that we must trim and treat as zero concentration. This trimming
-	of the concentrations can attenuate the intensity of out-of-gamut colors, but we've also added a solution to
-	compensate for this later.
+	Out of gamut colors can produce negative solutions or solutions that exeed 1, these values must be cliped to stay
+	within range. This trimming of the concentrations can attenuate the intensity of out-of-gamut colors, but we've also
+	added a solution to compensate for this later.
 
 4.  To better handle colors outside the sRGB gamut, once we've decomposed the out-of-gamut color to a reflectance curve,
 	we convert it to XYZ and get the difference between it and the original and save this residual. Residuals occur when
