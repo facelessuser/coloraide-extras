@@ -30,7 +30,7 @@ Modified by Isaac Muse
   and generated them with our exact RGB matrix and CMF calculations.
 - Eliminated need for C, M, Y curves as R, G, B covered the full gamut and is
   how the eye works.
-- Concentration calculation is now simply an XYZ to sRGB transform, constrainted between 0 and 1.
+- Concentration calculation is now simply an XYZ to sRGB transform, constrained between 0 and 1.
 - Added a few normalizations for when curve exceeds with higher gamuts.
 - Calculate residual and add back when calculating colors beyond the spectral gamut.
 """
