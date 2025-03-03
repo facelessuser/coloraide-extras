@@ -205,7 +205,7 @@ def spectral_mix(xyz1: Vector, xyz2: Vector, t: float) -> Vector:
     r1, res1 = single_constant_xyz_to_reflectance(xyz1)
     r2, res2 = single_constant_xyz_to_reflectance(xyz2)
 
-    # Adjust the mixing based on when color dominates due to luminance.
+    # Adjust the mixing based on which color dominates due to luminance.
     t = nonlinear_luminance_ease(xyz1[1], xyz2[1], t)
 
     # Apply the Kubelka-Munk mixing
