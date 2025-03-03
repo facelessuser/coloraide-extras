@@ -109,7 +109,7 @@ different.
 	- `#!color rgb(255 0 255)`
 	- `#!color rgb(255 255 0)`
 
-	During our evaluation, we found that only following were needed.
+	During our evaluation, we found that only the following were needed.
 
 	- `#!color rgb(255 0 0)`
 	- `#!color rgb(0 255 0)`
