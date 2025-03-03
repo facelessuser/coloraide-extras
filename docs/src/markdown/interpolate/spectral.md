@@ -69,7 +69,7 @@ Orange decomposed into the red, green, blue reflectance curves and then reconstr
 ///
 
 With the ability to represent any color within our gamut as a reflectance curve, we then can mix colors by identifying
-what there curve is and then applying Kubelka-Munk theory, converting those curves into absorption and scattering data
+what the curves are and then applying Kubelka-Munk theory, converting those curves into absorption and scattering data
 and mixing them. Once mixed, we can transform them back to a reflectance curve and then back to our target color space.
 
 ![Reflectance Mix](../images/reflect-mix.png)
@@ -79,15 +79,15 @@ Combining a blue and red color to and getting green.
 
 Kubelka-Munk theory can be used in a couple of ways, one that utilizes absorption and scattering data independent of
 each other, which can be referred to as the two-constant approach, and one that treats the absorption and scattering
-as a single constant, which will call the single-constant approach. Generally, for paint, the two-constant approach is
-probably more accurate, but since we generate the reflectance curves without knowing specifically what the absorption
-vs scattering properties are, especially since this is not based off real paint data, the "spectral" approach uses the
+as a single constant, which we will call the single-constant approach. Generally, for paint, the two-constant approach
+is probably more accurate, but since we generate the reflectance curves without knowing specifically what the absorption
+vs scattering properties are, especially since this is not based off real paint data, the "spectral" mixing uses the
 single-constant approach.
 
 Lastly, because the single-constant approach we are using produces colors a bit more darkly, Spectral.js applies an
 easing function to the interpolation progress that favors the more dominant luminance when mixing, biasing the color
-more towards the the color with more intense luminance. This is applied to give a more aesthetically pleasing mix that
-appears more like what you mind have when using Mixbox.
+more towards the color with more intense luminance. This is applied to give a more aesthetically pleasing mix that
+appears more like what you wound have when using something like Mixbox.
 
 ## Differences
 
