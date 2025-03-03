@@ -118,29 +118,9 @@ different.
 	These three colors are sufficient to cover the entire gamut. The additional colors used by Spectral.js seem to be
 	unnecessary and provided no noticeable improvements, at least as observed during our tests.
 
-3.  We found that we could decompose colors into the concentrations of our primary colors by crafting a special matrix
-	that allows us to apply a least squares approach, one that will generally yield positive results for colors in the
-	sRGB gamut.
-
-	When multiplied with an XYZ color, we get the concentrations of the red, green and blue spectral curves
-
-	<div style="font-size: 75%;" markdown>
-
-    $$
-    \begin{bmatrix}
-    3.2409699419045253 & -1.537383177570097 & -0.4986107602930039\\\
-    -0.9692436362808824 & 1.8759675015077237 & 0.041555057407175744\\\
-    0.055630079696993795 & -0.20397695888897688 & 1.0569715142428786
-    \end{bmatrix}
-    \begin{bmatrix}X\\\ Y\\\ Z\end{bmatrix} =
-    \begin{bmatrix}Cr\\\ Cg\\\ Cb\end{bmatrix}
-	$$
-
-	</div>
-
-	Out of gamut colors can produce negative solutions or solutions that exceed 1, these values must be clipped to stay
-	within range. This trimming of the concentrations can attenuate the intensity of out-of-gamut colors, but we've also
-	added a solution to compensate for this later.
+3.  Since we are just using R, G, and B, decomposition to concentrations is the literal translation of XYZ to linear
+    sRGB, though we must constrained the concentrations to be between 0 and 1. This trimming of the concentrations can
+    attenuate the intensity of out-of-gamut colors, but we've also added a solution to compensate for this later.
 
 4.  To better handle colors outside the sRGB gamut, once we've decomposed the out-of-gamut color to a reflectance curve,
 	we convert it to XYZ and get the difference between it and the original and save this residual. Residuals occur when
@@ -160,12 +140,6 @@ different.
 	```
 
 	Users are free to clip the returned colors or gamut map them in any way they see fit.
-
-4.  While Spectral.js uses linear sRGB as their working space, we chose to work in XYZ D65. While the reflectance curves
-    were calculated relative to the sRGB gamut, the actual mixing is not done in either sRGB or XYZ, but done with the
-    K/S data coefficients, only the residual data is mixed directly in a color space and we opted to measure and mix it
-    in a space non-specific to the sRGB gamut. Measuring and mixing the residual in linear sRGB would have been fine as
-    well with likely little noticeable difference, but this is one area that could be experimented with more.
 
 ## Registering
 
