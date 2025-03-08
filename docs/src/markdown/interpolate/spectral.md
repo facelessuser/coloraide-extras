@@ -7,18 +7,12 @@ https://en.wikipedia.org/wiki/Kubelka%E2%80%93Munk_theory) is a fundamental appr
 paint films and predicting this absorption and scattering. Utilizing Kubelka-Munk theory, colors can be simulated to
 mix more like paints.
 
-```py play wheel
-red = Color('rgb(128, 2, 46)').mix('white', 0.3, method='spectral')
-yellow = Color('rgb(252, 211, 0)').mix('white', 0.3, method='spectral')
-blue = Color('rgb(13, 27, 68)').mix('white', 0.3, method='spectral')
-Color.steps([red, yellow, blue, red], steps=13, method='spectral')[:-1]
-```
-
 ```py play
-red = Color('rgb(128, 2, 46)').mix('white', 0.3, method='spectral')
-yellow = Color('rgb(252, 211, 0)').mix('white', 0.3, method='spectral')
-blue = Color('rgb(13, 27, 68)').mix('white', 0.3, method='spectral')
-Steps(Color.steps([red, yellow, blue, red], steps=13, method='spectral')[:-1])
+red = Color('rgb(128, 2, 46)').mix('white', 0.25, method='spectral')
+yellow = Color('rgb(252, 211, 0)').mix('white', 0.25, method='spectral')
+blue = Color('rgb(13, 27, 68)').mix('white', 0.25, method='spectral')
+Wheel(Color.steps([red, yellow, blue, red], steps=13, method='spectral', out_space='srgb')[:-1])
+Steps(Color.steps([red, yellow, blue, red], steps=13, method='spectral', out_space='srgb')[:-1])
 ```
 
 The "spectral" interpolation method is based on Kubelka-Munk theory and, more specifically, follows after the approach

@@ -7,8 +7,8 @@ _M='SESSIONS'
 _L='pycon'
 _K='playground'
 _J='gamut'
-_I='color'
-_H='exceptions'
+_I='exceptions'
+_H='color'
 _G='highlight'
 _F='eval'
 _E='<string>'
@@ -46,7 +46,12 @@ if _M not in globals()or not globals()[_M]:
     class Ramp(list):0
     class Steps(list):0
     class Row(list):0
-    class ColorTuple(namedtuple('ColorTuple',['string',_I])):0
+    class Wheel(Steps):
+        def __init__(self,iterable):
+            if not hasattr(iterable,'__len__'):iterable=list(iterable)
+            if len(iterable)not in(3,6,12,24,48):raise ValueError('Wheel only supports iterables of length 3, 6, 12, 24, or 48')
+            super().__init__(iterable)
+    class ColorTuple(namedtuple('ColorTuple',['string',_H])):0
     class AtomicString(str):0
     class Break(Exception):0
     class Continue(Exception):0
@@ -65,7 +70,7 @@ def get_colors(result):
     domain=[]
     if isinstance(result,AtomicString):yield find_colors(result)
     if isinstance(result,Row):yield Row([ColorTuple(c.to_string(fit=_A),c.clone())if isinstance(c,Color)else ColorTuple(c,ColorAll(c))for c in result])
-    elif isinstance(result,(Steps,Ramp)):t=type(result);yield t([c.clone()if isinstance(c,Color)else ColorAll(c)for c in result])
+    elif isinstance(result,(Wheel,Steps,Ramp)):t=type(result);yield t([c.clone()if isinstance(c,Color)else ColorAll(c)for c in result])
     elif isinstance(result,Color):yield[ColorTuple(result.to_string(fit=_A),result.clone())]
     elif isinstance(result,Interpolator):
         if result._domain:domain=result._domain;result.domain(normalize_domain(result._domain))
@@ -218,7 +223,7 @@ def execute(cmd,no_except=_B,inline=_A,init='',g=_C):
     A='\n';console='';colors=[]
     if g is _C:g={}
     if not g:
-        g['Ramp']=Ramp;g['Steps']=Steps;g['Row']=Row;g['HtmlRow']=HtmlRow;g['HtmlSteps']=HtmlSteps;g['HtmlGradient']=HtmlGradient
+        g['Ramp']=Ramp;g['Steps']=Steps;g['Row']=Row;g['Wheel']=Wheel;g['HtmlRow']=HtmlRow;g['HtmlSteps']=HtmlSteps;g['HtmlGradient']=HtmlGradient
         if init:execute(init.strip(),g=g)
     m=RE_INIT.match(cmd)
     if m:block_init=m.group(1);src=cmd[m.end():];execute(block_init,g=g)
@@ -262,7 +267,7 @@ def execute(cmd,no_except=_B,inline=_A,init='',g=_C):
     return console,colors
 def colorize(src,lang,**options):HtmlFormatter=find_formatter_class('html');lexer=get_lexer_by_name(lang,**options);formatter=HtmlFormatter(cssclass=_G,wrapcode=_B);return highlight(src,lexer,formatter).strip()
 def color_command_validator(language,inputs,options,attrs,md):
-    valid_inputs={_H,'play','wheel'}
+    valid_inputs={_I,'play'}
     for(k,v)in inputs.items():
         if k==_N:
             if k not in SESSIONS:SESSIONS[k]={}
@@ -271,12 +276,35 @@ def color_command_validator(language,inputs,options,attrs,md):
         attrs[k]=v
     return _B
 def _color_command_console(colors,gamut=WEBSPACE):
-    B=' ';A='<div class="swatch-bar">{}</div>';el='';bar=_A;values=[]
+    C='</div>';B=' ';A='<div class="swatch-bar">{}</div>';el='';bar=_A;values=[]
     for item in colors:
-        is_grad=isinstance(item,HtmlGradient);is_steps=isinstance(item,Steps)
-        if is_grad or is_steps:
+        is_grad=isinstance(item,HtmlGradient);is_steps=isinstance(item,Steps);is_wheel=isinstance(item,Wheel);l=len(item)if is_wheel else 0
+        if is_wheel:
+            if l>=48:freq=16;offset=24
+            elif l>=24:freq=8;offset=12
+            elif l>=12:freq=4;offset=6
+            elif l>=6:freq=2;offset=3
+            else:freq=1;offset=1
+            extra_rings_start='';extra_rings_end='';primary=item[::freq][2::-1];color_rings=[primary]
+            if l>=6:extra_rings_start='<div class="secondary"><div class="secondary-inner">';extra_rings_end='</div></div>';secondary=(item[offset::freq]+[item[offset//3]])[2::-1];color_rings.append(secondary)
+            if l>=12:extra_rings_start='<div class="tertiary">'+extra_rings_start;extra_rings_end+=C;tertiary=item[::offset//6][11::-1];color_rings.append(tertiary)
+            if l>=24:extra_rings_start='<div class="tertiary2">'+extra_rings_start;extra_rings_end+=C;color_rings.append(item[::offset//12][23::-1])
+            if l>=48:extra_rings_start='<div class="tertiary3">'+extra_rings_start;extra_rings_end+=C;color_rings.append(item[47::-1])
+            color_stops=''
+            for(i,rcolors)in enumerate(color_rings,1):
+                total=len(rcolors);percent=100/total;current=percent;last=-1;stops=[]
+                for(e,color)in enumerate(rcolors):
+                    color.fit(gamut);color_str=color.convert(gamut).to_string()
+                    if current:
+                        stops.append(f"{color_str} {last!s}%");stops.append(f"{color_str} {current!s}%");last=current
+                        if e<total-1:current+=percent
+                        else:current=100
+                    else:stops.append(color_str)
+                color_stops+='--color-wheel-stops{}: {};'.format(i,','.join(stops))
+            color_wheel='<div class="color-wheel" style="{}"><div class="wheel">\n{}<div class="primary"><div class="primary-inner"></div></div></div></div>{}'.format(color_stops,extra_rings_start,extra_rings_end);el+=color_wheel
+        elif is_grad or is_steps:
             current=total=percent=last=0
-            if isinstance(item,Steps):total=len(item);percent=100/total;current=percent
+            if is_steps:total=len(item);percent=100/total;current=percent
             if bar:el+=A.format(B.join(values));values=[]
             sub_el1='<div class="swatch-bar"><span class="swatch swatch-gradient">{}</span></div>';style='--swatch-stops: ';stops=[]
             for(e,color)in enumerate(item):
@@ -306,35 +334,12 @@ def _color_command_console(colors,gamut=WEBSPACE):
     if bar:el+=A.format(B.join(values));values=[]
     return el
 def _color_command_formatter(src='',language='',class_name=_C,options=_C,md='',init='',**kwargs):
-    C='</div>';B='formatter';A='fenced_code_block';global code_id;from pymdownx.superfences import SuperFencesException;gamut=kwargs.get(_J,WEBSPACE);wheel=options.get('wheel',_A);play=options.get('play',_A)if options is not _C else _A;session=options.get(_N)if options is not _C else _C;session_name=options.get(_O,'')if options is not _C else''
+    B='formatter';A='fenced_code_block';global code_id;from pymdownx.superfences import SuperFencesException;gamut=kwargs.get(_J,WEBSPACE);play=options.get('play',_A)if options is not _C else _A;session=options.get(_N)if options is not _C else _C;session_name=options.get(_O,'')if options is not _C else''
     if not play and language==_K:play=_B
     if not play:return md.preprocessors[A].extension.superfences[0][B](src=src,class_name=class_name,language='py',md=md,options=options,**kwargs)
     try:
-        if wheel:
-            gamut='srgb';exceptions=options.get(_H,_A)if options is not _C else _A;_,colors=execute(src.strip(),not exceptions,init=init,g=session);l=len(colors)
-            if l not in(12,24,48):raise SuperFencesException('Color wheel requires either 12, 24, or 48 colors')
-            colors=[c[0].color for c in colors]
-            if l==12:freq=4;offset=6
-            elif l==24:freq=8;offset=12
-            else:freq=16;offset=24
-            primary=colors[::freq][::-1];secondary=(colors[offset::freq]+[colors[offset//3]])[::-1];tertiary=colors[::offset//6][::-1];color_rings=[primary,secondary,tertiary];extra_rings_start='';extra_rings_end=''
-            if l>12:extra_rings_start='<div class="tertiary2">';extra_rings_end+=C;color_rings.append(colors[::offset//12][::-1])
-            if l>24:extra_rings_start='<div class="tertiary3">'+extra_rings_start;extra_rings_end+=C;color_rings.append(colors[::-1])
-            color_stops=''
-            for(i,colors)in enumerate(color_rings,1):
-                total=len(colors);percent=100/total;current=percent;last=-1;stops=[]
-                for(e,color)in enumerate(colors):
-                    color.fit(gamut);color_str=color.convert(gamut).to_string()
-                    if current:
-                        stops.append(f"{color_str} {last!s}%");stops.append(f"{color_str} {current!s}%");last=current
-                        if e<total-1:current+=percent
-                        else:current=100
-                    else:stops.append(color_str)
-                color_stops+='--color-wheel-stops{}: {};'.format(i,','.join(stops))
-            color_wheel='<div class="color-wheel" style="{}"><div class="wheel">\n{}<div class="tertiary"><div class="secondary"><div class="secondary-inner"><div class="primary"><div class="primary-inner"></div></div></div></div></div></div></div>{}'.format(color_stops,extra_rings_start,extra_rings_end);return color_wheel
-        else:
-            if len(md.preprocessors[A].extension.stash)==0:code_id=0
-            exceptions=options.get(_H,_A)if options is not _C else _A;console,colors=execute(src.strip(),not exceptions,init=init,g=session);el=_color_command_console(colors,gamut=gamut);el+=md.preprocessors[A].extension.superfences[0][B](src=console,class_name=_G,language=_L,md=md,options=options,**kwargs);el=f'<div class="color-command">{el}</div>';el=template.format(el_id=code_id,raw_source=_escape(src),results=el,gamut=gamut,session=f"Session: {session_name}"if session_name else'');code_id+=1
+        if len(md.preprocessors[A].extension.stash)==0:code_id=0
+        exceptions=options.get(_I,_A)if options is not _C else _A;console,colors=execute(src.strip(),not exceptions,init=init,g=session);el=_color_command_console(colors,gamut=gamut);el+=md.preprocessors[A].extension.superfences[0][B](src=console,class_name=_G,language=_L,md=md,options=options,**kwargs);el=f'<div class="color-command">{el}</div>';el=template.format(el_id=code_id,raw_source=_escape(src),results=el,gamut=gamut,session=f"Session: {session_name}"if session_name else'');code_id+=1
     except SuperFencesException:raise
     except Exception:from pymdownx import superfences;import traceback;print(traceback.format_exc());return superfences.fence_code_format(src,'text',class_name,options,md,**kwargs)
     return el
@@ -376,9 +381,9 @@ def _live_color_command_formatter(src,init='',gamut=WEBSPACE,session=''):
     except Exception:import traceback;return'<div class="color-command"><div class="swatch-bar"></div>{}</div>'.format(colorize(traceback.format_exc(),_L))
     return el
 def live_color_command_formatter(init='',gamut=WEBSPACE,session=''):return partial(_live_color_command_formatter,init=init,gamut=gamut,session=session)
-def live_color_command_validator(language,inputs,options,attrs,md):value=color_command_validator(language,inputs,options,attrs,md);options[_H]=_B;return value
+def live_color_command_validator(language,inputs,options,attrs,md):value=color_command_validator(language,inputs,options,attrs,md);options[_I]=_B;return value
 def render_console(*args,**kwargs):
-    C='.swatch-bar';B='id_num';A='code';from js import document;gamut=kwargs.get(_J,WEBSPACE)
+    C='.swatch-bar, .color-wheel';B='id_num';A='code';from js import document;gamut=kwargs.get(_J,WEBSPACE)
     try:
         results=document.getElementById('__playground-results_{}'.format(globals()[B]));footer=document.querySelector('#__playground_{} .gamut'.format(globals()[B]));session=globals()['session_id'];result=live_color_command_formatter(LIVE_INIT,gamut)(globals()[_R],session=session);temp=document.createElement('div');temp.innerHTML=result;cmd=results.querySelector('.color-command')
         for el in cmd.querySelectorAll(C):el.remove()
@@ -386,7 +391,7 @@ def render_console(*args,**kwargs):
         footer.innerHTML=f"Gamut: {gamut}";pre=cmd.querySelector('pre');pre.replaceChild(temp.querySelector(A),pre.querySelector(A));temp.remove();scrollingElement=results.querySelector(A);scrollingElement.scrollTop=scrollingElement.scrollHeight
     except Exception as e:print(e)
 def render_notebook(*args,**kwargs):
-    d='quote';c='example';b='bug';a='danger';Z='failure';Y='warning';X='question';W='success';V='tip';U='info';T='abstract';S='note';R='settings';Q='new';P='types';O='diagram';N='pymdownx.fancylists';M='pymdownx.blocks.tab';L='pymdownx.blocks.details';K='pymdownx.blocks.admonition';J='pymdownx.arithmatex';I='pymdownx.keys';H='pymdownx.magiclink';G='pymdownx.inlinehilite';F='pymdownx.superfences';E='markdown.extensions.smarty';D='markdown.extensions.toc';C='validator';B='format';A='name';import markdown;from pymdownx import slugs,superfences;from js import document;gamut=kwargs.get(_J,WEBSPACE);text=globals().get(_R,'');extensions=[D,E,'pymdownx.betterem','markdown.extensions.attr_list','markdown.extensions.tables','markdown.extensions.abbr','markdown.extensions.footnotes',F,'pymdownx.highlight',G,H,'pymdownx.tilde','pymdownx.caret','pymdownx.smartsymbols','pymdownx.emoji','pymdownx.escapeall','pymdownx.tasklist','pymdownx.striphtml','pymdownx.snippets',I,'pymdownx.saneheaders',J,K,L,'pymdownx.blocks.html','pymdownx.blocks.definition',M,N,'pymdownx.blocks.caption'];extension_configs={D:{'slugify':slugs.slugify(case='lower'),'permalink':''},E:{'smart_quotes':_A},J:{'generic':_B,'block_tag':'pre'},F:{'preserve_tabs':_B,'custom_fences':[{A:O,_D:O,B:superfences.fence_code_format},{A:_K,_D:_K,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator},{A:'python',_D:_G,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator},{A:'py',_D:_G,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator}]},G:{'custom_inline':[{A:_I,_D:_I,B:color_formatter(LIVE_INIT,gamut)}]},H:{'repo_url_shortener':_B,'repo_url_shorthand':_B,'social_url_shorthand':_B,'user':'facelessuser','repo':'coloraide'},I:{'separator':'＋'},M:{'alternate_style':_B},K:{P:[Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d]},N:{'inject_style':_B},L:{P:[{A:'details-new',_D:Q},{A:'details-settings',_D:R},{A:'details-note',_D:S},{A:'details-abstract',_D:T},{A:'details-info',_D:U},{A:'details-tip',_D:V},{A:'details-success',_D:W},{A:'details-question',_D:X},{A:'details-warning',_D:Y},{A:'details-failure',_D:Z},{A:'details-danger',_D:a},{A:'details-bug',_D:b},{A:'details-example',_D:c},{A:'details-quote',_D:d}]}}
+    d='quote';c='example';b='bug';a='danger';Z='failure';Y='warning';X='question';W='success';V='tip';U='info';T='abstract';S='note';R='settings';Q='new';P='types';O='diagram';N='pymdownx.fancylists';M='pymdownx.blocks.tab';L='pymdownx.blocks.details';K='pymdownx.blocks.admonition';J='pymdownx.arithmatex';I='pymdownx.keys';H='pymdownx.magiclink';G='pymdownx.inlinehilite';F='pymdownx.superfences';E='markdown.extensions.smarty';D='markdown.extensions.toc';C='validator';B='format';A='name';import markdown;from pymdownx import slugs,superfences;from js import document;gamut=kwargs.get(_J,WEBSPACE);text=globals().get(_R,'');extensions=[D,E,'pymdownx.betterem','markdown.extensions.attr_list','markdown.extensions.tables','markdown.extensions.abbr','markdown.extensions.footnotes',F,'pymdownx.highlight',G,H,'pymdownx.tilde','pymdownx.caret','pymdownx.smartsymbols','pymdownx.emoji','pymdownx.escapeall','pymdownx.tasklist','pymdownx.striphtml','pymdownx.snippets',I,'pymdownx.saneheaders',J,K,L,'pymdownx.blocks.html','pymdownx.blocks.definition',M,N,'pymdownx.blocks.caption'];extension_configs={D:{'slugify':slugs.slugify(case='lower'),'permalink':''},E:{'smart_quotes':_A},J:{'generic':_B,'block_tag':'pre'},F:{'preserve_tabs':_B,'custom_fences':[{A:O,_D:O,B:superfences.fence_code_format},{A:_K,_D:_K,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator},{A:'python',_D:_G,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator},{A:'py',_D:_G,B:color_command_formatter(LIVE_INIT,gamut),C:live_color_command_validator}]},G:{'custom_inline':[{A:_H,_D:_H,B:color_formatter(LIVE_INIT,gamut)}]},H:{'repo_url_shortener':_B,'repo_url_shorthand':_B,'social_url_shorthand':_B,'user':'facelessuser','repo':'coloraide'},I:{'separator':'＋'},M:{'alternate_style':_B},K:{P:[Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d]},N:{'inject_style':_B},L:{P:[{A:'details-new',_D:Q},{A:'details-settings',_D:R},{A:'details-note',_D:S},{A:'details-abstract',_D:T},{A:'details-info',_D:U},{A:'details-tip',_D:V},{A:'details-success',_D:W},{A:'details-question',_D:X},{A:'details-warning',_D:Y},{A:'details-failure',_D:Z},{A:'details-danger',_D:a},{A:'details-bug',_D:b},{A:'details-example',_D:c},{A:'details-quote',_D:d}]}}
     try:html=markdown.markdown(text,extensions=extensions,extension_configs=extension_configs)
     except Exception:html=''
     content=document.getElementById('__notebook-render');content.innerHTML=html
