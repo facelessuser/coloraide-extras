@@ -20,9 +20,8 @@ class TestRoundTrip:
         """Local color object."""
 
     Color.deregister('space:hpluv')
-    Color.deregister('space:ryb-biased')
 
-    SPACES = {k: 6 for k in Color.CS_MAP.keys()}
+    SPACES = dict.fromkeys(Color.CS_MAP, 6)
 
     COLORS = [
         Color('red'),
@@ -91,9 +90,7 @@ class TestAchromaticRoundTrip(TestRoundTrip):
     Color.deregister('space:ryb')
     Color.deregister('space:ryb-biased')
 
-    SPACES = {k: 5 for k in Color.CS_MAP.keys()}
-    # Precision just isn't as high for these in achromatic region
-    # but it is good enough for practical purposes.
+    SPACES = dict.fromkeys(Color.CS_MAP, 6)
 
     COLORS = [
         Color('darkgrey'),
