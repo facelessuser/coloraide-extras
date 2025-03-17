@@ -112,17 +112,17 @@ different.
 	These three colors are sufficient to cover the entire gamut. The additional colors used by Spectral.js seem to be
 	unnecessary and provided no noticeable improvements, at least as observed during our tests.
 
-3.  Since we are just using R, G, and B, decomposition to concentrations is the literal translation of XYZ to linear
-    sRGB, though we must constrained the concentrations to be between 0 and 1. This trimming of the concentrations can
-    attenuate the intensity of out-of-gamut colors, but we've also added a solution to compensate for this later.
+3.  Since we are just using R, G, and B as our primary colors, the decomposition of colors to concentrations is the
+    literal translation of XYZ to linear sRGB, though we must constrain the concentrations to be between 0 and 1.
 
-4.  To better handle colors outside the sRGB gamut, once we've decomposed the out-of-gamut color to a reflectance curve,
-	we convert it to XYZ and get the difference between it and the original and save this residual. Residuals occur when
-	a color can't quite be represented with our primary colors. The identified residual XYZ values will be mixed
-	separately from the reflectance curves and then added in at the end. This approach is very similar to what Mixbox
-	describes in their paper and helps to provide more sane color mixing for colors outside the sRGB gamut.
+    This trimming of the concentrations can attenuate the intensity of out-of-gamut colors. To better handle colors
+    outside the sRGB gamut, once we've decomposed the out-of-gamut color to a reflectance curve, we convert it to XYZ
+    and get the difference between it and the original and save the residual. Residuals occur when a color can't quite
+    be represented with our primary colors. The identified residual XYZ values will be mixed separately from the
+    reflectance curves and then added in at the end. This approach is very similar to what Mixbox describes in their
+    paper and helps to provide more sane color mixing for colors outside the sRGB gamut.
 
-5.  Spectral.js generally clips the mixed colors before returning them. We do not clip any colors that are out-of-gamut
+4.  Spectral.js generally clips the mixed colors before returning them. We do not clip any colors that are out-of-gamut
 	due to mixing in case the user is within a gamut that can accommodate them. Additionally, we allow colors outside of
     sRGB to be mixed as well.
 
