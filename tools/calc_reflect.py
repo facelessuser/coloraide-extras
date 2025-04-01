@@ -15,7 +15,7 @@ from coloraide import algebra as alg  # noqa: E402
 from coloraide.everything import ColorAll as Color  # noqa: E402
 from coloraide.cmfs import CIE_1931_2DEG as CMF  # noqa: E402
 
-targets = ('#ff0000', '#00ff00', '#0000ff')
+targets = ['#ff0000', '#00ff00', '#0000ff', '#00ffff', '#ff00ff', '#ffff00']
 space = 'srgb'
 START = 380
 STEP = 10
@@ -401,7 +401,7 @@ pcolors = []
 rcolors = []
 # Estimate curves for the specified colors red, green, and blue
 rho = []
-for c in ([1, 0, 0], [0, 1, 0], [0, 0, 1]):
+for c in ([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 1, 1], [1, 0, 1], [1, 1, 0]):
     if METHOD == 3:
         r = method_3(D, alg.transpose(TRGB), c)
     elif METHOD == 2:
@@ -411,7 +411,7 @@ for c in ([1, 0, 0], [0, 1, 0], [0, 0, 1]):
     rho.append(r)
 
 # Calculate concentration to XYZ matrix
-M = alg.dot(T, list(zip(rho[0], rho[1], rho[2])))
+M = alg.dot(T, list(zip(*rho)))
 
 # Let's assume full rank. If it isn't, we'll get a singular matrix error.
 # If it fails it would require a more advanced approach to try and invert.
