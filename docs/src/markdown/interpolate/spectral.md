@@ -70,7 +70,7 @@ target color space.
 
 ![Reflectance Mix](../images/reflect-mix.png)
 /// figure-caption
-Combining a blue and red color to and getting green.
+Mixing a blue and yellow color with Kubelka-Munk theory.
 ///
 
 Kubelka-Munk theory can be used in a couple of ways, one that utilizes absorption and scattering data independent of
