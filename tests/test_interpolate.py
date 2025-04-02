@@ -15,13 +15,13 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
         c2 = Color('#FCD200')
         expected = [
             Color('color(xyz-d65 0.04777 0.02781 0.22476 / 1)'),
-            Color('color(xyz-d65 0.02702 0.03256 0.0952 / 1)'),
-            Color('color(xyz-d65 0.03708 0.06349 0.07065 / 1)'),
-            Color('color(xyz-d65 0.07141 0.12697 0.07348 / 1)'),
-            Color('color(xyz-d65 0.13374 0.22374 0.08054 / 1)'),
-            Color('color(xyz-d65 0.22802 0.34531 0.08724 / 1)'),
-            Color('color(xyz-d65 0.35287 0.47483 0.09216 / 1)'),
-            Color('color(xyz-d65 0.49749 0.59023 0.09487 / 1)'),
+            Color('color(xyz-d65 0.02667 0.03298 0.0951 / 1)'),
+            Color('color(xyz-d65 0.03708 0.06387 0.07248 / 1)'),
+            Color('color(xyz-d65 0.07117 0.12699 0.07519 / 1)'),
+            Color('color(xyz-d65 0.13265 0.22305 0.08176 / 1)'),
+            Color('color(xyz-d65 0.22548 0.34363 0.08795 / 1)'),
+            Color('color(xyz-d65 0.34991 0.47284 0.09246 / 1)'),
+            Color('color(xyz-d65 0.49784 0.59012 0.09493 / 1)'),
             Color('color(xyz-d65 0.6319 0.6679 0.09564 / 1)')
         ]
         for a, b in zip(Color.steps([c1, c2], method='spectral', steps=9), expected):
@@ -42,7 +42,7 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
 
         self.assertColorEqual(
             Color.interpolate([red, green, blue], method='spectral')(0.75),
-            Color('color(xyz-d65 0.02697 0.03463 0.0467)')
+            Color('color(xyz-d65 0.02701 0.03438 0.04685)')
         )
 
         red.convert('xyz-d65', in_place=True).set('y', NaN)
@@ -50,7 +50,7 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
 
         self.assertColorEqual(
             Color.interpolate([red, green], method='spectral')(0.5),
-            Color('color(xyz-d65 0.13635 -0.05537 0.0189)')
+            Color('color(xyz-d65 0.12966 -0.05897 0.01868)')
         )
 
     def test_mix_black(self):
@@ -130,13 +130,13 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
         c2 = Color('#FCD200')
         expected = [
             Color('color(xyz-d65 0.04777 0.02781 0.22476 / 1)'),
-            Color('color(xyz-d65 0.02702 0.03256 0.0952 / 1)'),
-            Color('color(xyz-d65 0.03708 0.06349 0.07065 / 1)'),
-            Color('color(xyz-d65 0.07141 0.12697 0.07348 / 1)'),
-            Color('color(xyz-d65 0.13374 0.22374 0.08054 / 1)'),
-            Color('color(xyz-d65 0.22802 0.34531 0.08724 / 1)'),
-            Color('color(xyz-d65 0.35287 0.47483 0.09216 / 1)'),
-            Color('color(xyz-d65 0.49749 0.59023 0.09487 / 1)'),
+            Color('color(xyz-d65 0.02667 0.03298 0.0951 / 1)'),
+            Color('color(xyz-d65 0.03708 0.06387 0.07248 / 1)'),
+            Color('color(xyz-d65 0.07117 0.12699 0.07519 / 1)'),
+            Color('color(xyz-d65 0.13265 0.22305 0.08176 / 1)'),
+            Color('color(xyz-d65 0.22548 0.34363 0.08795 / 1)'),
+            Color('color(xyz-d65 0.34991 0.47284 0.09246 / 1)'),
+            Color('color(xyz-d65 0.49784 0.59012 0.09493 / 1)'),
             Color('color(xyz-d65 0.6319 0.6679 0.09564 / 1)')
         ]
         for a, b in zip(Color.steps([c1, c2], method='spectral-continuous', steps=9), expected):
@@ -152,12 +152,12 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
 
         self.assertColorEqual(
             Color.interpolate([red, green, blue], method='spectral-continuous')(0.25),
-            Color('color(xyz-d65 0.0622 0.04615 0.01112)')
+            Color('color(xyz-d65 0.06172 0.046 0.011)')
         )
 
         self.assertColorEqual(
             Color.interpolate([red, green, blue], method='spectral-continuous')(0.75),
-            Color('color(xyz-d65 0.02667 0.05355 0.02985)')
+            Color('color(xyz-d65 0.02659 0.05347 0.0299)')
         )
 
     def test_bad_color_space_continuous(self):

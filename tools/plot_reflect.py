@@ -2,13 +2,14 @@
 import sys
 import os
 import argparse
+import plotly.graph_objects as go
+import plotly.io as io
 
 sys.path.insert(0, os.getcwd())
 
 from coloraide_extras.interpolate import spectral
 from coloraide import algebra as alg
 from coloraide.everything import ColorAll as Color
-import matplotlib.pyplot as plt
 
 START = 380
 STEP = 10
@@ -41,7 +42,7 @@ def main():
     if len(colors) == 1:
         color = Color(args.color[0])
         xyz = color.convert('xyz-d65')[:-1]
-        c = alg.matmul(spectral.XYZ_TO_C, xyz)
+        c = spectral.xyz_to_concentration(xyz)
         r, res1 = spectral.single_constant_xyz_to_reflectance(xyz)
 
         style = ['solid']
@@ -49,11 +50,14 @@ def main():
         plot = [color.convert('srgb').to_string(hex=True)]
 
         if args.decomp:
-            target.append([ri * c[0] for e, ri in enumerate(spectral.REF_R)])
-            target.append([ri * c[1] for e, ri in enumerate(spectral.REF_G)])
-            target.append([ri * c[2] for e, ri in enumerate(spectral.REF_B)])
-            plot.extend(['#ff0000', '#00ff00', '#0000ff'])
-            style.extend(['dashed'] * 3)
+            target.append([ri * c[0] for ri in spectral.REF_C])
+            target.append([ri * c[1] for ri in spectral.REF_M])
+            target.append([ri * c[2] for ri in spectral.REF_Y])
+            target.append([ri * c[3] for ri in spectral.REF_R])
+            target.append([ri * c[4] for ri in spectral.REF_G])
+            target.append([ri * c[5] for ri in spectral.REF_B])
+            plot.extend(['#00ffff', '#ff00ff', '#ffff00', '#ff0000', '#00ff00', '#0000ff'])
+            style.extend(['dash'] * 6)
     else:
         color = Color(args.color[0])
         xyz = color.convert('xyz-d65')[:-1]
@@ -82,7 +86,7 @@ def main():
             if count != 9:
                 target.append(r)
                 plot.append('#cccccc')
-                style.append('dashed')
+                style.append('dash')
             else:
                 target.append(r)
                 xyz1 = spectral.reflectance_to_xyz(r)
@@ -100,47 +104,50 @@ def main():
         plot.append(color2.convert('srgb').to_string(hex=True))
         style.extend(['solid'] * 2)
 
-    # Setup plot for results
-    plt.style.use('seaborn-v0_8-darkgrid')
-
-    # Create axes
-    ax = plt.axes(
-        xlabel='Wavelength',
-        ylabel='Reflection'
-    )
-
     # Create titles
     title = args.title
     if not title:
         title = f'Reflectance Curve of {color.to_string()}'
         if not color.in_gamut('srgb'):
             if len(args.color()) == 1:
-                plt.suptitle(title)
-                ax.set_title('Color out of sRGB gamut, curves may be attenuated')
+                title += '<br><sup>Color out of sRGB gamut, curves may be attenuated</sup>'
             else:
-                ax.set_title(f'Spectral mix of {color.to_string()} and {color2.to_string()}')
-        else:
-            ax.set_title(title)
-    else:
-        ax.set_title(title)
+                title = f'Spectral mix of {color.to_string()} and {color2.to_string()}'
+
+    fig = go.Figure(
+        layout={
+            'title': title,
+            'xaxis_title': 'Wavelength',
+            'yaxis_title': 'Reflection'
+        }
+    )
 
     for e, data in enumerate(zip(plot, target)):
         p, t = data
-        plt.plot(
-            list(range(START, END, STEP)),
-            t,
-            color=p,
-            marker="",
-            linewidth=1.5,
-            markersize=2,
-            linestyle=style[e],
-            antialiased=True
-        )
 
-    plt.gcf().set_dpi(200)
-    plt.show()
+        fig.add_traces(data=go.Scatter(
+            x=list(range(START, END, STEP)),
+            y=t,
+            mode="lines",
+            line={'color': p, 'width': 2, 'dash': style[e]},
+            showlegend=False
+        ))
 
-    return 0
+    if fig:
+        if args.output:
+            filetype = os.path.splitext(args.output)[1].lstrip('.').lower()
+            if filetype == 'html':
+                with open(args.output, 'w') as f:
+                    f.write(io.to_html(fig))
+            elif filetype == 'json':
+                io.write_json(fig, args.output)
+            else:
+                with open(args.output, 'wb') as f:
+                    f.write(fig.to_image(format=filetype))
+        else:
+            fig.show()
+        return 0
+    return 1
 
 
 if __name__ == "__main__":

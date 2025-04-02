@@ -59,12 +59,14 @@ reflectance curves and then construct a new curve that represents the color.
 
 ![Decomposition of Color Reflectance Concentrations](../images/reflect-orange.png)
 /// figure-caption
-Orange decomposed into the red, green, blue reflectance curves and then reconstructed into its own curve.
+Orange decomposed into cyan, magenta, yellow, red, green, and blue reflectance curves and then reconstructed into its
+own curve.
 ///
 
-With the ability to represent any color within our gamut as a reflectance curve, we then can mix colors by identifying
-what the curves are and then applying Kubelka-Munk theory, converting those curves into absorption and scattering data
-and mixing them. Once mixed, we can transform them back to a reflectance curve and then back to our target color space.
+With the ability to represent almost any color within our gamut as a reflectance curve, we then can mix colors by
+identifying what the curves are and then applying Kubelka-Munk theory, converting those curves into absorption and
+scattering data and mixing them. Once mixed, we can transform them back to a reflectance curve and then back to our
+target color space.
 
 ![Reflectance Mix](../images/reflect-mix.png)
 /// figure-caption
@@ -95,45 +97,42 @@ different.
 
 2.  Spectral.js uses primary colors of:
 
-	- `#!color rgb(255 255 255)`
-	- `#!color rgb(255 0 0)`
-	- `#!color rgb(0 255 0)`
-	- `#!color rgb(0 0 255)`
-	- `#!color rgb(0 255 255)`
-	- `#!color rgb(255 0 255)`
-	- `#!color rgb(255 255 0)`
+    - `#!color rgb(255 255 255)`
+    - `#!color rgb(255 0 0)`
+    - `#!color rgb(0 255 0)`
+    - `#!color rgb(0 0 255)`
+    - `#!color rgb(0 255 255)`
+    - `#!color rgb(255 0 255)`
+    - `#!color rgb(255 255 0)`
 
-	During our evaluation, we found that only the following were needed.
+    During our evaluation, we found that `#!color rgb(255 255 255)` was not needed and sufficient coverage can be
+    obtained without it. The white reflectance curve also exceeded the range for appropriate for the Kubelka-Munk
+    functions, and additional logic is present to compensate for this.
 
-	- `#!color rgb(255 0 0)`
-	- `#!color rgb(0 255 0)`
-	- `#!color rgb(0 0 255)`
+3.  During decomposition of colors we constrain concentrations to be between 0 and 1. We also constrain the final
+    composite reflectance curve to be between a very small value and 1 as the Kubelka-Munk functions expect reflectance
+    to not be zero and not exceed 1.
 
-	These three colors are sufficient to cover the entire gamut. The additional colors used by Spectral.js seem to be
-	unnecessary and provided no noticeable improvements, at least as observed during our tests.
-
-3.  Since we are just using R, G, and B as our primary colors, the decomposition of colors to concentrations is the
-    literal translation of XYZ to linear sRGB, though we must constrain the concentrations to be between 0 and 1.
-
-    This trimming of the concentrations can attenuate the intensity of out-of-gamut colors. To better handle colors
-    outside the sRGB gamut, once we've decomposed the out-of-gamut color to a reflectance curve, we convert it to XYZ
-    and get the difference between it and the original and save the residual. Residuals occur when a color can't quite
-    be represented with our primary colors. The identified residual XYZ values will be mixed separately from the
-    reflectance curves and then added in at the end. This approach is very similar to what Mixbox describes in their
-    paper and helps to provide more sane color mixing for colors outside the sRGB gamut.
+    This trimming of the concentrations and the reflectance curve means some out-of-gamut colors can attenuated. To
+    better handle these colors, and even some colors in the sRGB gamut that can't quite be covered, once we've
+    decomposed a color to a reflectance curve, we convert it to XYZ and get the difference between it and the original
+    and save the residual. Residuals occur when a color can't quite be represented with our primary colors. The
+    identified residual XYZ values will be mixed separately from the reflectance curves and then added in at the end.
+    This approach is very similar to what Mixbox describes in their paper and helps to provide more sane color mixing
+    for colors outside the sRGB gamut.
 
 4.  Spectral.js generally clips the mixed colors before returning them. We do not clip any colors that are out-of-gamut
-	due to mixing in case the user is within a gamut that can accommodate them. Additionally, we allow colors outside of
+    due to mixing in case the user is within a gamut that can accommodate them. Additionally, we allow colors outside of
     sRGB to be mixed as well.
 
     ```py play
-	c1 = Color('color(display-p3 0 0 1)')
-	c2 = Color('color(display-p3 1 1 0)')
-	Color.interpolate([c1, c2], method='spectral')
-	Steps(Color.steps([c1, c2], method='spectral', steps=9))
-	```
+    c1 = Color('color(display-p3 0 0 1)')
+    c2 = Color('color(display-p3 1 1 0)')
+    Color.interpolate([c1, c2], method='spectral')
+    Steps(Color.steps([c1, c2], method='spectral', steps=9))
+    ```
 
-	Users are free to clip the returned colors or gamut map them in any way they see fit.
+    Users are free to clip the returned colors or gamut map them in any way they see fit.
 
 ## Registering
 

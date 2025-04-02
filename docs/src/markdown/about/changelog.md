@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.2
+
+-   **FIX**: Fix issues with spectral interpolation.
+
 ## 1.9.1
 
 -   **FIX**: Fix issue with how spectral interpolation concentrations are clipped.
