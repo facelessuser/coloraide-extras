@@ -113,13 +113,13 @@ different.
     composite reflectance curve to be between a very small value and 1 as the Kubelka-Munk functions expect reflectance
     to not be zero and not exceed 1.
 
-    This trimming of the concentrations and the reflectance curve means some out-of-gamut colors can attenuated. To
+    This trimming of the concentrations and the reflectance curve means some out-of-gamut colors can be attenuated. To
     better handle these colors, and even some colors in the sRGB gamut that can't quite be covered, once we've
     decomposed a color to a reflectance curve, we convert it to XYZ and get the difference between it and the original
-    and save the residual. Residuals occur when a color can't quite be represented with our primary colors. The
-    identified residual XYZ values will be mixed separately from the reflectance curves and then added in at the end.
-    This approach is very similar to what Mixbox describes in their paper and helps to provide more sane color mixing
-    for colors outside the sRGB gamut.
+    and save the residual. The identified residual XYZ values will be mixed separately using normal normal linear
+    interpolation. These residuals are then added at the end to the reflectance curves that were mixed using
+    Kubelka-Munk theory. This approach is very similar to what Mixbox describes in their paper and helps to provide more
+    sane color mixing for colors outside the sRGB gamut.
 
 4.  Spectral.js generally clips the mixed colors before returning them. We do not clip any colors that are out-of-gamut
     due to mixing in case the user is within a gamut that can accommodate them. Additionally, we allow colors outside of
