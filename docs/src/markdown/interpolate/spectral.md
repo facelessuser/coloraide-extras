@@ -106,8 +106,8 @@ different.
     - `#!color rgb(255 255 0)`
 
     During our evaluation, we found that `#!color rgb(255 255 255)` was not needed and sufficient coverage can be
-    obtained without it. The white reflectance curve also exceeded the range for appropriate for the Kubelka-Munk
-    functions, and additional logic is present to compensate for this.
+    obtained without it. The white reflectance curve also exceeded the range appropriate for the Kubelka-Munk functions,
+    and additional logic is present to compensate for this.
 
 3.  During decomposition of colors we constrain concentrations to be between 0 and 1. We also constrain the final
     composite reflectance curve to be between a very small value and 1 as the Kubelka-Munk functions expect reflectance

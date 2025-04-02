@@ -71,6 +71,10 @@ def main():
         plot = []
         count = 0
         for i in (0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, args.mix):
+
+            if i == -1:
+                continue
+
             t = spectral.nonlinear_luminance_ease(xyz[1], xyz2[1], i)
             size = len(r1)
             r = [0.0] * size
@@ -83,15 +87,15 @@ def main():
 
                 r[i] = (1 + ks - alg.nth_root(ks ** 2 + 2 * ks, 2))
 
-            if count != 9:
+            if args.mix > 0 and count != 9:
                 target.append(r)
                 plot.append('#cccccc')
                 style.append('dash')
             else:
                 target.append(r)
-                xyz1 = spectral.reflectance_to_xyz(r)
-                xyz2 = [alg.lerp(r1, r2, t) for r1, r2 in zip(res1, res2)]
-                xyz_final = [xyz1[0] + xyz2[0], xyz1[1] + xyz2[1], xyz1[2] + xyz2[2]]
+                xyza = spectral.reflectance_to_xyz(r)
+                xyzb = [alg.lerp(r1, r2, t) for r1, r2 in zip(res1, res2)]
+                xyz_final = [xyza[0] + xyzb[0], xyza[1] + xyzb[1], xyza[2] + xyzb[2]]
                 color3 = Color('xyz-d65', xyz_final)
                 plot.append(color3.convert('srgb').to_string(hex=True))
                 style.append('solid')
@@ -129,7 +133,7 @@ def main():
             x=list(range(START, END, STEP)),
             y=t,
             mode="lines",
-            line={'color': p, 'width': 2, 'dash': style[e]},
+            line={'color': p, 'width': 4, 'dash': style[e], 'shape': 'spline'},
             showlegend=False
         ))
 
