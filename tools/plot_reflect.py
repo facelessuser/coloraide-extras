@@ -23,6 +23,7 @@ def main():
     parser.add_argument('--color', '-c', action='append', help="Color.")
     parser.add_argument('--title', '-T', default='', help="Title of plot")
     parser.add_argument('--mix', '-m', type=float, default=0.5, help="Mix percentage")
+    parser.add_argument('--mix-steps', '-s', type=int, default=9, help="Number of mix steps to show.")
     parser.add_argument('--decomp', '-d', action="store_true", help='Show color decompossed into RGB.')
     parser.add_argument('--resolution', '-r', default="800", help="How densely to render the figure.")
     parser.add_argument('--no-border', '-b', action="store_true", help='Draw no border around the graphed content.')
@@ -70,7 +71,9 @@ def main():
         target = []
         plot = []
         count = 0
-        for i in (0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, args.mix):
+        values = alg.linspace(0, 1, args.mix_steps + 2)[1:-1]
+        values.append(args.mix)
+        for i in values:
 
             if i == -1:
                 continue
