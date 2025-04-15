@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.3
+
+-   **FIX**: Spectral interpolation should mix residual with the non-luminance-adjusted progress for better out of gamut
+    color mixing.
+
 ## 1.9.2
 
 -   **FIX**: Fix issues with spectral interpolation.

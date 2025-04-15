@@ -252,7 +252,7 @@ def spectral_mix(xyz1: Vector, xyz2: Vector, t: float) -> Vector:
     r2, res2 = single_constant_xyz_to_reflectance(xyz2)
 
     # Adjust the mixing based on which color dominates due to luminance.
-    t = nonlinear_luminance_ease(xyz1[1], xyz2[1], t)
+    t2 = nonlinear_luminance_ease(xyz1[1], xyz2[1], t)
 
     # Apply the Kubelka-Munk mixing
     r = [0.0] * SIZE
@@ -262,7 +262,7 @@ def spectral_mix(xyz1: Vector, xyz2: Vector, t: float) -> Vector:
         ks2 = (1 - r2[i]) ** 2 / (2 * r2[i])
 
         # Perform the actual interpolation
-        ks = alg.lerp(ks1, ks2, t)
+        ks = alg.lerp(ks1, ks2, t2)
 
         # Back to reflectance
         r[i] = 1 + ks - alg.nth_root(ks ** 2 + 2 * ks, 2)
