@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.10
+
+-   **NEW**: Sync types with latest ColorAide and require the latest ColorAide.
+
 ## 1.9.3
 
 -   **FIX**: Spectral interpolation should mix residual with the non-luminance-adjusted progress for better out of gamut

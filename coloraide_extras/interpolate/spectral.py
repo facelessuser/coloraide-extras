@@ -37,7 +37,7 @@ Modified by Isaac Muse
 from __future__ import annotations
 import math
 from coloraide import algebra as alg
-from coloraide.types import Vector
+from coloraide.types import Vector, AnyColor
 from coloraide.interpolate import Interpolator, Interpolate
 from coloraide.interpolate.linear import InterpolatorLinear
 from coloraide.interpolate.continuous import InterpolatorContinuous
@@ -273,7 +273,7 @@ def spectral_mix(xyz1: Vector, xyz2: Vector, t: float) -> Vector:
     return [xyz1[0] + xyz2[0], xyz1[1] + xyz2[1], xyz1[2] + xyz2[2]]
 
 
-class InterpolatorSpectralContinuous(InterpolatorContinuous):
+class InterpolatorSpectralContinuous(InterpolatorContinuous[AnyColor]):
     """Interpolate with continuous piecewise."""
 
     def mix(self, a: Vector, b: Vector, t: float) -> Vector:
@@ -319,7 +319,7 @@ class InterpolatorSpectralContinuous(InterpolatorContinuous):
         return progress(t) if progress is not None else t
 
 
-class InterpolatorSpectralLinear(InterpolatorLinear):
+class InterpolatorSpectralLinear(InterpolatorLinear[AnyColor]):
     """Interpolate multiple ranges of colors using linear, Piecewise interpolation."""
 
     def mix(self, a: Vector, b: Vector, t: float) -> Vector:
@@ -370,12 +370,12 @@ class InterpolatorSpectralLinear(InterpolatorLinear):
         return progress(t) if progress is not None else t
 
 
-class Spectral(Interpolate):
+class Spectral(Interpolate[AnyColor]):
     """Linear interpolation plugin."""
 
     NAME = "spectral"
 
-    def interpolator(self, *args: Any, **kwargs: Any) -> Interpolator:
+    def interpolator(self, *args: Any, **kwargs: Any) -> Interpolator[AnyColor]:
         """Return the linear interpolator."""
 
         return InterpolatorSpectralLinear(*args, **kwargs)
@@ -389,12 +389,12 @@ class Spectral(Interpolate):
         raise ValueError(f"Only '{SPACE}' is supported for '{self.NAME}' interpolation")
 
 
-class SpectralContinuous(Interpolate):
+class SpectralContinuous(Interpolate[AnyColor]):
     """Linear interpolation plugin."""
 
     NAME = "spectral-continuous"
 
-    def interpolator(self, *args: Any, **kwargs: Any) -> Interpolator:
+    def interpolator(self, *args: Any, **kwargs: Any) -> Interpolator[AnyColor]:
         """Return the linear interpolator."""
 
         return InterpolatorSpectralContinuous(*args, **kwargs)
