@@ -172,28 +172,25 @@ SIZE = len(X_BAR)
 REFLECTANCE = [REF_C, REF_M, REF_Y, REF_R, REF_G, REF_B]
 
 
-def nonlinear_luminance_ease(l1: float, l2: float, t: float) -> float:
-    """
-    Scale the transition in a non-linear manner.
+def calculate_mixing_concentration(t: float, l1: float, l2: float) -> tuple[float, float]:
+    """Calculate the concentrations of the colors based on the interpolation progress and luminance."""
 
-    As our curves are calculated directly from light data, there is no
-    context of true pigment characteristics. Particularly, our results
-    will mix linearly while this is not true for paint.
-
-    Based on the luminance difference in the two colors, the proportion
-    of mixing (the dominance of one color over another) will be altered.
-
-    Essentially, a color with more luminance will dominate the mix.
-    """
-
+    # Get luminance but use a very small lightness if lightness is zero
     if l1 <= 0.0:
         l1 = EPSILON
     if l2 <= 0.0:
         l2 = EPSILON
 
-    t1 = l1 * (1 - t) ** 2
-    t2 = l2 * t ** 2
-    return t2 / (t1 + t2)
+    # Calculate the concentration of each reflectance curve.
+    # This applies an easing function to the interpolation progress
+    # that biases the color mixing towards the more luminous color.
+    c1 = (1 - t) ** 2 * l1
+    c2 = t ** 2 * l2
+    total = c1 + c2
+    c1 /= total
+    c2 /= total
+
+    return c1, c2
 
 
 def xyz_to_concentration(xyz: Vector) -> Vector:
@@ -251,8 +248,7 @@ def spectral_mix(xyz1: Vector, xyz2: Vector, t: float) -> Vector:
     r1, res1 = single_constant_xyz_to_reflectance(xyz1)
     r2, res2 = single_constant_xyz_to_reflectance(xyz2)
 
-    # Adjust the mixing based on which color dominates due to luminance.
-    t2 = nonlinear_luminance_ease(xyz1[1], xyz2[1], t)
+    c1, c2 = calculate_mixing_concentration(t, xyz1[1], xyz2[1])
 
     # Apply the Kubelka-Munk mixing
     r = [0.0] * SIZE
@@ -261,8 +257,8 @@ def spectral_mix(xyz1: Vector, xyz2: Vector, t: float) -> Vector:
         ks1 = (1 - r1[i]) ** 2 / (2 * r1[i])
         ks2 = (1 - r2[i]) ** 2 / (2 * r2[i])
 
-        # Perform the actual interpolation
-        ks = alg.lerp(ks1, ks2, t2)
+        # Perform the actual interpolation giving more weight to high luminance colors
+        ks = ks1 * c1 + ks2 * c2
 
         # Back to reflectance
         r[i] = 1 + ks - alg.nth_root(ks ** 2 + 2 * ks, 2)

@@ -105,25 +105,30 @@ different.
     - `#!color rgb(255 0 255)`
     - `#!color rgb(255 255 0)`
 
-    During our evaluation, we found that `#!color rgb(255 255 255)` was not needed and sufficient coverage can be
-    obtained without it. The white reflectance curve also exceeded the range appropriate for the Kubelka-Munk functions,
-    and additional logic is present to compensate for this.
+    During our evaluation, we found that including `#!color rgb(255 255 255)` provided no significant improvements as
+    the other primary colors provide sufficient coverage with comparable results.
 
-3.  During decomposition of colors we constrain concentrations to be between 0 and 1. We also constrain the final
+3.  During decomposition of colors, we constrain concentrations to be between 0 and 1. We also constrain the final
     composite reflectance curve to be between a very small value and 1 as the Kubelka-Munk functions expect reflectance
-    to not be zero and not exceed 1.
+    to not be zero and not exceed 1. We compensate for this by calculating the residual (the difference between the
+    expected XYZ value and the recreated XYZ value) and mixing it separately and then adding the results back into the
+    final result. This allows us to reasonably represent colors that may exceed the actual gamut that the primary
+    reflectance curves can actually reproduce and even colors that exceed the sRGB gamut entirely, though colors within
+    the sRGB gamut should be considered to have more accurate Kubelka-Munk mixing.
 
-    This trimming of the concentrations and the reflectance curve means some out-of-gamut colors can be attenuated. To
-    better handle these colors, and even some colors in the sRGB gamut that can't quite be covered, once we've
-    decomposed a color to a reflectance curve, we convert it to XYZ and get the difference between it and the original
-    and save the residual. The identified residual XYZ values will be mixed separately using normal normal linear
-    interpolation. These residuals are then added at the end to the reflectance curves that were mixed using
-    Kubelka-Munk theory. This approach is very similar to what Mixbox describes in their paper and helps to provide more
-    sane color mixing for colors outside the sRGB gamut.
+    Our approach differs from Spectral.js which does not clamp the high end values and does not utilize residuals which
+    causes inaccuracies in round tripping of colors through the Kubelka-Munk functions if the color's reflectance curve
+    has values that exceed 1. Better stated, the Spectral.js approach can process most of the colors in the sRGB gamut
+    accurately, but not all. It should be noted though that Spectral.js clamps their final results to the course
+    resolution of sRGB hexadecimal values, and because of they are limited to the sRGB gamut only, and to such a low
+    resolution, inaccuracies are not easily observable. Since we allow for the expectation of great precision and larger
+    gamuts, we cannot get away with the same approach and require some mitigation.
 
-4.  Spectral.js generally clips the mixed colors before returning them. We do not clip any colors that are out-of-gamut
-    due to mixing in case the user is within a gamut that can accommodate them. Additionally, we allow colors outside of
-    sRGB to be mixed as well.
+4.  Spectral.js generally clips the mixed colors to sRGB hexadecimal resolution before returning them. We do not clip
+    any colors that are out-of-gamut due to mixing in case the user is within a gamut that can accommodate them. We
+    also do not force hexadecimal resolution. We let the user chose how they will gamut map their colors and to what
+    resolution they wish to round the their values to. This means we allow colors that exceed the sRGB gamut if that is
+    desired. In short, users are free to clip the returned colors or gamut map them in any way they see fit.
 
     ```py play
     c1 = Color('color(display-p3 0 0 1)')
@@ -132,7 +137,10 @@ different.
     Steps(Color.steps([c1, c2], method='spectral', steps=9))
     ```
 
-    Users are free to clip the returned colors or gamut map them in any way they see fit.
+5.  Lastly, Spectral.js has the concept of "tinting strength". It is essentially parameter to manually adjust the
+    weight of a color when mixing. It is a fiddly way to subjectively adjust the interpolation between individual
+    colors. We do not implement this and all interpolations essentially perform as if the "tinting strength" is set to 1
+    which causes this variable to drop out.
 
 ## Registering
 
