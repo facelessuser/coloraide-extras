@@ -49,6 +49,7 @@ NaN
 Penrose
 Pinney
 PyPI
+PyPI's
 RGB
 Reflectance
 Rlab
