@@ -2,7 +2,8 @@
 
 ## 1.10.1
 
--   **ENHANCE**: Update internal algorithm of Spectral mixing which is more efficient.
+-   **ENHANCE**: Switch to deploying with PyPI's "Trusted Publisher".
+-   **ENHANCE**: Update internal algorithm of Spectral mixing to a more efficient approach.
 
 ## 1.10
 
