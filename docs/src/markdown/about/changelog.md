@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.10.1
+
+-   **ENHANCE**: Update internal algorithm of Spectral mixing which is more efficient.
+
 ## 1.10
 
 -   **NEW**: Sync types with latest ColorAide and require the latest ColorAide.

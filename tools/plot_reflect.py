@@ -78,7 +78,7 @@ def main():
             if i == -1:
                 continue
 
-            t = spectral.nonlinear_luminance_ease(xyz[1], xyz2[1], i)
+            c1, c2 = spectral.calculate_mixing_concentration(i, xyz[1], xyz2[1])
             size = len(r1)
             r = [0.0] * size
             for i in range(size):
@@ -86,7 +86,7 @@ def main():
                 ks2 = (1 - r2[i]) ** 2 / (2 * r2[i])
 
                 # Perform the actual interpolation
-                ks = alg.lerp(ks1, ks2, t)
+                ks = ks1 * c1 + ks2 * c2
 
                 r[i] = (1 + ks - alg.nth_root(ks ** 2 + 2 * ks, 2))
 
@@ -97,7 +97,7 @@ def main():
             else:
                 target.append(r)
                 xyza = spectral.reflectance_to_xyz(r)
-                xyzb = [alg.lerp(r1, r2, t) for r1, r2 in zip(res1, res2)]
+                xyzb = [alg.lerp(r1, r2, i) for r1, r2 in zip(res1, res2)]
                 xyz_final = [xyza[0] + xyzb[0], xyza[1] + xyzb[1], xyza[2] + xyzb[2]]
                 color3 = Color('xyz-d65', xyz_final)
                 plot.append(color3.convert('srgb').to_string(hex=True))
