@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.11
+
+-   **NEW**: Support Python 3.14.
+
 ## 1.10.1
 
 -   **ENHANCE**: Switch to deploying with PyPI's "Trusted Publisher".
