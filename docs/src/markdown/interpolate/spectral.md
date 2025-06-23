@@ -93,7 +93,9 @@ different.
 
 1.  Following the approach outlined by Scott Burns, we regenerated all the data at higher precision and ensured that it
     was done with the same transformation matrices and white points that we use within our library. This was done just
-    to ensure we have more precise transforms within our library.
+    to ensure we have more precise transforms within our library. Generally, the approach is the same as what
+    Spectral.js does, but values _might_ be slightly different as we did the calculations ourselves with our exact
+    white points and matrices.
 
 2.  Spectral.js uses primary colors of:
 
@@ -110,25 +112,26 @@ different.
 
 3.  During decomposition of colors, we constrain concentrations to be between 0 and 1. We also constrain the final
     composite reflectance curve to be between a very small value and 1 as the Kubelka-Munk functions expect reflectance
-    to not be zero and not exceed 1. We compensate for this by calculating the residual (the difference between the
-    expected XYZ value and the recreated XYZ value) and mixing it separately and then adding the results back into the
-    final result. This allows us to reasonably represent colors that may exceed the actual gamut that the primary
-    reflectance curves can actually reproduce and even colors that exceed the sRGB gamut entirely, though colors within
-    the sRGB gamut should be considered to have more accurate Kubelka-Munk mixing.
+    to not be zero and not exceed 1. This does alter the curve, and we compensate for this by calculating the residual
+    (the difference between the expected XYZ value and the recreated XYZ value) and mixing it separately and then adding
+    the results back into the final result. This allows us to reasonably represent colors that may exceed the actual
+    gamut that the primary reflectance curves can actually reproduce and even colors that exceed the sRGB gamut
+    entirely. It should be noted though that colors within the sRGB gamut should be considered to have more accurate
+    Kubelka-Munk mixing as there will only be slight clamping within sRGB colors when they get close to white.
 
     Our approach differs from Spectral.js which does not clamp the high end values and does not utilize residuals which
     causes inaccuracies in round tripping of colors through the Kubelka-Munk functions if the color's reflectance curve
-    has values that exceed 1. Better stated, the Spectral.js approach can process most of the colors in the sRGB gamut
-    accurately, but not all. It should be noted though that Spectral.js clamps their final results to the course
-    resolution of sRGB hexadecimal values, and because of they are limited to the sRGB gamut only, and to such a low
-    resolution, inaccuracies are not easily observable. Since we allow for the expectation of great precision and larger
-    gamuts, we cannot get away with the same approach and require some mitigation.
+    has values that exceed 1, which happens as colors get very close to white. Better stated, the Spectral.js approach
+    can process most of the colors in the sRGB gamut accurately, but not all. It should be noted though that Spectral.js
+    does clamp their final result to the course resolution of sRGB hexadecimal values, and because they are limited to
+    the sRGB gamut only, and to such a low resolution, inaccuracies are not easily observable. Since we allow for higher
+    precision and larger gamuts, we cannot get away with the same approach and require some mitigation.
 
 4.  Spectral.js generally clips the mixed colors to sRGB hexadecimal resolution before returning them. We do not clip
     any colors that are out-of-gamut due to mixing in case the user is within a gamut that can accommodate them. We
-    also do not force hexadecimal resolution. We let the user chose how they will gamut map their colors and to what
-    resolution they wish to round the their values to. This means we allow colors that exceed the sRGB gamut if that is
-    desired. In short, users are free to clip the returned colors or gamut map them in any way they see fit.
+    also do not force hexadecimal resolution. We let the user choose how they will gamut map their colors and to what
+    resolution they wish to round their values to. This means we allow colors that exceed the sRGB gamut if that is
+    desired. In short, users are free to clip or gamut map their returned colors in any way they see fit.
 
     ```py play
     c1 = Color('color(display-p3 0 0 1)')

@@ -27,7 +27,7 @@ The sRGB gamut represented within the UVW color space.
 
 //// note
 It is a bit uncertain as to why the 3D model shows a number of values resolving to a black bulb under the shape,
-but the translation as been compared against some other libraries that have implemented the space, and it seems to
+but the translation has been compared against some other libraries that have implemented the space, and it seems to
 align :shrug:.
 ////
 
