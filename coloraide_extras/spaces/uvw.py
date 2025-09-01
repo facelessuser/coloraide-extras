@@ -4,7 +4,7 @@ CIE 1964 UVW class.
 https://en.wikipedia.org/wiki/CIE_1964_color_space
 """
 from __future__ import annotations
-from coloraide.spaces import Space
+from coloraide.spaces import Luminant, Prism, Space
 from coloraide.channels import Channel, FLG_MIRROR_PERCENT
 from coloraide.cat import WHITES
 from coloraide import util
@@ -47,7 +47,7 @@ def uvw_to_xyz(uvw: Vector, white: VectorLike) -> Vector:
     return util.xy_to_xyz([x, y], (((w + 17.0) / 25.0) ** 3) / 100.0)
 
 
-class UVW(Space):
+class UVW(Luminant, Prism, Space):
     """The UVW class."""
 
     BASE = "xyz-d65"
@@ -59,6 +59,12 @@ class UVW(Space):
         Channel("w", 0.0, 100.0, flags=FLG_MIRROR_PERCENT)
     )
     WHITE = WHITES['2deg']['D65']
+
+
+    def lightness_name(self) -> str:
+        """Get lightness name."""
+
+        return "w"
 
     def to_base(self, coords: Vector) -> Vector:
         """To XYZ."""

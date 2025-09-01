@@ -23,7 +23,7 @@ dynamic = [
 ]
 
 dependencies = [
-    "coloraide>=4.6"
+    "coloraide>=5.1"
 ]
 
 [project.urls]

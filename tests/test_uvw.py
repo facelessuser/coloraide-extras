@@ -64,6 +64,12 @@ class TestUVWSerialize(util.ColorAssertsPyTest):
 class TestUVWPoperties(util.ColorAsserts, unittest.TestCase):
     """Test UVW."""
 
+    def test_names(self):
+        """Test Luminant names."""
+
+        c = Color('color(--uvw 7.628 70.501 96.177)')
+        self.assertEqual(c._space.lightness_name(), 'w')
+
     def test_u(self):
         """Test `u`."""
 

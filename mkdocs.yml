@@ -210,7 +210,7 @@ extra_css:
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/ace-builds@1.43.0/src-min-noconflict/ace.js
   - https://cdn.jsdelivr.net/npm/mermaid@11.7.0/dist/mermaid.min.js
-  - playground-config-0ba7e885.js
+  - playground-config-42c17ad5.js
   - https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js
   - assets/coloraide-extras/extra-notebook-DQMNiD5r.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

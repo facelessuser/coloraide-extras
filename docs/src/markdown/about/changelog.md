@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12
+
+-   **NEW**: UVW color space now inherits from Luminant and Prism space.
+
 ## 1.11
 
 -   **NEW**: Support Python 3.14.
