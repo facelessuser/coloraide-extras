@@ -38,6 +38,7 @@ LMS
 Ladd
 Lstar
 Lstar's
+Luminant
 MERCHANTABILITY
 MHPE
 MacAdam
