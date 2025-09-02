@@ -3,6 +3,7 @@
 ## 1.12
 
 -   **NEW**: UVW color space now inherits from Luminant and Prism space.
+-   **NEW**: Require ColorAide 5.1.
 
 ## 1.11
 
