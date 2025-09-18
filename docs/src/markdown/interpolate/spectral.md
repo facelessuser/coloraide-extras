@@ -110,6 +110,12 @@ different.
     During our evaluation, we found that including `#!color rgb(255 255 255)` provided no significant improvements as
     the other primary colors provide sufficient coverage with comparable results.
 
+    /// note
+    It should be noted that it was recently discovered that Spectral.js requires white data because their concentration
+    calculation is slightly different than ours and has an issue. If they adopt a similar way of decomposing the RGB
+    into cyan, magenta, yellow, red, green, and blue they should be able to drop white as well, if they choose to do so.
+    ///
+
 3.  During decomposition of colors, we constrain concentrations to be between 0 and 1. We also constrain the final
     composite reflectance curve to be between a very small value and 1 as the Kubelka-Munk functions expect reflectance
     to not be zero and not exceed 1. This does alter the curve, and we compensate for this by calculating the residual
