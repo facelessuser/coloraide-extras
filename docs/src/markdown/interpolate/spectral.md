@@ -112,26 +112,38 @@ different.
 
     /// note
     It should be noted that it was recently discovered that Spectral.js requires white data because their concentration
-    calculation is slightly different than ours and has an issue. If they adopt a similar way of decomposing the RGB
-    into cyan, magenta, yellow, red, green, and blue they should be able to drop white as well, if they choose to do so.
+    calculation is slightly different than ours and has an issue. If they adopt a similar way of decomposing RGB into
+    cyan, magenta, yellow, red, green, and blue, they should be able to drop white as well, if they choose to do so.
     ///
 
-3.  During decomposition of colors, we constrain concentrations to be between 0 and 1. We also constrain the final
-    composite reflectance curve to be between a very small value and 1 as the Kubelka-Munk functions expect reflectance
-    to not be zero and not exceed 1. This does alter the curve, and we compensate for this by calculating the residual
-    (the difference between the expected XYZ value and the recreated XYZ value) and mixing it separately and then adding
-    the results back into the final result. This allows us to reasonably represent colors that may exceed the actual
-    gamut that the primary reflectance curves can actually reproduce and even colors that exceed the sRGB gamut
-    entirely. It should be noted though that colors within the sRGB gamut should be considered to have more accurate
-    Kubelka-Munk mixing as there will only be slight clamping within sRGB colors when they get close to white.
+3.  During decomposition of colors, we constrain concentrations to be between 0 and 1. Concentrations are always
+    relative to the colors they are mixing with, so you can't have 200% of red of 100% as what this really represents
+    is 2 parts red and 1 part blue, which equates to 0.6666666666666666% and 0.3333333333333333% of blue. You can never
+    mix more than 100% of a given wavelength. Spectral.js only constrains the lower end.
 
-    Our approach differs from Spectral.js which does not clamp the high end values and does not utilize residuals which
-    causes inaccuracies in round tripping of colors through the Kubelka-Munk functions if the color's reflectance curve
-    has values that exceed 1, which happens as colors get very close to white. Better stated, the Spectral.js approach
-    can process most of the colors in the sRGB gamut accurately, but not all. It should be noted though that Spectral.js
-    does clamp their final result to the course resolution of sRGB hexadecimal values, and because they are limited to
-    the sRGB gamut only, and to such a low resolution, inaccuracies are not easily observable. Since we allow for higher
-    precision and larger gamuts, we cannot get away with the same approach and require some mitigation.
+    Additionally, we constrain composite reflectance curves to be between a very small value and 1 as the Kubelka-Munk
+    functions expect reflectance to not be zero and not exceed 1. The Kubelka-Munk mixing function does not handle
+    values that exceed 1 very well and cannot round trip these values. Spectral.js only constrains the lower end.
+
+    These changes will alter the curve compared to Spectral.js when getting very close to white or exceeding the sRGB
+    gamut. The primary curves do not sum up to 1 perfectly and can sum to values greater than 1. This means color
+    information is lost, but the information would be inaccurate when passing through the Kubelka-Munk mixing functions.
+
+    We compensate for the color information that is lost by capturing the residual (the difference between the expected
+    XYZ value and the recreated XYZ value) and mixing those separately and then adding the mixed residual back into the
+    final color at the end. This allows us to reasonably represent colors that may exceed the actual gamut that the
+    primary reflectance curves can actually reproduce and even colors that exceed the sRGB gamut entirely. It should be
+    noted though that colors within the sRGB gamut should be considered to have more accurate Kubelka-Munk mixing as
+    there will only be slight clamping within sRGB colors when they get close to white.
+
+    Better stated, the Spectral.js approach can process most of the colors in the sRGB gamut accurately, but not all.
+    Our adjusted approach allows us to better handle colors at the edge of what the Spectral.js approach can support for
+    the sRGB gamut and beyond.
+
+    It should be noted though that Spectral.js does clamp their final result to the course resolution of sRGB
+    hexadecimal values, and because they are limited to the sRGB gamut only, and to such a low resolution, inaccuracies
+    are not easily observable. Since we allow for higher precision and larger gamuts, we cannot get away with the same
+    approach and require some mitigation.
 
 4.  Spectral.js generally clips the mixed colors to sRGB hexadecimal resolution before returning them. We do not clip
     any colors that are out-of-gamut due to mixing in case the user is within a gamut that can accommodate them. We
