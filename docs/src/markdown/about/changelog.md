@@ -2,7 +2,7 @@
 
 ## 1.12.1
 
--   **NEW**: Adjust the spectral mixing to use a smaller epsilon that matches the current Spectral.js implementation.
+-   **FIX**: Adjust the spectral mixing to use a smaller epsilon that matches the current Spectral.js implementation.
 
 ## 1.12
 
