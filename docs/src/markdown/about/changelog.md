@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.1
+
+-   **NEW**: Adjust the spectral mixing to use a smaller epsilon that matches the current Spectral.js implmentation.
+
 ## 1.12
 
 -   **NEW**: UVW color space now inherits from Luminant and Prism space.
