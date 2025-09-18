@@ -140,6 +140,7 @@ def main():
             showlegend=False
         ))
 
+    # Show or save the data as an image, etc.
     if fig:
         if args.output:
             filetype = os.path.splitext(args.output)[1].lstrip('.').lower()
@@ -150,9 +151,9 @@ def main():
                 io.write_json(fig, args.output)
             else:
                 with open(args.output, 'wb') as f:
-                    f.write(fig.to_image(format=filetype))
+                    f.write(fig.to_image(format=filetype, width=args.width, height=args.height))
         else:
-            fig.show()
+            fig.show('browser')
         return 0
     return 1
 
