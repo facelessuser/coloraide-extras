@@ -47,7 +47,7 @@ from typing import Any, Mapping, TYPE_CHECKING
 if TYPE_CHECKING:  # pragma: no cover
     from coloraide.color import Color
 
-EPSILON = 1e-12
+EPSILON = alg.EPS
 
 SPACE = 'xyz-d65'
 
