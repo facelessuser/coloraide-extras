@@ -116,11 +116,9 @@ different.
     During our evaluation, we found that including `#!color rgb(255 255 255)` provided no significant improvements as
     the other primary colors provide sufficient coverage with comparable results.
 
-    /// note
-    It should be noted that it was recently discovered that Spectral.js requires white data because their concentration
-    calculation is slightly different than ours and has an issue. If they adopt a similar way of decomposing RGB into
-    cyan, magenta, yellow, red, green, and blue, they should be able to drop white as well, if they choose to do so.
-    ///
+    In order to drop `#!color rgb(255 255 255)` as a primary curve, we simply adjusted the algorithm that calculated
+    concentrations so that the decomposition of linear sRGB values into cyan, magenta, Yellow, red, green, and blue was
+    not dependent upon white being subtracted first.
 
 3.  During decomposition of colors, we constrain concentrations to be between 0 and 1. Concentrations are always
     relative to the colors they are mixing with, so you can't have 200% of red of 100% as what this really represents
