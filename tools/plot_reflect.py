@@ -116,7 +116,7 @@ def main():
     if not title:
         title = f'Reflectance Curve of {color.to_string()}'
         if not color.in_gamut('srgb'):
-            if len(args.color()) == 1:
+            if len(args.color) == 1:
                 title += '<br><sup>Color out of sRGB gamut, curves may be attenuated</sup>'
             else:
                 title = f'Spectral mix of {color.to_string()} and {color2.to_string()}'
