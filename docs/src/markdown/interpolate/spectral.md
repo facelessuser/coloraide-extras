@@ -50,8 +50,8 @@ Steps(Color.steps([c1, c2], space='srgb', steps=9))
 The idea is simple enough. Create a palette of primary colors from which you can mix and get all the colors within your
 desired gamut, which in our case is sRGB. Once the colors are selected, reflectance curves need to be generated for
 those primary colors. There are various ways in which such curves could be created, but the chosen approach that was
-settled on involves applying applying the [research of Scott Burns](http://scottburns.us/reflectance-curves-from-srgb-10/).
-His research details a way to use spectral data to approximate reflectance curves for any color within the sRGB gamut.
+settled on involves applying the [research of Scott Burns](http://scottburns.us/reflectance-curves-from-srgb-10/). His
+research details a way to use spectral data to approximate reflectance curves for any color within the sRGB gamut.
 
 ![Primary Reflectance Curves](../images/reflectance-curves.png)
 /// figure-caption
@@ -165,7 +165,7 @@ different.
     Steps(Color.steps([c1, c2], method='spectral', steps=9))
     ```
 
-5.  Lastly, Spectral.js has the concept of "tinting strength". It is essentially parameter to manually adjust the
+5.  Lastly, Spectral.js has the concept of "tinting strength". It is essentially a parameter to manually adjust the
     weight of a color when mixing. It is a fiddly way to subjectively adjust the interpolation between individual
     colors. We do not implement this and all interpolations essentially perform as if the "tinting strength" is set to 1
     which causes this variable to drop out.
