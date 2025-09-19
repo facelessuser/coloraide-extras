@@ -121,10 +121,10 @@ different.
     not dependent upon white being subtracted first.
 
 3.  During decomposition of colors, we constrain concentrations to be between 0 and 1. Concentrations are always
-    relative to the colors they are mixing with, so you can't have 200% of red of 100% as what this really represents
-    is 2 parts red and 1 part blue, which equates to 0.6666666666666666% and 0.3333333333333333% of blue. You can never
-    mix more than 100% of a given wavelength as it would create unrealistic reflectance curves that would break when
-    performing the Kubelka-Munk mix. Spectral.js only constrains the lower end.
+    relative to the colors they are mixing with. You can't have 200% of red and 100% of blue paint as what this really
+    represents is 2 parts red and 1 part blue, which equates to 0.6666666666666666% of red and 0.3333333333333333% of
+    blue. You can never mix more than 100% of a given wavelength as it would create unrealistic reflectance curves that
+    would break when performing the Kubelka-Munk mix. Spectral.js only constrains the lower end.
 
     Additionally, we constrain composite reflectance curves to be between a very small value and 1 as the Kubelka-Munk
     functions expect reflectance to not be zero and not exceed 1. The Kubelka-Munk mixing function does not handle
