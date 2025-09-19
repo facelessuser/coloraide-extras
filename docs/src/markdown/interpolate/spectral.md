@@ -117,7 +117,7 @@ different.
     the other primary colors provide sufficient coverage with comparable results.
 
     In order to drop `#!color rgb(255 255 255)` as a primary curve, we simply adjusted the algorithm that calculated
-    concentrations so that the decomposition of linear sRGB values into cyan, magenta, Yellow, red, green, and blue was
+    concentrations so that the decomposition of linear sRGB values into cyan, magenta, yellow, red, green, and blue was
     not dependent upon white being subtracted first.
 
 3.  During decomposition of colors, we constrain concentrations to be between 0 and 1. Concentrations are always
