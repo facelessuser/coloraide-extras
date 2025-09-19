@@ -7,7 +7,7 @@ http://scottburns.us/matlab-octave-and-python-source-code-for-refl-recon-chrom-a
 import sys
 import os
 import math
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 sys.path.insert(0, os.getcwd())
 
@@ -440,25 +440,26 @@ print('=== CMFs D65 ===')
 alg.pprint(T)
 
 # Setup plot for results
-plt.style.use('seaborn-v0_8-darkgrid')
-# Create axes
-ax = plt.axes(
-    xlabel='Wavelength',
-    ylabel='Reflection'
+fig = go.Figure(
+    layout={
+        'title': 'Primary Color Reflectance Curves',
+        'xaxis_title': 'Wavelength',
+        'yaxis_title': 'Reflection',
+        'width': 800,
+        'height': 600
+    }
 )
 
 for target, r in zip(targets, rho):
     print(f'==== Curve for {target} ====')
     alg.pprint(r)
-    plt.plot(
-        list(range(START, END, STEP)),
-        r,
-        color=target,
-        marker="",
-        linewidth=1.5,
-        markersize=2,
-    antialiased=True
-)
 
-plt.gcf().set_dpi(200)
-plt.show()
+    fig.add_traces(data=go.Scatter(
+        x=list(range(START, END, STEP)),
+        y=r,
+        mode="lines",
+        line={'color': target, 'width': 4, 'shape': 'spline'},
+        showlegend=False
+    ))
+
+fig.show('browser')

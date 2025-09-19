@@ -25,11 +25,9 @@ def main():
     parser.add_argument('--mix', '-m', type=float, default=0.5, help="Mix percentage")
     parser.add_argument('--mix-steps', '-s', type=int, default=9, help="Number of mix steps to show.")
     parser.add_argument('--decomp', '-d', action="store_true", help='Show color decompossed into RGB.')
-    parser.add_argument('--resolution', '-r', default="800", help="How densely to render the figure.")
-    parser.add_argument('--no-border', '-b', action="store_true", help='Draw no border around the graphed content.')
-    parser.add_argument('--dark', action="store_true", help="Use dark theme.")
-    parser.add_argument('--dpi', default=200, type=int, help="DPI of image.")
     parser.add_argument('--output', '-o', default='', help='Output file.')
+    parser.add_argument('--height', '-H', type=int, default=600, help="Height")
+    parser.add_argument('--width', '-W', type=int, default=800, help="Width")
 
     args = parser.parse_args()
 

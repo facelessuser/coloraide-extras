@@ -53,6 +53,12 @@ those primary colors. There are various ways in which such curves could be creat
 settled on involves applying applying the [research of Scott Burns](http://scottburns.us/reflectance-curves-from-srgb-10/).
 His research details a way to use spectral data to approximate reflectance curves for any color within the sRGB gamut.
 
+![Primary Reflectance Curves](../images/reflectance-curves.png)
+/// figure-caption
+Reflectance curves of cyan, magenta, yellow, red, green, and blue as approximated using the method proposed by Scott
+Burns.
+///
+
 With our primary colors selected and the reflectance curves created for each one, we can use these curves to create any
 color within our gamut. More interestingly, we can take a color and deconstruct it into concentrations of these primary
 reflectance curves and then construct a new curve that represents the color.
