@@ -136,6 +136,6 @@ commands=
 deps=
     -rrequirements/docs.txt
 commands=
-    {envpython} -m mkdocs build --clean --verbose --strict
+    {envpython} -m zensical build -f zensical.yml --clean --strict
     {envbindir}/pyspelling
 """

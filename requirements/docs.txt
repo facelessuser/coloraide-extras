@@ -1,7 +1,5 @@
-mkdocs_pymdownx_material_extras>=2.6
+zensical
 git+https://github.com/facelessuser/pymdown-lexers.git
-mkdocs-git-revision-date-localized-plugin
-mkdocs-minify-plugin
 pyspelling
 build
-coloraide>=5.1
+coloraide>=6.0
