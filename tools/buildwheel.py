@@ -11,7 +11,7 @@ import hashlib
 
 # Notebook specific wheels
 NOTEBOOK_WHEELS = [
-    "https://files.pythonhosted.org/packages/96/2b/34cc11786bc00d0f04d0f5fdc3a2b1ae0b6239eef72d3d345805f9ad92a1/markdown-3.8.2-py3-none-any.whl",  # noqa: E501
+    "https://files.pythonhosted.org/packages/70/ae/44c4a6a4cbb496d93c6257954260fe3a6e91b7bed2240e5dad2a717f5111/markdown-3.9-py3-none-any.whl",  # noqa: E501
     "https://files.pythonhosted.org/packages/e4/06/43084e6cbd4b3bc0e80f6be743b2e79fbc6eed8de9ad8c629939fa55d972/pymdown_extensions-10.16.1-py3-none-any.whl",  # noqa: E501
 ]
 
@@ -22,12 +22,12 @@ NOTEBOOK_PYODIDE_PKGS = [
 # Wheels required in addition to the current project
 PLAYGROUND_WHEELS = [
     "https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl",  # noqa: E501
-    "https://files.pythonhosted.org/packages/16/fb/5f13cf2af66c5c07fc7793661eade4e3c9cb145ac5be9d077f4f29c0af48/coloraide-5.1-py3-none-any.whl"  # noqa: E501
+    "https://files.pythonhosted.org/packages/9a/87/ea9030c03b9ade0a9467241af3835874211836288260ecc5143d46059d96/coloraide-6.0-py3-none-any.whl"  # noqa: E501
 ]
 
 PLAYGROUND_PYODIDE_PKGS = ['micropip']
 
-MKDOCS_YML = 'mkdocs.yml'
+ZENSICAL_YML = 'zensical.yml'
 
 RE_CONFIG = re.compile(r'playground-config.*?\.js')
 RE_BUILD = re.compile(r'Successfully built ([-_0-9.a-zA-Z]+?\.whl)')
@@ -152,10 +152,10 @@ if __name__ == "__main__":
             f.write(config)
 
         # Update `mkdocs` source to reference wheel config
-        with open(MKDOCS_YML, 'rb') as f:
+        with open(ZENSICAL_YML, 'rb') as f:
             mkdocs = f.read().decode('utf-8')
         mkdocs = RE_CONFIG.sub('playground-config-{}.js'.format(hsh), mkdocs)
-        with open(MKDOCS_YML, 'wb') as f:
+        with open(ZENSICAL_YML, 'wb') as f:
             f.write(mkdocs.encode('utf-8'))
 
     print("FAILED :(" if status else "SUCCESS :)")
