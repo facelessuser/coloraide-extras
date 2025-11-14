@@ -152,12 +152,12 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
 
         self.assertColorEqual(
             Color.interpolate([red, green, blue], method='spectral-continuous')(0.25),
-            Color('color(xyz-d65 0.06172 0.046 0.011)')
+            Color('color(xyz-d65 0.06178 0.04602 0.01101)')
         )
 
         self.assertColorEqual(
             Color.interpolate([red, green, blue], method='spectral-continuous')(0.75),
-            Color('color(xyz-d65 0.02659 0.05347 0.0299)')
+            Color('color(xyz-d65 0.0266 0.05348 0.02989)')
         )
 
     def test_bad_color_space_continuous(self):
@@ -219,4 +219,3 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
             )(1),
             Color('color(xyz-d65 0.09024 0.0361 0.47527 / 1)')
         )
-

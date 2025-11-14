@@ -55,8 +55,8 @@ research details a way to use spectral data to approximate reflectance curves fo
 
 ![Primary Reflectance Curves](../images/reflectance-curves.png)
 /// figure-caption
-Reflectance curves of cyan, magenta, yellow, red, green, and blue as approximated using the method proposed by Scott
-Burns.
+Reflectance curves of white, cyan, magenta, yellow, red, green, and blue as approximated using the methods proposed by
+Scott Burns.
 ///
 
 With our primary colors selected and the reflectance curves created for each one, we can use these curves to create any
@@ -65,8 +65,8 @@ reflectance curves and then construct a new curve that represents the color.
 
 ![Decomposition of Color Reflectance Concentrations](../images/reflect-orange.png)
 /// figure-caption
-Orange decomposed into cyan, magenta, yellow, red, green, and blue reflectance curves and then reconstructed into its
-own curve.
+Orange decomposed into white, cyan, magenta, yellow, red, green, and blue reflectance curves and then reconstructed into
+its own curve.
 ///
 
 With the ability to represent almost any color within our gamut as a reflectance curve, we then can mix colors by
@@ -94,8 +94,7 @@ appears more like what you wound have when using something like Mixbox.
 ## Differences
 
 It should be noted that we do deviate a bit from the Spectral.js implementation. As we explored this approach we found
-a few things that we found to be unnecessary, things we could improve upon, or just things we approached slightly
-different.
+a few things that we found to be unnecessary, or things we had to do slightly different.
 
 1.  Following the approach outlined by Scott Burns, we regenerated all the data at higher precision and ensured that it
     was done with the same transformation matrices and white points that we use within our library. This was done just
@@ -103,58 +102,35 @@ different.
     Spectral.js does, but values _might_ be slightly different as we did the calculations ourselves with our exact
     white points and matrices.
 
-2.  Spectral.js uses primary colors of:
+2.  During decomposition of colors, we constrain concentrations to be between 0 and 1 and  we constrain composite
+    reflectance curves to be between a very small value and 1 as the Kubelka-Munk functions expect reflectance to not be
+    zero and not exceed 1. The Kubelka-Munk mixing function does not handle values that exceed 1 and cannot round trip
+    these values. Spectral.js only constrains the lower end.
 
-    - `#!color rgb(255 255 255)`
-    - `#!color rgb(255 0 0)`
-    - `#!color rgb(0 255 0)`
-    - `#!color rgb(0 0 255)`
-    - `#!color rgb(0 255 255)`
-    - `#!color rgb(255 0 255)`
-    - `#!color rgb(255 255 0)`
-
-    During our evaluation, we found that including `#!color rgb(255 255 255)` provided no significant improvements as
-    the other primary colors provide sufficient coverage with comparable results.
-
-    In order to drop `#!color rgb(255 255 255)` as a primary curve, we simply adjusted the algorithm that calculated
-    concentrations so that the decomposition of linear sRGB values into cyan, magenta, yellow, red, green, and blue was
-    not dependent upon white being subtracted first.
-
-3.  During decomposition of colors, we constrain concentrations to be between 0 and 1. Concentrations are always
-    relative to the colors they are mixing with. You can't have 200% of red and 100% of blue paint as what this really
-    represents is 2 parts red and 1 part blue, which equates to 0.6666666666666666% of red and 0.3333333333333333% of
-    blue. You can never mix more than 100% of a given wavelength as it would create unrealistic reflectance curves that
-    would break when performing the Kubelka-Munk mix. Spectral.js only constrains the lower end.
-
-    Additionally, we constrain composite reflectance curves to be between a very small value and 1 as the Kubelka-Munk
-    functions expect reflectance to not be zero and not exceed 1. The Kubelka-Munk mixing function does not handle
-    values that exceed 1 very well and cannot round trip these values. Spectral.js only constrains the lower end.
-
-    These changes will alter the curve compared to Spectral.js when getting very close to white or exceeding the sRGB
-    gamut. The primary curves do not sum up to 1 perfectly and can sum to values greater than 1. This means color
-    information is lost, but the information would be inaccurate when passing through the Kubelka-Munk mixing functions.
+    These changes will alter the curve compared to Spectral.js when the composite reflectance curve has values that
+    exceed one; such as, very close to white or exceeding the sRGB gamut. The primary curves can create composite
+    reflectance curves that exceed one at various wavelengths. This means color information is lost, but the information
+    would be lost regardless, and inaccurate when passing through the Kubelka-Munk mixing functions.
 
     We compensate for the color information that is lost by capturing the residual (the difference between the expected
     XYZ value and the recreated XYZ value) and mixing those separately and then adding the mixed residual back into the
     final color at the end. This allows us to reasonably represent colors that may exceed the actual gamut that the
     primary reflectance curves can actually reproduce and even colors that exceed the sRGB gamut entirely. It should be
     noted though that colors within the sRGB gamut should be considered to have more accurate Kubelka-Munk mixing as
-    there will only be slight clamping within sRGB colors when they get close to white.
+    there will only be slight clamping within sRGB colors at the edge of the sRGB gamut.
 
     Better stated, the Spectral.js approach can process most of the colors in the sRGB gamut well, but not all.
     Our adjusted approach allows us to better handle colors at the edge of what the Spectral.js approach can support for
     the sRGB gamut and beyond.
 
-    It should be noted though that Spectral.js does clamp their final result to the course resolution of sRGB
-    hexadecimal values, and because they are limited to the sRGB gamut only, and to such a low resolution, inaccuracies
-    are not easily observable. Since we allow for higher precision and larger gamuts, we cannot get away with the same
-    approach and require some mitigation.
+    It should be noted though that Spectral.js is constrained to the sRGB gamut, and any inaccuracies near the edge of
+    the sRGB gamut are not really noticeable.
 
-4.  Spectral.js generally clips the mixed colors to sRGB hexadecimal resolution before returning them. We do not clip
-    any colors that are out-of-gamut due to mixing in case the user is within a gamut that can accommodate them. We
-    also do not force hexadecimal resolution. We let the user choose how they will gamut map their colors and to what
-    resolution they wish to round their values to. This means we allow colors that exceed the sRGB gamut if that is
-    desired. In short, users are free to clip or gamut map their returned colors in any way they see fit.
+4.  Spectral.js generally clips or gamut maps the mixed colors to sRGB hexadecimal resolution before returning them. We
+    do not clip any colors that are out-of-gamut due to mixing in case the user is within a gamut that can accommodate
+    them. We also do not force hexadecimal resolution. We let the user choose how they will gamut map their colors and
+    to what resolution they wish to round their values to. This means we allow colors that exceed the sRGB gamut if that
+    is desired. In short, users are free to clip or gamut map their returned colors in any way they see fit.
 
     ```py play
     c1 = Color('color(display-p3 0 0 1)')

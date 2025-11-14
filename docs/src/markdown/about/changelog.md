@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.2
+
+-   **FIX**: Include white in spectral mixing to create smoother curves in all cases.
+
 ## 1.12.1
 
 -   **FIX**: Adjust the spectral mixing to use a smaller epsilon that matches the current Spectral.js implementation.

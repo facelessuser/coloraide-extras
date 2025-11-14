@@ -21,7 +21,14 @@ class TestRoundTrip:
 
     Color.deregister('space:hpluv')
 
-    SPACES = dict.fromkeys(Color.CS_MAP, 6)
+    SPACES = dict.fromkeys(Color.CS_MAP, 10)
+    # HCT will actually provide good conversion at about 11 decimal precision,
+    # but certain spaces have a gamma power function that is less accurate with RGB channels near zero
+    # (not necessarily near black): Rec. 2020, Rec. 709, etc. HCT, which approximates its inverse transform,
+    # can emphasizes these cases and fall a little below our target of 6. This is expected.
+    # To handle this in testing, we can specify more nuanced conditions. Provide the default precision,
+    # and optional lower precision, and spaces that would trigger this lower precision.
+    SPACES['hct'] = (10, 4, {'rec709', 'rec2020', 'a98-rgb'})
 
     COLORS = [
         Color('red'),
@@ -40,8 +47,13 @@ class TestRoundTrip:
         name = c1.to_string(names=True)
         c1.convert(space, in_place=True)
         p1 = self.SPACES[space]
+        original_space = space
+        # Is this a value or a tuple for conditional precision
+        conditional = isinstance(p1, tuple)
         for space, p2 in self.SPACES.items():
-            p = min(p1, p2)
+            pa = (p1[1] if space in p1[2] else p1[0]) if conditional else p1
+            pb = (p2[1] if original_space in p2[2] else p2[0]) if isinstance(p2, tuple) else p2
+            p = min(pa, pb)
             # Print the color space to easily identify which color space broke.
             c2 = c1.convert(space)
             c2.convert(c1.space(), in_place=True)
@@ -60,7 +72,7 @@ class TestRoundTrip:
             str2 = self.Color(c2.to_string(color=True, fit=False)).to_string(color=True, fit=False, precision=p)
             # Print failing results for debug purposes
             if str1 != str2:
-                print('----- Convert: {} <=> {} -----'.format(c1.space(), space))
+                print(f'----- Convert: {c1.space()} <=> {space} -----')
                 print('Name: ', name)
                 print('Original: ', color.to_string(color=True, fit=False, precision=p))
                 print(c1.space() + ': ', str1, c1[:])
@@ -90,7 +102,7 @@ class TestAchromaticRoundTrip(TestRoundTrip):
     Color.deregister('space:ryb')
     Color.deregister('space:ryb-biased')
 
-    SPACES = dict.fromkeys(Color.CS_MAP, 6)
+    SPACES = dict.fromkeys(Color.CS_MAP, 10)
 
     COLORS = [
         Color('darkgrey'),

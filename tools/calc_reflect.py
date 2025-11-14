@@ -15,7 +15,7 @@ from coloraide import algebra as alg  # noqa: E402
 from coloraide.everything import ColorAll as Color  # noqa: E402
 from coloraide.cmfs import CIE_1931_2DEG as CMF  # noqa: E402
 
-targets = ['#ff0000', '#00ff00', '#0000ff', '#00ffff', '#ff00ff', '#ffff00']
+targets = ['#ff0000', '#00ff00', '#0000ff', '#00ffff', '#ff00ff', '#ffff00', '#ffffff']
 space = 'srgb'
 # With the current settings, method2 requires an epsilon of 1e-14, while method 3 can use 1e-15
 # More iterations may be required for for higher step resolutions.
@@ -25,7 +25,7 @@ START = 380
 STEP = 10
 END = 750 + STEP
 MAX_ITERS = 50
-METHOD = 2
+METHOD = 3
 EPSILON = 1e-15 if METHOD == 3 else 1e-14
 
 # Values at 1 nanometers
@@ -852,6 +852,8 @@ def method_3(d, cmfs_w, XYZ_w, max_iterations=MAX_ITERS, tolerance=EPSILON):
 rho = []
 for color in targets:
     c = Color(color).convert('srgb-linear').coords()
+    METHOD = 2 if c == [1, 1, 1] else 3
+    EPSILON = 1e-15 if METHOD == 3 else 1e-14
     if METHOD == 3:
         r = method_3(D, alg.transpose(TRGB), c)
     elif METHOD == 2:
