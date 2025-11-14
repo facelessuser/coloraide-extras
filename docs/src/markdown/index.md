@@ -1,3 +1,6 @@
+---
+icon: lucide/house
+---
 # Introduction
 
 /// warning | Experimental

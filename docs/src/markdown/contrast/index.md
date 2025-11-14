@@ -1,3 +1,6 @@
+---
+icon: lucide/contrast
+---
 # Contrast
 
 ColorAide provides WCAG 2.1 color contrast by default, but there are some criticisms related to how well the WCAG 2.1

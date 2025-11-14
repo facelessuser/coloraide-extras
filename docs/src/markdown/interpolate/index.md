@@ -1,3 +1,6 @@
+---
+icon: lucide/spline
+---
 # Interpolate
 
 ColorAide Extras provides a few experimental interpolation plugins

@@ -1,3 +1,6 @@
+---
+icon: lucide/palette
+---
 # Supported Color Spaces
 
 ColorAide Extras adds a number of additional color spaces to ColorAide. Some are just spaces that are less practical
