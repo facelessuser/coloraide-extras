@@ -1,23 +1,20 @@
 # CIE 1964 UVW
 
 /// html | div.info-container
-//// info | Properties
-    attrs: {class: inline end}
-
-**Name:** `uvw`
-
-**White Point:** D65
-
-**Coordinates:**
-
-Name | Range^\*^
----- | -----
-`u`  | [-100.0, 100.0]
-`v`  | [-100.0, 100.0]
-`w`  | [0.0, 100.0]
-
-^\*^ Range is currently quite arbitrary.
-////
+> [!info | inline | end] Properties 
+> **Name:** `uvw`
+> 
+> **White Point:** D65
+> 
+> **Coordinates:**
+> 
+> Name | Range^\*^
+> ---- | -----
+> `u`  | [-100.0, 100.0]
+> `v`  | [-100.0, 100.0]
+> `w`  | [0.0, 100.0]
+> 
+> ^\*^ Range is currently quite arbitrary.
 
 ![UVW](../images/uvw-3d.png)
 
@@ -25,11 +22,10 @@ Name | Range^\*^
 The sRGB gamut represented within the UVW color space.
 ////
 
-//// note
-It is a bit uncertain as to why the 3D model shows a number of values resolving to a black bulb under the shape,
-but the translation has been compared against some other libraries that have implemented the space, and it seems to
-align :shrug:.
-////
+> [!note]
+> It is a bit uncertain as to why the 3D model shows a number of values resolving to a black bulb under the shape,
+> but the translation has been compared against some other libraries that have implemented the space, and it seems to
+> align :shrug:.
 
 Wyszecki invented the UVW color space in order to be able to calculate color differences without having to hold the
 luminance constant. He defined a lightness index W* by simplifying expressions suggested earlier by Ladd and Pinney,

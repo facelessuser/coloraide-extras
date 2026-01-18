@@ -3,10 +3,9 @@ icon: lucide/house
 ---
 # Introduction
 
-/// warning | Experimental
-Plugins provided by ColorAide Extras is essentially an experimental playground. Regardless of how polished a given
-plugin may seem, they should be considered experimental.
-///
+> [!example] Experimental
+> Plugins provided by ColorAide Extras is essentially an experimental playground. Regardless of how polished a given
+> plugin may seem, they should be considered experimental.
 
 ## Overview
 
