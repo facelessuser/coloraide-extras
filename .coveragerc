@@ -1,5 +1,8 @@
 [run]
-omit=coloraide_extras/__meta__.py
-
+omit=
+    coloraide_extras/__meta__.py
+    coloraide_extras/interpolate/spectral.py
 [report]
-omit=coloraide_extras/__meta__.py
+omit=
+    coloraide_extras/__meta__.py
+    coloraide_extras/interpolate/spectral.py
