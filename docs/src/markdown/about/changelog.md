@@ -3,6 +3,13 @@ icon: lucide/scroll-text
 ---
 # Changelog
 
+## 1.13
+
+-   **NEW**: Require ColorAide 8.8.
+-   **NEW**: Spectral mixing has been moved to the official ColorAide package. References here are deprecated and will
+    be removed in the future.
+-   **NEW**: Drop support for Python 3.9.
+
 ## 1.12.2
 
 -   **FIX**: Include white in spectral mixing to create smoother curves in all cases.
