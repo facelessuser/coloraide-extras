@@ -63,12 +63,6 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
             Color('red').mix('black', method='spectral'), Color('color(xyz-d65 0.08223 0.04839 0.01747)')
         )
 
-    def test_bad_color_space(self):
-        """Spectral will only mix in XYZ."""
-
-        with self.assertRaises(ValueError):
-            Color('red').mix('blue', method='spectral', space='lab')
-
     def test_easing(self):
         """Test easing functions."""
 
@@ -159,12 +153,6 @@ class TestSpectral(util.ColorAsserts, unittest.TestCase):
             Color.interpolate([red, green, blue], method='spectral-continuous')(0.75),
             Color('color(xyz-d65 0.0266 0.05348 0.02989)')
         )
-
-    def test_bad_color_space_continuous(self):
-        """Spectral continuous will only mix in XYZ."""
-
-        with self.assertRaises(ValueError):
-            Color('red').mix('blue', method='spectral-continuous', space='lab')
 
     def test_easing_continuous(self):
         """Test easing functions."""

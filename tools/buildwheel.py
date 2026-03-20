@@ -22,7 +22,7 @@ NOTEBOOK_PYODIDE_PKGS = [
 # Wheels required in addition to the current project
 PLAYGROUND_WHEELS = [
     "https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl",  # noqa: E501
-    "https://files.pythonhosted.org/packages/11/52/cd3825f320c0baf928ff84cc618c31d8d8510efa93de3b1ad76c9b13427d/coloraide-8.0-py3-none-any.whl"  # noqa: E501
+    "https://files.pythonhosted.org/packages/07/4d/e18c498dae5124d0efb0f79615d95efc89c9fdb90ba21394985921c894b2/coloraide-8.8-py3-none-any.whl"  # noqa: E501
 ]
 
 PLAYGROUND_PYODIDE_PKGS = ['micropip']
