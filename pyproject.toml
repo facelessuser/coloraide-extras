@@ -87,6 +87,7 @@ lint.select = [
 ]
 
 lint.ignore = [
+    "B905",
     "D202",
     "D203",
     "D212",
