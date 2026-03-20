@@ -6,6 +6,7 @@ See source in ColorAide.
 from __future__ import annotations
 import warnings
 from coloraide.interpolate.spectral import Spectral, SpectralContinuous
+from typing import Any
 
 __all__ = ('Spectral', 'SpectralContinuous')
 
@@ -15,7 +16,7 @@ __deprecated__ = {
 }
 
 
-def __getattr__(name):
+def __getattr__(name: str) -> Any:
     """Get attribute."""
 
     deprecated = __deprecated__.get(name)
